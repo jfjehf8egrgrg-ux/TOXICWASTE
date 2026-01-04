@@ -13,9 +13,11 @@ body {
   color: #00FF00;
 }
 
-/* Логотип сверху */
 .logo {
   margin: 20px 0;
+  background-color: transparent; /* или #000 для чёрного фона */
+  padding: 10px; /* немного отступов вокруг логотипа */
+  border-radius: 10px; /* если хочешь скругление */
 }
 
 .logo img {
@@ -71,6 +73,7 @@ button:hover {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.6; }
 }
+
 
 
 
