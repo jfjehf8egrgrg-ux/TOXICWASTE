@@ -16,11 +16,7 @@ body {
 }
 
 .logo {
-  margin-top: -15px;
-  margin-bottom: 10px;
-}
-
-.logo img {
+  margin-top: 5px;
   width: 250px;
   background-color: transparent; /* или #000 для чёрного фона */
   padding: 10px; /* немного отступов вокруг логотипа */
@@ -80,6 +76,7 @@ button:hover {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.6; }
 }
+
 
 
 
