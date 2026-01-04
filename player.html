@@ -6,36 +6,49 @@
   <title>TOXIC WASTE - Player</title>
   <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body class="player-page">
 
   <!-- Логотип сверху -->
   <div class="logo">
-    <img src="img/logo2.png">
+    <img src="img/logo2.png" alt="TOXIC WASTE Logo">
   </div>
 
-<div class="player-box">
-  <div class="track-info">
-    <span id="track-title">TRACK 1</span>
+  <!-- Плеер -->
+  <div class="player-box">
+
+    <!-- Информация о треке -->
+    <div class="track-info">
+      <span id="track-title">TRACK 1</span>
+    </div>
+
+    <!-- Кнопки управления -->
+    <div class="controls">
+      <button id="play">▶️</button>
+      <button id="pause">⏸</button>
+      <button id="stop">⏹</button>
+    </div>
+
+    <!-- Прогресс-бар -->
+    <div class="progress-container">
+      <div id="progress-bar"></div>
+    </div>
+
+    <!-- Будущие треки -->
+    <div class="soon-buttons">
+      <button disabled>Track 2 - SOON</button>
+      <button disabled>Track 3 - SOON</button>
+    </div>
+
+    <!-- Сам трек -->
+    <audio id="track1" src="music/track1.mp3"></audio>
   </div>
 
-  <div class="controls">
-    <button id="play">▶️</button>
-    <button id="pause">⏸</button>
-    <button id="stop">⏹</button>
-  </div>
-
-  <div class="progress-container">
-    <div id="progress-bar"></div>
-  </div>
-
-  <!-- Будущие треки -->
-  <div class="soon-buttons">
-    <button disabled>Track 2 - SOON</button>
-    <button disabled>Track 3 - SOON</button>
-  </div>
-
-  <audio id="track1" src="music/track1.mp3"></audio>
-</div>
+  <!-- JS для работы плеера -->
+  <script>
+    const track = document.getElementById('track1');
+    const playBtn = document.getElementById('play');
+    const pauseBtn = document.getElementById('pause');
+    con
 
 
 
