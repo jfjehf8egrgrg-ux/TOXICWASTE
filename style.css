@@ -14,7 +14,7 @@ body {
 
 /* ===== ФОН ДЛЯ ПЕРВОЙ СТРАНИЦЫ ===== */
 body.login-page {
-  background: url('img/background.gif') no-repeat center 20% fixed;
+  background: url('img/background.gif');
   background-size: cover;
 }
 
@@ -128,6 +128,7 @@ button:hover {
   font-size: 16px;
   cursor: not-allowed;
 }
+
 
 
 
