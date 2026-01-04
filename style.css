@@ -1,4 +1,4 @@
-/* Фон с гифкой */
+/* ===== ОСНОВА СТРАНИЦЫ ===== */
 body {
   margin: 0;
   padding: 0;
@@ -12,51 +12,44 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
+
   color: #00FF00;
 }
 
-/* Логотип */
-/* Логотип сверху */
+/* ===== ЛОГОТИП ===== */
 .logo {
   margin-top: 10px;
   margin-bottom: 20px;
-  background-color: transparent;
   padding: 10px;
-  border-radius: 10px;
+  background: transparent;
 
-  /* анимация */
   animation: logo-float 4s ease-in-out infinite;
 }
 
-/* Размер логотипа */
 .logo img {
-  width: 220px;   /* ← регулируй размер тут */
+  width: 220px;
+  height: auto;
   max-width: 80vw;
 }
 
-/* Анимация логотипа (меньше, чем у окна) */
+/* Плавание логотипа (мягкое) */
 @keyframes logo-float {
   0%, 100% {
-    transform: translateY(0px);
+    transform: translateY(0);
   }
   50% {
-    transform: translateY(-8px); /* МАЛЕНЬКОЕ колебание */
+    transform: translateY(-8px);
   }
 }
 
-  background-color: transparent; /* или #000 для чёрного фона */
-  padding: 10px; /* немного отступов вокруг логотипа */
-  border-radius: 10px; /* если хочешь скругление */
-
-}
-
-/* Окно входа */
+/* ===== ОКНО ВХОДА ===== */
 .login-box {
   background: rgba(28, 28, 28, 0.8);
   padding: 30px 50px;
   border-radius: 15px;
   text-align: center;
-  animation: float 3s ease-in-out infinite;
+
+  animation: login-float 3s ease-in-out infinite;
   box-shadow: 0 0 20px #8ffe09;
 }
 
@@ -67,16 +60,19 @@ body {
   font-size: 24px;
 }
 
-/* Поля ввода */
-input, button {
+/* ===== ПОЛЯ ВВОДА ===== */
+input,
+button {
   display: block;
   width: 250px;
   margin: 10px auto;
   padding: 10px;
+
   border: 2px solid #00FF00;
   border-radius: 5px;
   background: #1c1c1c;
   color: #00FF00;
+
   font-weight: bold;
   font-size: 16px;
 }
@@ -88,17 +84,23 @@ button:hover {
   animation: blink 1s infinite;
 }
 
-/* Анимация “полетания” окна вверх-вниз */
-@keyframes float {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-15px); }
+/* Плавание окна (сильнее) */
+@keyframes login-float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-15px);
+  }
 }
 
-/* Мигающая кнопка */
+/* Моргание кнопки */
 @keyframes blink {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.6; }
 }
+
+
 
 
 
