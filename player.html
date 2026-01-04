@@ -21,17 +21,11 @@
       <span id="track-title">TRACK 1</span>
     </div>
 
-    <!-- Кнопки управления -->
-    <div class="controls">
-      <button id="play">▶️</button>
-      <button id="pause">⏸</button>
-      <button id="stop">⏹</button>
-    </div>
-
-    <!-- Прогресс-бар -->
-    <div class="progress-container">
-      <div id="progress-bar"></div>
-    </div>
+    <!-- Стандартный аудиоплеер -->
+    <audio id="track1" controls>
+      <source src="music/track1.mp3" type="audio/mpeg">
+      Ваш браузер не поддерживает аудио.
+    </audio>
 
     <!-- Будущие треки -->
     <div class="soon-buttons">
@@ -39,16 +33,11 @@
       <button disabled>Track 3 - SOON</button>
     </div>
 
-    <!-- Сам трек -->
-    <audio id="track1" src="music/track1.mp3"></audio>
   </div>
 
-  <!-- JS для работы плеера -->
-  <script>
-    const track = document.getElementById('track1');
-    const playBtn = document.getElementById('play');
-    const pauseBtn = document.getElementById('pause');
-    con
+</body>
+</html>
+
 
 
 
