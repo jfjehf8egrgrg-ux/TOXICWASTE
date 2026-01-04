@@ -1,23 +1,73 @@
+/* Фон с гифкой */
 body {
-  background: #111;
-  color: white;
-  font-family: Arial;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  margin: 0;
+  padding: 0;
   height: 100vh;
+  background: url('img/background.gif') no-repeat center center fixed;
+  background-size: cover;
+  font-family: 'Courier New', monospace;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  color: #00FF00;
 }
 
+/* Логотип сверху */
+.logo {
+  margin: 20px 0;
+}
+
+.logo img {
+  width: 250px; /* можно подкорректировать */
+}
+
+/* Окно входа */
 .login-box {
-  background: #1c1c1c;
-  padding: 30px;
-  border-radius: 10px;
+  background: rgba(28, 28, 28, 0.8);
+  padding: 30px 50px;
+  border-radius: 15px;
   text-align: center;
+  animation: float 3s ease-in-out infinite;
+  box-shadow: 0 0 20px #00FF00;
 }
 
+.login-box h2 {
+  margin-bottom: 20px;
+  color: #FF4500;
+  text-shadow: 2px 2px 5px #000;
+  font-size: 24px;
+}
+
+/* Поля ввода */
 input, button {
   display: block;
-  width: 200px;
+  width: 250px;
   margin: 10px auto;
   padding: 10px;
+  border: 2px solid #00FF00;
+  border-radius: 5px;
+  background: #1c1c1c;
+  color: #00FF00;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+button:hover {
+  background: #00FF00;
+  color: #111;
+  cursor: pointer;
+  animation: blink 1s infinite;
+}
+
+/* Анимация “полетания” окна вверх-вниз */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-15px); }
+}
+
+/* Мигающая кнопка */
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
 }
