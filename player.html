@@ -1,19 +1,32 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>player</title>
-<link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TOXIC WASTE - Player</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<h2>Музыка</h2>
+  <!-- Логотип сверху -->
+  <div class="logo">
+    <img src="img/logo2.png" alt="TOXIC WASTE">
+  </div>
 
-<audio controls src="music/track1.mp3"></audio><br>
-<audio controls src="music/track2.mp3"></audio><br>
-<audio controls src="music/track3.mp3"></audio>
+  <!-- Плеер -->
+  <div class="player-box">
+    <audio id="track1" controls>
+      <source src="music/track1.mp3" type="audio/mpeg">
+      Your browser does not support the audio element.
+    </audio>
 
+    <!-- Кнопки для будущих треков -->
+    <div class="soon-buttons">
+      <button disabled>Track 2 - SOON</button>
+      <button disabled>Track 3 - SOON</button>
+    </div>
+  </div>
+
+  <script src="player.js"></script>
 </body>
 </html>
-
-
