@@ -29,7 +29,7 @@ body {
   border-radius: 15px;
   text-align: center;
   animation: float 3s ease-in-out infinite;
-  box-shadow: 0 0 20px #00FF00;
+  box-shadow: 0 0 20px #8ffe09;
 }
 
 .login-box h2 {
@@ -71,3 +71,4 @@ button:hover {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.6; }
 }
+
