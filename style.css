@@ -1,52 +1,22 @@
 body {
-  margin: 0;
-  padding: 0;
-  min-height: 100vh;
+  background: #111;
+  color: #00FF00;
   font-family: 'Courier New', monospace;
-  background: url('img/background_player.gif') no-repeat center center fixed;
-  background-size: cover;
-  color: #00FF00;
-
   display: flex;
-  flex-direction: column;
+  justify-content: center;
   align-items: center;
+  height: 100vh;
+  flex-direction: column;
 }
 
-/* Логотип сверху */
-.logo img {
-  width: 200px;
-  margin: 20px 0;
-  animation: logo-float 4s ease-in-out infinite;
-}
-
-/* Анимация логотипа (легкая) */
-@keyframes logo-float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-8px); }
-}
-
-/* Блок плеера */
-.player-box {
-  background: rgba(28, 28, 28, 0.8);
-  padding: 30px;
-  border-radius: 15px;
-  text-align: center;
-  box-shadow: 0 0 20px #8ffe09;
-  margin-top: 30px;
-}
-
-/* Кастомный аудиоплеер */
-audio {
-  width: 300px;
-  outline: none;
-  border-radius: 10px;
+.login-box {
   background: #1c1c1c;
-  color: #00FF00;
-  margin-bottom: 20px;
+  padding: 30px;
+  border-radius: 10px;
+  text-align: center;
 }
 
-/* Кнопки SOON */
-.soon-buttons button {
+input, button {
   display: block;
   width: 250px;
   margin: 10px auto;
@@ -56,8 +26,17 @@ audio {
   background: #1c1c1c;
   color: #00FF00;
   font-weight: bold;
-  font-size: 16px;
-  cursor: not-allowed;
+}
+
+button:hover {
+  background: #00FF00;
+  color: #111;
+  cursor: pointer;
+}
+
+audio {
+  width: 300px;
+  margin: 10px;
 }
 
 
