@@ -16,6 +16,7 @@ body {
 }
 
 /* Логотип */
+/* Логотип сверху */
 .logo {
   margin-top: 10px;
   margin-bottom: 20px;
@@ -23,23 +24,23 @@ body {
   padding: 10px;
   border-radius: 10px;
 
-  /* анимация плавания */
+  /* анимация */
   animation: logo-float 4s ease-in-out infinite;
 }
 
 /* Размер логотипа */
 .logo img {
-  width: 220px;      /* нормальный размер */
-  height: auto;
+  width: 220px;   /* ← регулируй размер тут */
+  max-width: 80vw;
 }
 
-/* Анимация — слабее, чем у окна входа */
+/* Анимация логотипа (меньше, чем у окна) */
 @keyframes logo-float {
   0%, 100% {
-    transform: translateY(0);
+    transform: translateY(0px);
   }
   50% {
-    transform: translateY(-8px); /* меньше, чем у login-box */
+    transform: translateY(-8px); /* МАЛЕНЬКОЕ колебание */
   }
 }
 
@@ -98,6 +99,7 @@ button:hover {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.6; }
 }
+
 
 
 
