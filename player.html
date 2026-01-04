@@ -13,21 +13,29 @@
     <img src="img/logo2.png">
   </div>
 
-  <!-- Плеер -->
-  <div class="player-box">
-    <audio id="track1" controls>
-      <source src="music/track1.mp3" type="audio/mpeg">
-      Your browser does not support the audio element.
-    </audio>
-
-    <!-- Кнопки для будущих треков -->
-    <div class="soon-buttons">
-      <button disabled>Track 2 - SOON</button>
-      <button disabled>Track 3 - SOON</button>
-    </div>
+<div class="player-box">
+  <div class="track-info">
+    <img src="img/logo2.png" alt="Track Logo" class="track-logo">
+    <span id="track-title">TRACK 1</span>
   </div>
 
-  <script src="player.js"></script>
-</body>
-</html>
+  <div class="controls">
+    <button id="play">▶️</button>
+    <button id="pause">⏸</button>
+    <button id="stop">⏹</button>
+  </div>
+
+  <div class="progress-container">
+    <div id="progress-bar"></div>
+  </div>
+
+  <!-- Будущие треки -->
+  <div class="soon-buttons">
+    <button disabled>Track 2 - SOON</button>
+    <button disabled>Track 3 - SOON</button>
+  </div>
+
+  <audio id="track1" src="music/track1.mp3"></audio>
+</div>
+
 
