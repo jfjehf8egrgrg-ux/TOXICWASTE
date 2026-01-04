@@ -27,3 +27,21 @@ track.addEventListener('timeupdate', () => {
   const percent = (track.currentTime / track.duration) * 100;
   progressBar.style.width = percent + '%';
 });
+
+<script>
+  const bgMusic = document.getElementById('bg-music');
+  const loginBtn = document.getElementById('login-btn');
+
+  loginBtn.addEventListener('click', () => {
+    // Проверяем, что музыка ещё не играет
+    if(bgMusic.paused) {
+      bgMusic.volume = 0.2; // регулируем громкость
+      bgMusic.play().catch(err => {
+        console.log("Не удалось включить звук:", err);
+      });
+    }
+
+    // Тут твоя логика логина
+    // Например: window.location.href = "player.html";
+  });
+</script>
