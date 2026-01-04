@@ -15,12 +15,34 @@ body {
   color: #00FF00;
 }
 
+/* Логотип */
 .logo {
-  margin: 20px 0;
-  background-color: transparent; /* или #000 для чёрного фона */
-  padding: 10px; /* немного отступов вокруг логотипа */
-  border-radius: 10px; /* если хочешь скругление */
+  margin-top: 10px;
+  margin-bottom: 20px;
+  background-color: transparent;
+  padding: 10px;
+  border-radius: 10px;
+
+  /* анимация плавания */
+  animation: logo-float 4s ease-in-out infinite;
 }
+
+/* Размер логотипа */
+.logo img {
+  width: 220px;      /* нормальный размер */
+  height: auto;
+}
+
+/* Анимация — слабее, чем у окна входа */
+@keyframes logo-float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px); /* меньше, чем у login-box */
+  }
+}
+
   background-color: transparent; /* или #000 для чёрного фона */
   padding: 10px; /* немного отступов вокруг логотипа */
   border-radius: 10px; /* если хочешь скругление */
@@ -76,6 +98,7 @@ button:hover {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.6; }
 }
+
 
 
 
