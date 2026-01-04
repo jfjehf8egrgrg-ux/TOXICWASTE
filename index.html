@@ -21,25 +21,31 @@
     <button id="login-btn">ENTER</button>
   </div>
 
-  <!-- Фоновая музыка (без autoplay) -->
+  <!-- Фоновая музыка -->
   <audio id="bg-music" src="music/background.mp3" preload="auto" loop></audio>
 
   <script>
-    // Получаем элементы
     const bgMusic = document.getElementById('bg-music');
     const loginBtn = document.getElementById('login-btn');
+    const usernameInput = document.getElementById('username');
+    const passwordInput = document.getElementById('password');
 
-    // Обработчик клика на кнопку ENTER
-    loginBtn.addEventListener('click', function() {
-      // Запуск фоновой музыки, если ещё не играет
-      if(bgMusic.paused) {
-        bgMusic.volume = 0.2; // тихий фон
+    // Функция запуска фоновой музыки
+    function playBgMusic() {
+      if (bgMusic.paused) {
+        bgMusic.volume = 0.2;
         bgMusic.play().catch(err => console.log("Ошибка воспроизведения:", err));
       }
+    }
 
-      // Здесь можно добавить проверку логина и переход на player.html
-      const username = document.getElementById('username').value;
-      const password = document.getElementById('password').value;
+    // Любое нажатие клавиши или клик мыши запускает фон
+    document.addEventListener('keydown', playBgMusic, { once: true });
+    document.addEventListener('mousedown', playBgMusic, { once: true });
+
+    // Обработчик кнопки ENTER
+    loginBtn.addEventListener('click', () => {
+      const username = usernameInput.value;
+      const password = passwordInput.value;
 
       if(username === "toxic" && password === "waste") {
         window.location.href = "player.html";
@@ -47,9 +53,15 @@
         alert("Неверный логин или пароль");
       }
     });
+
+    // Также Enter на клавиатуре внутри поля input отправляет форму
+    document.addEventListener('keydown', (e) => {
+      if(e.key === "Enter") {
+        loginBtn.click();
+      }
+    });
   </script>
 
 </body>
 </html>
-
 
