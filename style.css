@@ -4,7 +4,7 @@ body {
   padding: 0;
   height: 100vh;
 
-  background: url('img/background.gif') no-repeat center 20% fixed;
+  background: url('img/background.gif');
 
   font-family: 'Courier New', monospace;
   display: flex;
@@ -98,6 +98,7 @@ button:hover {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.6; }
 }
+
 
 
 
