@@ -1,36 +1,55 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>TOXIC WASTE</title>
-<link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TOXIC WASTE - Login</title>
+  <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body class="login-page">
 
-<!-- Логотип сверху -->
-<div class="logo">
-  <img src="img/logo.png">
-</div>
+  <!-- Логотип -->
+  <div class="logo">
+    <img src="img/logo.png" alt="TOXIC WASTE Logo">
+  </div>
 
-<!-- Окно входа -->
-<div class="login-box">
-  <h2>ENTER THE WASTE</h2>
-  <input type="text" id="login" placeholder="Логин">
-  <input type="password" id="password" placeholder="Пароль">
-  <button onclick="checkLogin()">Войти</button>
-  <p id="error"></p>
-</div>
+  <!-- Окно входа -->
+  <div class="login-box">
+    <h2>ENTER THE WASTE</h2>
+    <input type="text" id="username" placeholder="Username">
+    <input type="password" id="password" placeholder="Password">
+    <button id="login-btn">ENTER</button>
+  </div>
 
-<script src="script.js"></script>
+  <!-- Фоновая музыка (без autoplay) -->
+  <audio id="bg-music" src="music/background.mp3" preload="auto" loop></audio>
+
+  <script>
+    // Получаем элементы
+    const bgMusic = document.getElementById('bg-music');
+    const loginBtn = document.getElementById('login-btn');
+
+    // Обработчик клика на кнопку ENTER
+    loginBtn.addEventListener('click', function() {
+      // Запуск фоновой музыки, если ещё не играет
+      if(bgMusic.paused) {
+        bgMusic.volume = 0.2; // тихий фон
+        bgMusic.play().catch(err => console.log("Ошибка воспроизведения:", err));
+      }
+
+      // Здесь можно добавить проверку логина и переход на player.html
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+
+      if(username === "toxic" && password === "waste") {
+        window.location.href = "player.html";
+      } else {
+        alert("Неверный логин или пароль");
+      }
+    });
+  </script>
+
 </body>
 </html>
-
- <!-- Фоновая музыка -->
-  <audio id="bg-music" src="music/background.mp3" loop></audio>
-</body>
-
-<audio id="bg-music" src="music/background.mp3" preload="auto" loop></audio>
-
-
 
 
