@@ -1,103 +1,63 @@
-/* ===== ОСНОВА СТРАНИЦЫ ===== */
 body {
   margin: 0;
   padding: 0;
-  height: 100vh;
-
-  background: url('img/background.gif');
-  background-size: cover;
-
+  min-height: 100vh;
   font-family: 'Courier New', monospace;
+  background: url('img/background_player.gif') no-repeat center center fixed;
+  background-size: cover;
+  color: #00FF00;
+
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-start;
-
-  color: #00FF00;
 }
 
-/* ===== ЛОГОТИП ===== */
-.logo {
-  margin-top: 10px;
-  margin-bottom: 20px;
-  padding: 10px;
-  background: transparent;
-
+/* Логотип сверху */
+.logo img {
+  width: 200px;
+  margin: 20px 0;
   animation: logo-float 4s ease-in-out infinite;
 }
 
-.logo img {
-  width: 220px;
-  height: auto;
-  max-width: 80vw;
-}
-
-/* Плавание логотипа (мягкое) */
+/* Анимация логотипа (легкая) */
 @keyframes logo-float {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-8px);
-  }
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
 }
 
-/* ===== ОКНО ВХОДА ===== */
-.login-box {
+/* Блок плеера */
+.player-box {
   background: rgba(28, 28, 28, 0.8);
-  padding: 30px 50px;
+  padding: 30px;
   border-radius: 15px;
   text-align: center;
-
-  animation: login-float 3s ease-in-out infinite;
   box-shadow: 0 0 20px #8ffe09;
+  margin-top: 30px;
 }
 
-.login-box h2 {
-  margin-bottom: 20px;
+/* Кастомный аудиоплеер */
+audio {
+  width: 300px;
+  outline: none;
+  border-radius: 10px;
+  background: #1c1c1c;
   color: #00FF00;
-  text-shadow: 2px 2px 5px #000;
-  font-size: 24px;
+  margin-bottom: 20px;
 }
 
-/* ===== ПОЛЯ ВВОДА ===== */
-input,
-button {
+/* Кнопки SOON */
+.soon-buttons button {
   display: block;
   width: 250px;
   margin: 10px auto;
   padding: 10px;
-
   border: 2px solid #00FF00;
   border-radius: 5px;
   background: #1c1c1c;
   color: #00FF00;
-
   font-weight: bold;
   font-size: 16px;
-}
-
-button:hover {
-  background: #00FF00;
-  color: #111;
-  cursor: pointer;
-  animation: blink 1s infinite;
-}
-
-/* Плавание окна (сильнее) */
-@keyframes login-float {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-15px);
-  }
-}
-
-/* Моргание кнопки */
-@keyframes blink {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.6; }
+  cursor: not-allowed;
 }
 
 
