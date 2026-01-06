@@ -22,7 +22,7 @@ stopBtn.addEventListener('click', () => {
   track.currentTime = 0;
 });
 
-// Обновление прогресс-бара
+
 track.addEventListener('timeupdate', () => {
   const percent = (track.currentTime / track.duration) * 100;
   progressBar.style.width = percent + '%';
@@ -33,15 +33,15 @@ track.addEventListener('timeupdate', () => {
   const loginBtn = document.getElementById('login-btn');
 
   loginBtn.addEventListener('click', () => {
-    // Проверяем, что музыка ещё не играет
+  
     if(bgMusic.paused) {
-      bgMusic.volume = 0.2; // регулируем громкость
+      bgMusic.volume = 0.2; 
       bgMusic.play().catch(err => {
         console.log("Не удалось включить звук:", err);
       });
     }
 
-    // Тут твоя логика логина
-    // Например: window.location.href = "player.html";
+
   });
 </script>
+
