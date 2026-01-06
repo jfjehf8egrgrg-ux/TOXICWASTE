@@ -8,12 +8,11 @@
 </head>
 <body class="login-page">
 
-  <!-- Логотип -->
   <div class="logo">
     <img src="img/logo.png" alt="TOXIC WASTE Logo">
   </div>
 
-  <!-- Окно входа -->
+
   <div class="login-box">
     <h2>ENTER THE WASTE</h2>
     <input type="text" id="username" placeholder="Login">
@@ -21,7 +20,7 @@
     <button id="login-btn">ENTER</button>
   </div>
 
-  <!-- Фоновая музыка -->
+  
   <audio id="bg-music" src="music/background.mp3" preload="auto" loop></audio>
 
   <script>
@@ -30,7 +29,7 @@
     const usernameInput = document.getElementById('username');
     const passwordInput = document.getElementById('password');
 
-    // Функция запуска фоновой музыки
+    
     function playBgMusic() {
       if (bgMusic.paused) {
         bgMusic.volume = 0.2;
@@ -38,11 +37,11 @@
       }
     }
 
-    // Любое нажатие клавиши или клик мыши запускает фон
+   
     document.addEventListener('keydown', playBgMusic, { once: true });
     document.addEventListener('mousedown', playBgMusic, { once: true });
 
-    // Обработчик кнопки ENTER
+    
     loginBtn.addEventListener('click', () => {
       const username = usernameInput.value;
       const password = passwordInput.value;
@@ -54,7 +53,7 @@
       }
     });
 
-    // Также Enter на клавиатуре внутри поля input отправляет форму
+  
     document.addEventListener('keydown', (e) => {
       if(e.key === "Enter") {
         loginBtn.click();
@@ -64,6 +63,7 @@
 
 </body>
 </html>
+
 
 
 
