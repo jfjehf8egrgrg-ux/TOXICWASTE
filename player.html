@@ -8,7 +8,7 @@
 </head>
 <body class="player-page">
 
-  <!-- Логотип сверху -->
+  <!-- Логотип -->
   <div class="logo">
     <img src="img/logo2.png" alt="TOXIC WASTE Logo">
   </div>
@@ -16,24 +16,47 @@
   <!-- Плеер -->
   <div class="player-box">
 
-    <!-- Информация о треке -->
+    <!-- Название трека -->
     <div class="track-info">
       <span id="track-title">ЖИДКИЙ МЕТАЛЛ</span>
     </div>
 
-    <!-- Стандартный аудиоплеер -->
-    <audio id="track1" controls>
+    <!-- Один аудиоплеер -->
+    <audio id="audioPlayer" controls>
       <source src="music/track1.mp3" type="audio/mpeg">
       Ваш браузер не поддерживает аудио.
     </audio>
 
-    <!-- Будущие треки -->
+    <!-- Кнопки треков -->
     <div class="soon-buttons">
-      <button disabled>DISSOLVE - 7/01</button>
-      <button disabled>YAYAD - 9/01</button>
+      <button onclick="playTrack('track1')">ЖИДКИЙ МЕТАЛЛ</button>
+      <button onclick="playTrack('track2')">DISSOLVE</button>
+      <button disabled>YAYAD — SOON</button>
     </div>
 
   </div>
+
+  <script>
+    const audio = document.getElementById('audioPlayer');
+    const title = document.getElementById('track-title');
+
+    const tracks = {
+      track1: {
+        src: 'music/track1.mp3',
+        name: 'ЖИДКИЙ МЕТАЛЛ'
+      },
+      track2: {
+        src: 'music/track2.mp3',
+        name: 'DISSOLVE(ft. jealosu & atxma)'
+      }
+    };
+
+    function playTrack(trackKey) {
+      audio.src = tracks[trackKey].src;
+      title.textContent = tracks[trackKey].name;
+      audio.play();
+    }
+  </script>
 
 </body>
 </html>
