@@ -1,69 +1,84 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TOXIC WASTE - Login</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body class="login-page">
+  <title>TOXIC WASTE</title>
 
-  <div class="logo">
-    <img src="img/logo.png" alt="TOXIC WASTE Logo">
-  </div>
-
-
-  <div class="login-box">
-    <h2>ENTER THE WASTE</h2>
-    <input type="text" id="username" placeholder="Login">
-    <input type="password" id="password" placeholder="Password">
-    <button id="login-btn">ENTER</button>
-  </div>
-
-  
-  <audio id="bg-music" src="music/background.mp3" preload="auto" loop></audio>
-
-  <script>
-    const bgMusic = document.getElementById('bg-music');
-    const loginBtn = document.getElementById('login-btn');
-    const usernameInput = document.getElementById('username');
-    const passwordInput = document.getElementById('password');
-
-    
-    function playBgMusic() {
-      if (bgMusic.paused) {
-        bgMusic.volume = 0.2;
-        bgMusic.play().catch(err => console.log("Ошибка воспроизведения:", err));
-      }
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      font-family: Arial, sans-serif;
     }
 
-   
-    document.addEventListener('keydown', playBgMusic, { once: true });
-    document.addEventListener('mousedown', playBgMusic, { once: true });
 
-    
-    loginBtn.addEventListener('click', () => {
-      const username = usernameInput.value;
-      const password = passwordInput.value;
+    .logo {
+      margin-top: 30px;
+      margin-bottom: 40px;
+    }
 
-      if(username === "nuclear" && password === "kiss") {
-        window.location.href = "player.html";
-      } else {
-        alert("Неверный логин или пароль");
-      }
-    });
+    .logo img {
+      max-width: 220px;
+      height: auto;
+    }
+
+
+    .images {
+      display: flex;
+      gap: 40px;
+      align-items: flex-start;
+    }
+
+    .image-block {
+      text-align: center;
+    }
+
+    .image-block img {
+      max-width: 260px;
+      height: auto;
+      display: block;
+    }
+
+    .caption {
+      margin-top: 10px;
+      font-size: 18px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+
+  <div class="logo">
+    <img src="img/logo3.png" alt="Logo">
+  </div>
 
   
-    document.addEventListener('keydown', (e) => {
-      if(e.key === "Enter") {
-        loginBtn.click();
-      }
-    });
-  </script>
+  <div class="images">
+
+   
+    <div class="image-block">
+      <img src="img/1.png" alt="Photo">
+    </div>
+
+
+    <div class="image-block">
+      <img src="img/animation.gif" alt="GIF">
+      <div class="caption">12.1</div>
+    </div>
+
+
+    <div class="image-block">
+      <img src="img/animation.gif" alt="GIF">
+      <div class="caption">14.1</div>
+    </div>
+
+  </div>
 
 </body>
 </html>
-
-
-
-
