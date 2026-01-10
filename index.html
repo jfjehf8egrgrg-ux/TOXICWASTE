@@ -20,10 +20,9 @@
       align-items: center;
     }
 
-    /* Анимация полёта */
     @keyframes float {
       0%   { transform: translateY(0); }
-      50%  { transform: translateY(-12px); }
+      50%  { transform: translateY(-10px); }
       100% { transform: translateY(0); }
     }
 
@@ -32,14 +31,12 @@
       margin-top: 30px;
       margin-bottom: 40px;
       animation: float 3s ease-in-out infinite;
-      z-index: 2;
     }
 
     .logo img {
       max-width: 220px;
     }
 
-    /* Контейнер */
     .images {
       display: flex;
       gap: 40px;
@@ -53,7 +50,7 @@
     .image-block img {
       max-width: 260px;
       cursor: pointer;
-      transition: transform 0.5s ease;
+      transition: transform 0.4s ease;
     }
 
     .caption {
@@ -61,21 +58,31 @@
       font-size: 18px;
       font-weight: bold;
       color: #fff;
-      text-shadow: 0 0 5px rgba(0,0,0,0.8);
+      text-shadow: 0 0 6px rgba(0,0,0,0.8);
     }
 
-    /* === АКТИВНОЕ СОСТОЯНИЕ ЛЕВОГО ИЗОБРАЖЕНИЯ === */
+    /* подпись под 1.png */
+    .hint {
+      margin-top: 8px;
+      font-size: 14px;
+      color: #fff;
+      opacity: 0.85;
+      text-shadow: 0 0 6px rgba(0,0,0,0.8);
+    }
+
+    /* Увеличенное состояние */
     .expanded {
       position: fixed;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      max-width: 70vw !important;
+      max-width: 45vw !important;
+      max-height: 70vh;
       z-index: 10;
       animation: float 3s ease-in-out infinite;
     }
 
-    /* Затемнение фона */
+    /* Затемнение */
     .overlay {
       position: fixed;
       inset: 0;
@@ -83,7 +90,7 @@
       z-index: 9;
       opacity: 0;
       pointer-events: none;
-      transition: opacity 0.4s ease;
+      transition: opacity 0.3s ease;
     }
 
     .overlay.active {
@@ -94,7 +101,6 @@
 </head>
 <body>
 
-  <!-- Затемнение -->
   <div class="overlay" id="overlay"></div>
 
   <!-- Логотип -->
@@ -105,18 +111,19 @@
   <!-- Изображения -->
   <div class="images">
 
-    <!-- Слева: кликабельное фото -->
+    <!-- Слева -->
     <div class="image-block">
       <img src="img/1.png" alt="Photo" id="clickImage">
+      <div class="hint">нажми меня!</div>
     </div>
 
-    <!-- Центр: GIF -->
+    <!-- Центр -->
     <div class="image-block">
       <img src="img/animation.gif" alt="GIF">
       <div class="caption">12.1</div>
     </div>
 
-    <!-- Справа: GIF -->
+    <!-- Справа -->
     <div class="image-block">
       <img src="img/animation.gif" alt="GIF">
       <div class="caption">14.1</div>
