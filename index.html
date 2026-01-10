@@ -12,7 +12,6 @@
       min-height: 100vh;
       font-family: Arial, sans-serif;
 
-      /* Фон */
       background: url("img/background.gif") no-repeat center center fixed;
       background-size: cover;
 
@@ -21,7 +20,7 @@
       align-items: center;
     }
 
-    /* Анимация полёта логотипа */
+    /* Анимация полёта */
     @keyframes float {
       0%   { transform: translateY(0); }
       50%  { transform: translateY(-12px); }
@@ -33,14 +32,14 @@
       margin-top: 30px;
       margin-bottom: 40px;
       animation: float 3s ease-in-out infinite;
+      z-index: 2;
     }
 
     .logo img {
       max-width: 220px;
-      height: auto;
     }
 
-    /* Контейнер изображений */
+    /* Контейнер */
     .images {
       display: flex;
       gap: 40px;
@@ -53,8 +52,8 @@
 
     .image-block img {
       max-width: 260px;
-      height: auto;
-      display: block;
+      cursor: pointer;
+      transition: transform 0.5s ease;
     }
 
     .caption {
@@ -64,21 +63,51 @@
       color: #fff;
       text-shadow: 0 0 5px rgba(0,0,0,0.8);
     }
+
+    /* === АКТИВНОЕ СОСТОЯНИЕ ЛЕВОГО ИЗОБРАЖЕНИЯ === */
+    .expanded {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      max-width: 70vw !important;
+      z-index: 10;
+      animation: float 3s ease-in-out infinite;
+    }
+
+    /* Затемнение фона */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      z-index: 9;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s ease;
+    }
+
+    .overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
   </style>
 </head>
 <body>
+
+  <!-- Затемнение -->
+  <div class="overlay" id="overlay"></div>
 
   <!-- Логотип -->
   <div class="logo">
     <img src="img/logo3.png" alt="Logo">
   </div>
 
-  <!-- Три изображения -->
+  <!-- Изображения -->
   <div class="images">
 
-    <!-- Слева: фото -->
+    <!-- Слева: кликабельное фото -->
     <div class="image-block">
-      <img src="img/1.png" alt="Photo">
+      <img src="img/1.png" alt="Photo" id="clickImage">
     </div>
 
     <!-- Центр: GIF -->
@@ -95,7 +124,20 @@
 
   </div>
 
+  <script>
+    const img = document.getElementById('clickImage');
+    const overlay = document.getElementById('overlay');
+
+    img.addEventListener('click', () => {
+      img.classList.toggle('expanded');
+      overlay.classList.toggle('active');
+    });
+
+    overlay.addEventListener('click', () => {
+      img.classList.remove('expanded');
+      overlay.classList.remove('active');
+    });
+  </script>
+
 </body>
 </html>
-
-
