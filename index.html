@@ -9,17 +9,30 @@
     body {
       margin: 0;
       padding: 0;
-      background: #fff;
+      min-height: 100vh;
+      font-family: Arial, sans-serif;
+
+      /* Фон */
+      background: url("img/background.gif") no-repeat center center fixed;
+      background-size: cover;
+
       display: flex;
       flex-direction: column;
       align-items: center;
-      font-family: Arial, sans-serif;
     }
 
+    /* Анимация полёта логотипа */
+    @keyframes float {
+      0%   { transform: translateY(0); }
+      50%  { transform: translateY(-12px); }
+      100% { transform: translateY(0); }
+    }
 
+    /* Логотип */
     .logo {
       margin-top: 30px;
       margin-bottom: 40px;
+      animation: float 3s ease-in-out infinite;
     }
 
     .logo img {
@@ -27,7 +40,7 @@
       height: auto;
     }
 
-
+    /* Контейнер изображений */
     .images {
       display: flex;
       gap: 40px;
@@ -48,31 +61,33 @@
       margin-top: 10px;
       font-size: 18px;
       font-weight: bold;
+      color: #fff;
+      text-shadow: 0 0 5px rgba(0,0,0,0.8);
     }
   </style>
 </head>
 <body>
 
-
+  <!-- Логотип -->
   <div class="logo">
     <img src="img/logo3.png" alt="Logo">
   </div>
 
-  
+  <!-- Три изображения -->
   <div class="images">
 
-   
+    <!-- Слева: фото -->
     <div class="image-block">
-      <img src="img/1.png" alt="Photo">
+      <img src="img/photo.jpg" alt="Photo">
     </div>
 
-
+    <!-- Центр: GIF -->
     <div class="image-block">
       <img src="img/animation.gif" alt="GIF">
       <div class="caption">12.1</div>
     </div>
 
-
+    <!-- Справа: GIF -->
     <div class="image-block">
       <img src="img/animation.gif" alt="GIF">
       <div class="caption">14.1</div>
@@ -82,3 +97,4 @@
 
 </body>
 </html>
+
