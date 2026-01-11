@@ -24,11 +24,9 @@
 
     /* мягкий глитч */
     @keyframes softGlitch {
-      0%   { filter: none; }
-      92%  { filter: none; }
-      94%  { filter: hue-rotate(8deg) contrast(1.05); }
-      96%  { filter: hue-rotate(-6deg) saturate(1.1); }
-      100% { filter: none; }
+      0%, 92%, 100% { filter: none; }
+      94% { filter: hue-rotate(6deg) contrast(1.04); }
+      96% { filter: hue-rotate(-5deg) saturate(1.08); }
     }
 
     /* VHS полосы */
@@ -40,31 +38,32 @@
       background:
         repeating-linear-gradient(
           to bottom,
-          rgba(255,255,255,0.03),
-          rgba(255,255,255,0.03) 1px,
+          rgba(255,255,255,0.025),
+          rgba(255,255,255,0.025) 1px,
           rgba(0,0,0,0.03) 2px,
           rgba(0,0,0,0.03) 3px
         );
-      opacity: 0.25;
+      opacity: 0.22;
       z-index: 100;
       animation: scanMove 6s linear infinite;
     }
 
     @keyframes scanMove {
       from { background-position: 0 0; }
-      to   { background-position: 0 100px; }
+      to   { background-position: 0 120px; }
     }
 
-    @keyframes float {
-      0%   { transform: translateY(0); }
-      50%  { transform: translateY(-10px); }
-      100% { transform: translateY(0); }
+    /* вертикальное плавание БЕЗ transform */
+    @keyframes floatY {
+      0%   { margin-top: 0; }
+      50%  { margin-top: -10px; }
+      100% { margin-top: 0; }
     }
 
     .logo {
       margin-top: 30px;
       margin-bottom: 40px;
-      animation: float 3s ease-in-out infinite;
+      animation: floatY 3s ease-in-out infinite;
     }
 
     .logo img {
@@ -80,7 +79,6 @@
 
     @keyframes yDistort {
       0%, 100% { transform: translateY(0); }
-      95% { transform: translateY(0); }
       96% { transform: translateY(-1px); }
       97% { transform: translateY(1px); }
       98% { transform: translateY(0); }
@@ -96,7 +94,6 @@
       transition: transform 0.4s ease;
     }
 
-    /* одинаковый стиль текста */
     .caption,
     .hint {
       margin-top: 10px;
@@ -109,18 +106,17 @@
         0 0 6px rgba(0,0,0,0.8);
     }
 
-    /* увеличение фото */
+    /* УВЕЛИЧЕНИЕ — СТРОГО ПО ЦЕНТРУ */
     .expanded {
       position: fixed;
-      top: 0%;
-      left: 0%;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
       max-width: 45vw !important;
       max-height: 70vh;
       z-index: 10;
-      animation: float 3s ease-in-out infinite;
     }
 
-    /* затемнение */
     .overlay {
       position: fixed;
       inset: 0;
@@ -146,27 +142,22 @@
     <source src="music/bg.mp3" type="audio/mpeg">
   </audio>
 
-  <!-- логотип -->
   <div class="logo">
     <img src="img/logo3.png" alt="Logo">
   </div>
 
-  <!-- изображения -->
   <div class="images">
 
-    <!-- слева -->
     <div class="image-block">
       <img src="img/1.png" class="zoomable">
       <div class="hint">нажми меня!</div>
     </div>
 
-    <!-- центр -->
     <div class="image-block">
       <img src="img/2.png" class="zoomable">
       <div class="caption">нажми меня!</div>
     </div>
 
-    <!-- справа -->
     <div class="image-block">
       <img src="img/animation.gif">
       <div class="caption">14.1</div>
@@ -181,8 +172,8 @@
 
     images.forEach(img => {
       img.addEventListener('click', () => {
-        img.classList.toggle('expanded');
-        overlay.classList.toggle('active');
+        img.classList.add('expanded');
+        overlay.classList.add('active');
       });
     });
 
@@ -191,7 +182,6 @@
       overlay.classList.remove('active');
     });
 
-    /* запуск музыки после первого клика */
     document.body.addEventListener('click', () => {
       music.play().catch(() => {});
     }, { once: true });
@@ -199,6 +189,8 @@
 
 </body>
 </html>
+
+
 
 
 
