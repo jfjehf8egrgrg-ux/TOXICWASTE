@@ -19,17 +19,40 @@
       flex-direction: column;
       align-items: center;
 
-      /* ГЛИТЧ ВСЕГО САЙТА */
-      animation: siteGlitch 0.15s infinite;
+      animation: softGlitch 2.5s infinite;
     }
 
-    @keyframes siteGlitch {
-      0% { transform: translate(0); filter: hue-rotate(0deg); }
-      20% { transform: translate(-2px, 2px); }
-      40% { transform: translate(2px, -2px); filter: hue-rotate(20deg); }
-      60% { transform: translate(-1px, 1px); }
-      80% { transform: translate(1px, -1px); filter: hue-rotate(-20deg); }
-      100% { transform: translate(0); filter: hue-rotate(0deg); }
+    /* мягкий глитч */
+    @keyframes softGlitch {
+      0%   { filter: none; }
+      92%  { filter: none; }
+      94%  { filter: hue-rotate(8deg) contrast(1.05); }
+      96%  { filter: hue-rotate(-6deg) saturate(1.1); }
+      100% { filter: none; }
+    }
+
+    /* VHS полосы */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background:
+        repeating-linear-gradient(
+          to bottom,
+          rgba(255,255,255,0.03),
+          rgba(255,255,255,0.03) 1px,
+          rgba(0,0,0,0.03) 2px,
+          rgba(0,0,0,0.03) 3px
+        );
+      opacity: 0.25;
+      z-index: 100;
+      animation: scanMove 6s linear infinite;
+    }
+
+    @keyframes scanMove {
+      from { background-position: 0 0; }
+      to   { background-position: 0 100px; }
     }
 
     @keyframes float {
@@ -52,6 +75,15 @@
       display: flex;
       gap: 40px;
       align-items: flex-start;
+      animation: yDistort 4s infinite;
+    }
+
+    @keyframes yDistort {
+      0%, 100% { transform: translateY(0); }
+      95% { transform: translateY(0); }
+      96% { transform: translateY(-1px); }
+      97% { transform: translateY(1px); }
+      98% { transform: translateY(0); }
     }
 
     .image-block {
@@ -64,7 +96,7 @@
       transition: transform 0.4s ease;
     }
 
-    /* ОДИНАКОВЫЙ ШРИФТ ДЛЯ caption И hint */
+    /* одинаковый стиль текста */
     .caption,
     .hint {
       margin-top: 10px;
@@ -77,19 +109,18 @@
         0 0 6px rgba(0,0,0,0.8);
     }
 
-    /* Увеличенное состояние */
+    /* увеличение фото */
     .expanded {
       position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
+      top: 20%;
+      left: 35%;
       max-width: 45vw !important;
       max-height: 70vh;
       z-index: 10;
       animation: float 3s ease-in-out infinite;
     }
 
-    /* Затемнение */
+    /* затемнение */
     .overlay {
       position: fixed;
       inset: 0;
@@ -110,32 +141,32 @@
 
   <div class="overlay" id="overlay"></div>
 
-  <!-- МУЗЫКА -->
+  <!-- музыка -->
   <audio id="bgMusic" loop>
     <source src="music/bg.mp3" type="audio/mpeg">
   </audio>
 
-  <!-- Логотип -->
+  <!-- логотип -->
   <div class="logo">
     <img src="img/logo3.png" alt="Logo">
   </div>
 
-  <!-- Изображения -->
+  <!-- изображения -->
   <div class="images">
 
-    <!-- Слева -->
+    <!-- слева -->
     <div class="image-block">
       <img src="img/1.png" class="zoomable">
       <div class="hint">нажми меня!</div>
     </div>
 
-    <!-- Центр -->
+    <!-- центр -->
     <div class="image-block">
       <img src="img/2.png" class="zoomable">
       <div class="caption">нажми меня!</div>
     </div>
 
-    <!-- Справа -->
+    <!-- справа -->
     <div class="image-block">
       <img src="img/animation.gif">
       <div class="caption">14.1</div>
@@ -166,6 +197,8 @@
     }, { once: true });
   </script>
 
+</body>
+</html>
 
 
 
