@@ -18,6 +18,18 @@
       display: flex;
       flex-direction: column;
       align-items: center;
+
+      /* ГЛИТЧ ВСЕГО САЙТА */
+      animation: siteGlitch 0.15s infinite;
+    }
+
+    @keyframes siteGlitch {
+      0% { transform: translate(0); filter: hue-rotate(0deg); }
+      20% { transform: translate(-2px, 2px); }
+      40% { transform: translate(2px, -2px); filter: hue-rotate(20deg); }
+      60% { transform: translate(-1px, 1px); }
+      80% { transform: translate(1px, -1px); filter: hue-rotate(-20deg); }
+      100% { transform: translate(0); filter: hue-rotate(0deg); }
     }
 
     @keyframes float {
@@ -26,7 +38,6 @@
       100% { transform: translateY(0); }
     }
 
-    /* Логотип */
     .logo {
       margin-top: 30px;
       margin-bottom: 40px;
@@ -53,28 +64,24 @@
       transition: transform 0.4s ease;
     }
 
-    .caption {
+    /* ОДИНАКОВЫЙ ШРИФТ ДЛЯ caption И hint */
+    .caption,
+    .hint {
       margin-top: 10px;
       font-size: 18px;
       font-weight: bold;
       color: #fff;
-      text-shadow: 0 0 6px rgba(0,0,0,0.8);
-    }
-
-    /* подпись под 1.png */
-    .hint {
-      margin-top: 8px;
-      font-size: 14px;
-      color: #fff;
-      opacity: 0.85;
-      text-shadow: 0 0 6px rgba(0,0,0,0.8);
+      text-shadow:
+        2px 0 red,
+        -2px 0 cyan,
+        0 0 6px rgba(0,0,0,0.8);
     }
 
     /* Увеличенное состояние */
     .expanded {
       position: fixed;
-      top: 20%;
-      left: 35%;
+      top: 50%;
+      left: 50%;
       transform: translate(-50%, -50%);
       max-width: 45vw !important;
       max-height: 70vh;
@@ -86,7 +93,7 @@
     .overlay {
       position: fixed;
       inset: 0;
-      background: rgba(0,0,0,0.6);
+      background: rgba(0,0,0,0.7);
       z-index: 9;
       opacity: 0;
       pointer-events: none;
@@ -103,6 +110,11 @@
 
   <div class="overlay" id="overlay"></div>
 
+  <!-- МУЗЫКА -->
+  <audio id="bgMusic" loop>
+    <source src="music/bg.mp3" type="audio/mpeg">
+  </audio>
+
   <!-- Логотип -->
   <div class="logo">
     <img src="img/logo3.png" alt="Logo">
@@ -113,41 +125,47 @@
 
     <!-- Слева -->
     <div class="image-block">
-      <img src="img/1.png" alt="Photo" id="clickImage">
+      <img src="img/1.png" class="zoomable">
       <div class="hint">нажми меня!</div>
     </div>
 
-    <!-- Центр (ЗАМЕНЕНО) -->
+    <!-- Центр -->
     <div class="image-block">
-      <img src="img/2.png" alt="Image">
+      <img src="img/2.png" class="zoomable">
       <div class="caption">нажми меня!</div>
     </div>
 
     <!-- Справа -->
     <div class="image-block">
-      <img src="img/animation.gif" alt="GIF">
+      <img src="img/animation.gif">
       <div class="caption">14.1</div>
     </div>
 
   </div>
 
   <script>
-    const img = document.getElementById('clickImage');
+    const images = document.querySelectorAll('.zoomable');
     const overlay = document.getElementById('overlay');
+    const music = document.getElementById('bgMusic');
 
-    img.addEventListener('click', () => {
-      img.classList.toggle('expanded');
-      overlay.classList.toggle('active');
+    images.forEach(img => {
+      img.addEventListener('click', () => {
+        img.classList.toggle('expanded');
+        overlay.classList.toggle('active');
+      });
     });
 
     overlay.addEventListener('click', () => {
-      img.classList.remove('expanded');
+      images.forEach(img => img.classList.remove('expanded'));
       overlay.classList.remove('active');
     });
+
+    /* запуск музыки после первого клика */
+    document.body.addEventListener('click', () => {
+      music.play().catch(() => {});
+    }, { once: true });
   </script>
 
-</body>
-</html>
 
 
 
