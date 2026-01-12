@@ -6,6 +6,7 @@
 <title>TOXIC WASTE</title>
 
 <style>
+
 /* ================= BASE ================= */
 body {
   margin: 0;
@@ -19,75 +20,33 @@ body {
   align-items: center;
 }
 
-/* ================= VHS SCANLINES (REAL) ================= */
-.vhs {
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 15;
-  background:
-    repeating-linear-gradient(
-      to bottom,
-      rgba(255,255,255,0.06) 0px,
-      rgba(255,255,255,0.06) 1px,
-      rgba(0,0,0,0) 2px,
-      rgba(0,0,0,0) 4px
-    );
-  opacity: 0.35;
-  animation: scanMove 8s linear infinite;
-}
-
-@keyframes scanMove {
-  from { background-position-y: 0; }
-  to   { background-position-y: 120px; }
-}
-
-/* ================= RGB FRAME GLITCH ================= */
-.rgb-flash {
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 14;
-  mix-blend-mode: screen;
-  animation: rgbFlash 7s infinite;
-}
-
-@keyframes rgbFlash {
-  0%,93%,100% { opacity: 0; }
-  94% { opacity: 1; background: rgba(255,0,0,0.18); transform: translate(-2px,0); }
-  95% { opacity: 1; background: rgba(0,255,255,0.18); transform: translate(2px,0); }
-  96% { opacity: 0; }
-}
-
-/* ================= GLOBAL SHAKE (VERY SUBTLE) ================= */
+/* ================= GLOBAL RGB GLITCH ================= */
 .glitch-wrapper {
+  position: relative;
   width: 100%;
-  min-height: 100vh;
-  animation: globalShake 4.5s infinite;
+  animation: globalRGB 2.2s steps(1) infinite;
 }
 
-@keyframes globalShake {
-  0%,97%,100% { transform: translate(0); }
-  98% { transform: translate(-1px,1px); }
-  99% { transform: translate(1px,-1px); }
+@keyframes globalRGB {
+  0%, 92%, 100% { filter: none; }
+  93% { filter: drop-shadow(-4px 0 red); }
+  94% { filter: drop-shadow(4px 0 cyan); }
+  95% { filter: drop-shadow(-6px 0 magenta); }
 }
 
 /* ================= LOGO ================= */
 .logo {
-  margin-top: 20px;
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  animation: logoFloat 6s ease-in-out infinite;
-}
-
-.logo img {
-  max-width: 220px;
+  margin-top: 30px;
+  animation: logoFloat 3.5s ease-in-out infinite;
 }
 
 @keyframes logoFloat {
   0%,100% { transform: translateY(0); }
-  50% { transform: translateY(-12px); }
+  50% { transform: translateY(-14px); }
+}
+
+.logo img {
+  max-width: 220px;
 }
 
 /* ================= IMAGES ================= */
@@ -96,7 +55,6 @@ body {
   justify-content: center;
   gap: 90px;
   margin-top: 140px;
-  width: 100%;
 }
 
 .image-block {
@@ -109,65 +67,13 @@ body {
   cursor: pointer;
 }
 
-/* ================= LAG / VHS HOVER ================= */
-.image-block::before,
-.image-block::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  opacity: 0;
-  pointer-events: none;
-}
-
-.image-block::before {
-  background:
-    repeating-linear-gradient(
-      to bottom,
-      rgba(0,0,0,0.35) 0px,
-      rgba(0,0,0,0.35) 2px,
-      transparent 4px,
-      transparent 8px
-    );
-}
-
-.image-block::after {
-  background:
-    repeating-linear-gradient(
-      to right,
-      rgba(255,255,255,0.25) 0px,
-      rgba(255,255,255,0.25) 1px,
-      transparent 3px,
-      transparent 6px
-    );
-  mix-blend-mode: overlay;
-}
-
-@keyframes lagGlitch {
-  0% { transform: translateX(0); }
-  30% { transform: translateX(-2px); }
-  60% { transform: translateX(2px); }
-  100% { transform: translateX(0); }
-}
-
-.image-block:hover:not(.open)::before,
-.image-block:hover:not(.open)::after {
-  opacity: 1;
-}
-
-.image-block:hover:not(.open) img {
-  animation: lagGlitch 0.25s steps(2) infinite;
-  filter:
-    contrast(120%)
-    saturate(130%);
-}
-
 /* ================= TEXT ================= */
-.caption,
-.hint {
+.caption, .hint {
   margin-top: 10px;
   font-size: 18px;
   font-weight: bold;
   color: #fff;
+  background: none;
   text-shadow:
     2px 0 red,
     -2px 0 cyan,
@@ -178,8 +84,8 @@ body {
 .overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.75);
-  z-index: 40;
+  background: rgba(0,0,0,0.65);
+  z-index: 10;
   opacity: 0;
   pointer-events: none;
   transition: 0.25s;
@@ -203,10 +109,6 @@ body {
 }
 
 @keyframes zoomOut {
-  from {
-    transform: translate(-50%,-50%) scale(1);
-    opacity: 1;
-  }
   to {
     transform: translate(-50%,-50%) scale(0.25);
     opacity: 0;
@@ -217,87 +119,125 @@ body {
   position: fixed;
   top: 50%;
   left: 50%;
-  transform: translate(-50%,-50%);
-  max-width: 45vw !important;
+  max-width: 45vw;
   max-height: 70vh;
-  z-index: 100;
+  z-index: 20;
   animation: zoomIn 0.35s ease-out forwards;
-  filter: none !important;
 }
 
 .closing {
   animation: zoomOut 0.25s ease-in forwards;
 }
 
+/* ================= PNG HOVER GLITCH ================= */
+.zoomable:not(.open):hover {
+  animation: signalGlitch 0.35s steps(1) infinite;
+  filter: contrast(140%) saturate(150%);
+}
+
+@keyframes signalGlitch {
+  0% { clip-path: inset(0 0 0 0); }
+  20% { clip-path: inset(8% 0 60% 0); }
+  40% { clip-path: inset(45% 0 30% 0); }
+  60% { clip-path: inset(75% 0 10% 0); }
+  80% { clip-path: inset(20% 0 55% 0); }
+  100% { clip-path: inset(0 0 0 0); }
+}
+
+/* ================= BIT PIXELS ================= */
+.zoomable:not(.open):hover::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    repeating-linear-gradient(
+      to right,
+      rgba(255,255,255,0.18) 0px,
+      rgba(255,255,255,0.18) 2px,
+      transparent 4px,
+      transparent 9px
+    );
+  mix-blend-mode: difference;
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+/* ================= GIF SAFE ================= */
+.noglitch,
+.noglitch:hover {
+  animation: none !important;
+  filter: none !important;
+  clip-path: none !important;
+}
+
 /* ================= GREEN SPLASH ================= */
 .particle {
   position: fixed;
-  width: 5px;
-  height: 5px;
+  width: 6px;
+  height: 6px;
   background: #39ff14;
   box-shadow: 0 0 10px #39ff14;
   border-radius: 50%;
   pointer-events: none;
-  z-index: 90;
+  z-index: 30;
   animation: splash 0.9s ease-out forwards;
 }
 
 @keyframes splash {
-  from { transform: translate(0,0) scale(1); opacity: 1; }
-  to   { transform: translate(var(--x), var(--y)) scale(0.15); opacity: 0; }
+  to {
+    transform: translate(var(--x), var(--y)) scale(0.15);
+    opacity: 0;
+  }
 }
+
 </style>
 </head>
 
 <body>
 
-<div class="vhs"></div>
-<div class="rgb-flash"></div>
 <div class="overlay" id="overlay"></div>
 
 <div class="glitch-wrapper">
 
   <div class="logo">
-    <img src="img/logo3.png" alt="Logo">
+    <img src="img/logo3.png">
   </div>
 
   <div class="images">
+
     <div class="image-block">
-      <img src="img/1.png" class="zoomable" alt="Image 1">
+      <img src="img/1.png" class="zoomable">
       <div class="hint">нажми меня!</div>
     </div>
 
     <div class="image-block">
-      <img src="img/2.png" class="zoomable" alt="Image 2">
+      <img src="img/2.png" class="zoomable">
       <div class="caption">нажми меня!</div>
     </div>
 
     <div class="image-block">
-      <img src="img/animation.gif" alt="Gif">
+      <img src="img/animation.gif" class="noglitch">
       <div class="caption">14.1</div>
     </div>
-  </div>
 
+  </div>
 </div>
 
 <script>
 const imgs = document.querySelectorAll('.zoomable');
 const overlay = document.getElementById('overlay');
 
-/* GREEN SPLASH */
+/* SPLASH */
 function greenSplash(x, y) {
-  for (let i = 0; i < 26; i++) {
+  for (let i = 0; i < 22; i++) {
     const p = document.createElement('div');
     p.className = 'particle';
     p.style.left = x + 'px';
     p.style.top = y + 'px';
-
     const a = Math.random() * Math.PI * 2;
-    const r = Math.random() * 200 + 40;
-
+    const r = Math.random() * 160 + 30;
     p.style.setProperty('--x', Math.cos(a) * r + 'px');
     p.style.setProperty('--y', Math.sin(a) * r + 'px');
-
     document.body.appendChild(p);
     setTimeout(() => p.remove(), 900);
   }
@@ -306,9 +246,7 @@ function greenSplash(x, y) {
 /* ZOOM */
 imgs.forEach(img => {
   img.addEventListener('click', e => {
-    img.closest('.image-block').classList.add('open');
-    img.classList.remove('closing');
-    img.classList.add('expanded');
+    img.classList.add('open','expanded');
     overlay.classList.add('active');
     greenSplash(e.clientX, e.clientY);
   });
@@ -318,9 +256,8 @@ overlay.addEventListener('click', () => {
   imgs.forEach(img => {
     if (img.classList.contains('expanded')) {
       img.classList.add('closing');
-      img.closest('.image-block').classList.remove('open');
       setTimeout(() => {
-        img.classList.remove('expanded', 'closing');
+        img.classList.remove('expanded','closing','open');
       }, 250);
     }
   });
@@ -330,7 +267,6 @@ overlay.addEventListener('click', () => {
 
 </body>
 </html>
-
 
 
 
