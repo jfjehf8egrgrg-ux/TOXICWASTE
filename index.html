@@ -15,6 +15,8 @@ body{
   flex-direction:column;
   align-items:center;
   overflow:hidden;
+  transform-origin: center center;
+  transition: transform 0.05s linear;
 }
 
 /* LOGO */
@@ -62,7 +64,7 @@ body{
   z-index:10000;
   overflow:hidden;
   cursor:none;
-  filter: none;
+  filter:none;
 }
 .dead-face{
   position:fixed;
@@ -70,7 +72,7 @@ body{
   width:100vw;
   height:100vh;
   object-fit:cover;
-  z-index:100;
+  z-index:101;
 }
 
 /* DEAD SCREEN GLITCH STRIPS */
@@ -117,26 +119,27 @@ viewer.onclick=()=>{
   setTimeout(()=>viewer.classList.remove('active'),200);
 };
 
-/* --- HAOTIC GLITCH FOR SITE --- */
+/* --- HAOTIC GLITCH FOR ENTIRE SITE --- */
 function glitchSite(){
-  const offsetX = (Math.random()-0.5)*30;
-  const offsetY = (Math.random()-0.5)*30;
+  const offsetX = (Math.random()-0.5)*50; // большой сдвиг
+  const offsetY = (Math.random()-0.5)*50;
   const rotate = (Math.random()-0.5)*10;
   const scale = 1 + (Math.random()-0.5)*0.1;
-  const rOffset = (Math.random()-0.5)*15;
-  const gOffset = (Math.random()-0.5)*15;
-  const bOffset = (Math.random()-0.5)*15;
+
+  const rOffset = (Math.random()-0.5)*20;
+  const gOffset = (Math.random()-0.5)*20;
+  const bOffset = (Math.random()-0.5)*20;
 
   document.body.style.transform = `translate(${offsetX}px, ${offsetY}px) rotate(${rotate}deg) scale(${scale})`;
   document.body.style.filter = `drop-shadow(${rOffset}px 0 red) drop-shadow(${gOffset}px 0 green) drop-shadow(${bOffset}px 0 blue)`;
 
   setTimeout(()=>{
-    document.body.style.transform = '';
-    document.body.style.filter = '';
-  },100);
+    document.body.style.transform='';
+    document.body.style.filter='';
+  },120);
 }
 
-// каждые 1.5 секунды
+// каждые 1.5 сек
 setInterval(glitchSite,1500);
 
 /* --- FNATI EXIT --- */
@@ -148,12 +151,12 @@ logo.onclick=e=>{
   sound.currentTime=0;
   sound.play();
 
-  // Дед экран
+  // Черный экран, полностью скрываем фон
   const dead=document.createElement('div');
   dead.className='dead-screen';
   document.body.appendChild(dead);
 
-  // Полосы + хаотичный RGB glitch на всей сцене (кроме лица)
+  // Генерация полос и хаотичного RGB глитча
   const deadGlitchInterval = setInterval(()=>{
     // полосы
     const strip=document.createElement('div');
@@ -163,20 +166,20 @@ logo.onclick=e=>{
     dead.appendChild(strip);
     setTimeout(()=>strip.remove(),50);
 
-    // RGB хаос
+    // хаотичный RGB + движение
+    const offsetX = (Math.random()-0.5)*30;
+    const offsetY = (Math.random()-0.5)*30;
+    const rotate = (Math.random()-0.5)*15;
+    const scale = 1 + (Math.random()-0.5)*0.15;
     const rOffset = (Math.random()-0.5)*25;
     const gOffset = (Math.random()-0.5)*25;
     const bOffset = (Math.random()-0.5)*25;
-    const offsetX = (Math.random()-0.5)*20;
-    const offsetY = (Math.random()-0.5)*20;
-    const rotate = (Math.random()-0.5)*10;
-    const scale = 1 + (Math.random()-0.5)*0.1;
 
     dead.style.transform = `translate(${offsetX}px, ${offsetY}px) rotate(${rotate}deg) scale(${scale})`;
     dead.style.filter = `drop-shadow(${rOffset}px 0 red) drop-shadow(${gOffset}px 0 green) drop-shadow(${bOffset}px 0 blue)`;
   },30);
 
-  // Через 4 секунды показываем лицо
+  // Через 4 секунды показать лицо без глитча
   setTimeout(()=>{
     clearInterval(deadGlitchInterval);
     const face=document.createElement('img');
@@ -192,6 +195,8 @@ logo.onclick=e=>{
 </script>
 </body>
 </html>
+
+
 
 
 
