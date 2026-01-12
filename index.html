@@ -15,165 +15,175 @@ body {
   margin: 0;
   overflow-x: hidden;
   font-family: Arial, sans-serif;
+
   background: url("img/background.gif") no-repeat center center fixed;
   background-size: cover;
+
   display: flex;
   flex-direction: column;
   align-items: center;
+
+  animation: siteShift 3s infinite;
 }
 
-/* ================= TOTAL GLITCH (БЕЗУМИЕ) ================= */
-@keyframes totalGlitch {
-  0%, 70%, 100% { transform: translate(0) skew(0); filter:none; }
-  71% { transform: translate(-20px, 5px) skewX(5deg); filter: hue-rotate(60deg) contrast(1.8); }
-  72% { transform: translate(20px, -5px) skewY(-5deg); filter: hue-rotate(-60deg) saturate(2); }
-  73% { transform: translate(-35px, 0); filter: contrast(2.2); }
-  74% { transform: translate(35px, 0); }
-  75% { transform: translate(0); filter:none; }
-}
-body {
-  animation: totalGlitch 2.2s infinite;
-}
-
-/* ================= RGB SPLIT LAYERS ================= */
-body::before,
-body::after {
-  content:"";
-  position: fixed;
-  inset:0;
-  pointer-events:none;
-  z-index: 120;
-}
-body::before {
-  background:
-    repeating-linear-gradient(
-      to bottom,
-      rgba(255,0,0,.35) 0,
-      rgba(255,0,0,.35) 2px,
-      transparent 4px
-    );
-  mix-blend-mode: screen;
-  animation: rgbShift 0.15s infinite;
-}
-body::after {
-  background:
-    repeating-linear-gradient(
-      to bottom,
-      rgba(0,255,255,.35) 0,
-      rgba(0,255,255,.35) 2px,
-      transparent 5px
-    );
-  mix-blend-mode: screen;
-  animation: rgbShift 0.18s infinite reverse;
-}
-@keyframes rgbShift {
-  from { transform: translateY(0); }
-  to { transform: translateY(-30px); }
+/* ================= СДВИГИ САЙТА ================= */
+@keyframes siteShift {
+  0%, 78%, 100% {
+    transform: translate(0);
+  }
+  79% {
+    transform: translate(-12px, 4px);
+  }
+  80% {
+    transform: translate(12px, -4px);
+  }
+  81% {
+    transform: translate(-18px, 0);
+  }
+  82% {
+    transform: translate(18px, 0);
+  }
 }
 
-/* ================= SIGNAL TEARS ================= */
+/* ================= БЕЛЫЕ ПОЛОСЫ (SIGNAL TEARS) ================= */
 .signal-tear {
   position: fixed;
-  left:0;
-  width:100%;
-  height:6px;
+  left: 0;
+  width: 100%;
+  height: 5px;
   background: linear-gradient(
     to right,
     transparent,
-    rgba(255,255,255,.9),
+    rgba(255,255,255,0.9),
     transparent
   );
-  z-index:110;
-  animation: tearMove .08s linear infinite;
+  z-index: 90;
+  animation: tearMove 0.1s linear infinite;
 }
+
 @keyframes tearMove {
-  from { transform: translateX(-30px); }
-  to { transform: translateX(30px); }
+  from { transform: translateX(-40px); }
+  to   { transform: translateX(40px); }
 }
 
 /* ================= LOGO ================= */
 .logo {
   margin: 30px 0 40px;
-  animation: floatY 2.5s infinite;
+  animation: floatY 3s infinite;
 }
+
 @keyframes floatY {
-  0%,100%{ transform: translateY(0); }
-  50%{ transform: translateY(-12px); }
+  0%,100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
 }
-.logo img { max-width:220px; }
+
+.logo img {
+  max-width: 220px;
+}
 
 /* ================= IMAGES ================= */
 .images {
-  display:flex;
-  gap:40px;
+  display: flex;
+  gap: 40px;
 }
-.image-block { text-align:center; }
+
+.image-block {
+  text-align: center;
+}
+
 .image-block img {
-  max-width:260px;
-  cursor:pointer;
+  max-width: 260px;
+  cursor: pointer;
 }
 
 /* ================= TEXT ================= */
-.caption,.hint{
-  margin-top:10px;
-  font-size:18px;
-  font-weight:bold;
-  color:#fff;
-  text-shadow: 3px 0 red, -3px 0 cyan, 0 0 10px #000;
+.caption,
+.hint {
+  margin-top: 10px;
+  font-size: 18px;
+  font-weight: bold;
+  color: #fff;
+  text-shadow:
+    2px 0 red,
+    -2px 0 cyan,
+    0 0 8px rgba(0,0,0,0.8);
 }
 
 /* ================= OVERLAY ================= */
-.overlay{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.75);
-  z-index:10;
-  opacity:0;
-  pointer-events:none;
-  transition:.25s;
-}
-.overlay.active{
-  opacity:1;
-  pointer-events:auto;
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  z-index: 10;
+  opacity: 0;
+  pointer-events: none;
+  transition: 0.25s;
 }
 
-/* ================= ZOOM IN / OUT ================= */
+.overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* ================= ZOOM ================= */
 @keyframes zoomIn {
-  from { transform: translate(-50%,-50%) scale(.2) rotate(-5deg); opacity:0; }
-  to { transform: translate(-50%,-50%) scale(1) rotate(0); opacity:1; }
+  from {
+    transform: translate(-50%,-50%) scale(0.3);
+    opacity: 0;
+  }
+  to {
+    transform: translate(-50%,-50%) scale(1);
+    opacity: 1;
+  }
 }
+
 @keyframes zoomOut {
-  from { transform: translate(-50%,-50%) scale(1); opacity:1; }
-  to { transform: translate(-50%,-50%) scale(.1); opacity:0; }
+  from {
+    transform: translate(-50%,-50%) scale(1);
+    opacity: 1;
+  }
+  to {
+    transform: translate(-50%,-50%) scale(0.2);
+    opacity: 0;
+  }
 }
 
-.expanded{
-  position:fixed;
-  top:50%;
-  left:50%;
-  max-width:45vw!important;
-  max-height:70vh;
-  z-index:20;
-  animation: zoomIn .35s cubic-bezier(.2,.9,.1,1) forwards;
-}
-.closing{
-  animation: zoomOut .25s ease-in forwards;
+.expanded {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  max-width: 45vw !important;
+  max-height: 70vh;
+  z-index: 20;
+  animation: zoomIn 0.35s ease-out forwards;
 }
 
-/* ================= FLYING PARTICLES ================= */
-.particle{
-  position:fixed;
-  width:6px;
-  height:6px;
-  background: white;
-  mix-blend-mode: screen;
-  pointer-events:none;
-  z-index:25;
-  animation: fly 1s ease-out forwards;
+.closing {
+  animation: zoomOut 0.25s ease-in forwards;
 }
-@keyframes fly{
-  from{ transform: translate(0,0) scale(1); opacity:1; }
-  to{ transform: translate(var(--x),var(--y)) scale(0); opacity:0; }
+
+/* ================= GREEN SPLASH PARTICLES ================= */
+.particle {
+  position: fixed;
+  width: 6px;
+  height: 6px;
+  background: #39ff14;
+  box-shadow: 0 0 8px #39ff14;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 25;
+  animation: splash 0.9s ease-out forwards;
+}
+
+@keyframes splash {
+  from {
+    transform: translate(0,0) scale(1);
+    opacity: 1;
+  }
+  to {
+    transform: translate(var(--x), var(--y)) scale(0.2);
+    opacity: 0;
+  }
 }
 </style>
 </head>
@@ -212,55 +222,63 @@ const imgs = document.querySelectorAll('.zoomable');
 const overlay = document.getElementById('overlay');
 const music = document.getElementById('bgMusic');
 
-/* signal tears spawn */
-setInterval(()=>{
-  const t=document.createElement('div');
-  t.className='signal-tear';
-  t.style.top=Math.random()*innerHeight+'px';
-  document.body.appendChild(t);
-  setTimeout(()=>t.remove(),120);
-},200);
+/* белые полосы */
+setInterval(() => {
+  const tear = document.createElement('div');
+  tear.className = 'signal-tear';
+  tear.style.top = Math.random() * innerHeight + 'px';
+  document.body.appendChild(tear);
+  setTimeout(() => tear.remove(), 120);
+}, 220);
 
-/* particles */
-function spawnParticles(x,y){
-  for(let i=0;i<25;i++){
-    const p=document.createElement('div');
-    p.className='particle';
-    p.style.left=x+'px';
-    p.style.top=y+'px';
-    p.style.setProperty('--x',(Math.random()*600-300)+'px');
-    p.style.setProperty('--y',(Math.random()*600-300)+'px');
+/* зелёный всплеск */
+function greenSplash(x, y) {
+  for (let i = 0; i < 30; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    p.style.left = x + 'px';
+    p.style.top = y + 'px';
+
+    const angle = Math.random() * Math.PI * 2;
+    const radius = Math.random() * 200 + 50;
+
+    p.style.setProperty('--x', Math.cos(angle) * radius + 'px');
+    p.style.setProperty('--y', Math.sin(angle) * radius + 'px');
+
     document.body.appendChild(p);
-    setTimeout(()=>p.remove(),1000);
+    setTimeout(() => p.remove(), 900);
   }
 }
 
-imgs.forEach(img=>{
-  img.addEventListener('click',e=>{
+/* zoom */
+imgs.forEach(img => {
+  img.addEventListener('click', e => {
     img.classList.remove('closing');
     img.classList.add('expanded');
     overlay.classList.add('active');
-    spawnParticles(e.clientX,e.clientY);
+    greenSplash(e.clientX, e.clientY);
   });
 });
 
-overlay.addEventListener('click',()=>{
-  imgs.forEach(img=>{
-    if(img.classList.contains('expanded')){
+overlay.addEventListener('click', () => {
+  imgs.forEach(img => {
+    if (img.classList.contains('expanded')) {
       img.classList.add('closing');
-      setTimeout(()=>{
-        img.classList.remove('expanded','closing');
-      },250);
+      setTimeout(() => {
+        img.classList.remove('expanded', 'closing');
+      }, 250);
     }
   });
   overlay.classList.remove('active');
 });
 
-/* music */
-document.body.addEventListener('click',()=>{
+/* музыка */
+document.body.addEventListener('click', () => {
   music.play().catch(()=>{});
-},{once:true});
+}, { once:true });
 </script>
+
+<!-- ГОТОВО -->
 
 </body>
 </html>
