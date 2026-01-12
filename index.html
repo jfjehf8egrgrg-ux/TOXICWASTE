@@ -14,8 +14,9 @@ body{
   display:flex;
   flex-direction:column;
   align-items:center;
-  overflow-x:hidden;
+  overflow:hidden;
   transition: filter 0.05s linear;
+  position:relative;
 }
 
 /* LOGO */
@@ -34,8 +35,9 @@ body{
 .zoomable{
   max-width:260px;
   cursor:pointer;
-  transition: transform 0.05s linear, filter 0.05s linear;
+  transition: transform 0.2s ease, filter 0.05s linear;
 }
+.zoomable:hover{transform: scale(1.08);}
 .noglitch{max-width:260px;}
 
 /* VIEWER */
@@ -75,6 +77,33 @@ body{
   height:10px;
   mix-blend-mode:difference;
   opacity:0.8;
+}
+
+/* SPLASH */
+.splash {
+  position:absolute;
+  width:20px;
+  height:20px;
+  border-radius:50%;
+  background:limegreen;
+  pointer-events:none;
+  z-index:10000;
+  opacity:0.8;
+  transform: scale(0);
+  transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+}
+
+/* GLITCH PARTICLES */
+.glitch-particle{
+  position:absolute;
+  width:2px;
+  height:2px;
+  background-color:rgba(255,255,255,0.8);
+  pointer-events:none;
+  z-index:999;
+  mix-blend-mode:difference;
+  opacity:0;
+  transition: all 0.05s linear;
 }
 </style>
 </head>
@@ -147,7 +176,7 @@ logo.onclick=e=>{
 
 /* TV-LIKE GLITCH с RGB-сдвигами и тряской элементов */
 function glitchPage() {
-  // Фон RGB-сдвиг (не дергаем)
+  // Фон RGB
   const rBg = (Math.random()-0.5)*8;
   const gBg = (Math.random()-0.5)*8;
   const bBg = (Math.random()-0.5)*8;
@@ -165,7 +194,6 @@ function glitchPage() {
     el.style.filter = `drop-shadow(${r}px 0 red) drop-shadow(0 ${g}px lime) drop-shadow(${b}px ${b}px blue)`;
   });
 
-  // Возврат через 0.5 сек
   setTimeout(()=>{
     document.body.style.filter = '';
     elements.forEach(el => {
@@ -178,9 +206,44 @@ function glitchPage() {
 // каждые 6-7 секунд
 setInterval(glitchPage, 6000 + Math.random()*1000);
 
+/* SPLASH при клике */
+document.body.addEventListener('click', e=>{
+  const splash = document.createElement('div');
+  splash.className = 'splash';
+  splash.style.left = `${e.clientX-10}px`;
+  splash.style.top = `${e.clientY-10}px`;
+  document.body.appendChild(splash);
+
+  requestAnimationFrame(()=>{
+    splash.style.transform = 'scale(3)';
+    splash.style.opacity = '0';
+  });
+
+  setTimeout(()=>splash.remove(),300);
+});
+
+/* GLITCH PARTICLES */
+function spawnGlitchParticle() {
+  const particle = document.createElement('div');
+  particle.className = 'glitch-particle';
+  particle.style.left = Math.random()*window.innerWidth + 'px';
+  particle.style.top = Math.random()*window.innerHeight + 'px';
+  particle.style.opacity = 1;
+  document.body.appendChild(particle);
+
+  setTimeout(()=>{
+    particle.remove();
+  },100);
+}
+
+// Частые маленькие частицы
+setInterval(spawnGlitchParticle, 50);
+
 </script>
 </body>
 </html>
+
+
 
 
 
