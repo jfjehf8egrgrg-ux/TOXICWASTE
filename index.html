@@ -15,7 +15,7 @@ body{
   flex-direction:column;
   align-items:center;
   overflow-x:hidden;
-  transition: transform 0.05s linear, filter 0.05s linear;
+  transition: filter 0.05s linear;
 }
 
 /* LOGO */
@@ -26,6 +26,7 @@ body{
   transition: transform 0.05s linear, filter 0.05s linear;
 }
 .logo img{max-width:220px;}
+@keyframes logoFloat{50%{transform:translateY(-14px);}}
 
 /* IMAGES */
 .images{display:flex;gap:90px;margin-top:140px; transition: transform 0.05s linear, filter 0.05s linear;}
@@ -50,10 +51,6 @@ body{
 }
 .viewer.active{display:flex;}
 .viewer img{max-width:50vw;max-height:70vh; transition: transform 0.05s linear, filter 0.05s linear;}
-.zoom-in{animation:zin .25s ease-out forwards;}
-.zoom-out{animation:zout .2s ease-in forwards;}
-@keyframes zin{from{transform:scale(.4);opacity:0}to{transform:scale(1);opacity:1}}
-@keyframes zout{to{transform:scale(.25);opacity:0}}
 
 /* DEAD SCREEN */
 .dead-screen{
@@ -78,20 +75,6 @@ body{
   height:10px;
   mix-blend-mode:difference;
   opacity:0.8;
-}
-
-/* PARTIAL GLITCH (для редких полос) */
-.glitch-overlay{
-  position:fixed;
-  top:20%;
-  left:10%;
-  width:80%;
-  height:60%;
-  pointer-events:none;
-  z-index:999;
-  mix-blend-mode:difference;
-  opacity:0.6;
-  border-radius:4px;
 }
 </style>
 </head>
@@ -162,27 +145,35 @@ logo.onclick=e=>{
   },4000);
 };
 
-/* TV-LIKE GLITCH С RGB-СДВИГАМИ */
+/* TV-LIKE GLITCH с RGB-сдвигами */
 function glitchPage() {
-  const elements = [document.body, ...document.querySelectorAll('*')];
-
+  const elements = [...document.querySelectorAll('body, .logo, .images, .image-block, .zoomable, .noglitch, .viewer')];
+  
+  // смещение и RGB для элементов
   elements.forEach(el => {
-    const rShift = (Math.random()-0.5)*10;
-    const gShift = (Math.random()-0.5)*10;
-    const bShift = (Math.random()-0.5)*10;
-    const xShift = (Math.random()-0.5)*8;
-    const yShift = (Math.random()-0.5)*8;
+    // не трогаем фон — только логотип и элементы
+    if(el.tagName !== 'BODY') {
+      const xShift = (Math.random()-0.5)*6;
+      const yShift = (Math.random()-0.5)*6;
+      el.style.transform = `translate(${xShift}px, ${yShift}px) rotate(${(Math.random()-0.5)*2}deg)`;
+    }
+    // RGB-сдвиги через drop-shadow
+    const rShift = (Math.random()-0.5)*6;
+    const gShift = (Math.random()-0.5)*6;
+    const bShift = (Math.random()-0.5)*6;
     el.style.filter = `drop-shadow(${rShift}px 0 red) drop-shadow(0 ${gShift}px lime) drop-shadow(${bShift}px ${bShift}px blue)`;
-    el.style.transform = `translate(${xShift}px, ${yShift}px) rotate(${(Math.random()-0.5)*2}deg)`;
   });
 
-  // Возвращаем обратно через 0.5 сек
+  // фон (body) получает только RGB, не двигается
+  document.body.style.filter = `drop-shadow(${(Math.random()-0.5)*6}px 0 red) drop-shadow(0 ${(Math.random()-0.5)*6}px lime) drop-shadow(${(Math.random()-0.5)*6}px ${(Math.random()-0.5)*6}px blue)`;
+
   setTimeout(()=>{
     elements.forEach(el=>{
-      el.style.filter = '';
       el.style.transform = '';
+      el.style.filter = '';
     });
-  },500);
+    document.body.style.filter = '';
+  }, 500);
 }
 
 // каждые 6-7 секунд
@@ -191,6 +182,8 @@ setInterval(glitchPage, 6000 + Math.random()*1000);
 </script>
 </body>
 </html>
+
+
 
 
 
