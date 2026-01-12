@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>TOXIC WASTE</title>
-
 <style>
 body{
   margin:0;
@@ -55,14 +54,37 @@ body{
 @keyframes zin{from{transform:scale(.4);opacity:0}to{transform:scale(1);opacity:1}}
 @keyframes zout{to{transform:scale(.25);opacity:0}}
 
-/* GLITCH STRIPS */
+/* BIG GLITCH */
+.big-glitch{
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:999;
+  overflow:hidden;
+}
+.big-glitch-strip{
+  position:absolute;
+  width:100%;
+  height:20vh;
+  mix-blend-mode:difference;
+  opacity:0.7;
+}
+
+/* DEAD SCREEN */
+.dead-screen{
+  position:fixed;
+  inset:0;
+  background:black;
+  z-index:10000;
+  overflow:hidden;
+  cursor:none;
+}
 .dead-strip{
   position:absolute;
-  left:0;
   width:100%;
   height:15vh;
-  mix-blend-mode:difference;
   background:rgba(255,255,255,0.2);
+  mix-blend-mode:difference;
 }
 .dead-face{
   position:fixed;
@@ -71,14 +93,6 @@ body{
   height:100vh;
   object-fit:cover;
   z-index:100;
-}
-.dead-screen{
-  position:fixed;
-  inset:0;
-  background:black;
-  z-index:9999;
-  cursor:none;
-  overflow:hidden;
 }
 </style>
 </head>
@@ -116,6 +130,33 @@ viewer.onclick=()=>{
   setTimeout(()=>viewer.classList.remove('active'),200);
 };
 
+/* BIG GLITCH PERIODIC */
+function randomColor(){
+  const r=Math.floor(Math.random()*256);
+  const g=Math.floor(Math.random()*256);
+  const b=Math.floor(Math.random()*256);
+  return `rgba(${r},${g},${b},0.7)`;
+}
+
+function spawnBigGlitch(){
+  const glitch=document.createElement('div');
+  glitch.className='big-glitch';
+  document.body.appendChild(glitch);
+
+  for(let i=0;i<5;i++){
+    const strip=document.createElement('div');
+    strip.className='big-glitch-strip';
+    strip.style.top=(i*20)+'vh';
+    strip.style.background=randomColor();
+    glitch.appendChild(strip);
+  }
+
+  setTimeout(()=>glitch.remove(),500); // глитч длится 0.5 сек
+}
+
+// каждые 6 секунд
+setInterval(spawnBigGlitch,6000);
+
 /* FNATI EXIT */
 const logo=document.getElementById('exitLogo');
 const sound=document.getElementById('exitSound');
@@ -125,35 +166,37 @@ logo.onclick=e=>{
   sound.currentTime=0;
   sound.play();
 
-  // Создаём чёрный фон
-  const dead = document.createElement('div');
-  dead.className = 'dead-screen';
+  // Черный экран
+  const dead=document.createElement('div');
+  dead.className='dead-screen';
   document.body.appendChild(dead);
 
-  // Через 4 секунды добавляем полосы глитча
+  // Через 4 сек полосы глитча
   setTimeout(()=>{
     for(let i=0;i<5;i++){
-      const strip = document.createElement('div');
+      const strip=document.createElement('div');
       strip.className='dead-strip';
-      strip.style.top = (i*15)+'vh';
+      strip.style.top=(i*15)+'vh';
       dead.appendChild(strip);
     }
 
-    // Через 0.5 сек после полос → лицо
+    // Через 0.5 сек лицо
     setTimeout(()=>{
-      const face = document.createElement('img');
+      const face=document.createElement('img');
       face.src='img/face.png';
       face.className='dead-face';
       dead.appendChild(face);
 
-      // Перезагрузка через 0.1 сек
       setTimeout(()=>location.reload(),100);
     },500);
+
   },4000);
 };
 </script>
 </body>
 </html>
+
+
 
 
 
