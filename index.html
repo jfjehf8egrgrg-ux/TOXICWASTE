@@ -57,6 +57,9 @@ body {
 .logo {
   margin: 30px 0 40px;
   animation: floatY 3s infinite;
+
+  display: flex;
+  justify-content: center; /* центрируем по горизонтали */
 }
 
 @keyframes floatY {
@@ -71,7 +74,11 @@ body {
 /* ================= CONTENT ================= */
 .images {
   display: flex;
-  gap: 40px;
+  justify-content: space-between; /* слева, центр, справа */
+  align-items: center;
+  width: 100%;
+  max-width: 1200px; /* ограничение на большие экраны */
+  padding: 0 20px;
 }
 
 .image-block {
@@ -180,23 +187,23 @@ body {
 <div class="glitch-wrapper">
 
   <div class="logo">
-    <img src="img/logo3.png">
+    <img src="img/logo3.png" alt="Logo">
   </div>
 
   <div class="images">
     <div class="image-block">
-      <img src="img/1.png" class="zoomable">
+      <img src="img/1.png" class="zoomable" alt="Image 1">
       <div class="hint">нажми меня!</div>
     </div>
 
     <div class="image-block">
-      <img src="img/2.png" class="zoomable">
-      <div class="caption">нажми меня!</div>
+      <img src="img/animation.gif" class="zoomable" alt="Gif">
+      <div class="caption">14.1</div>
     </div>
 
     <div class="image-block">
-      <img src="img/animation.gif">
-      <div class="caption">14.1</div>
+      <img src="img/2.png" class="zoomable" alt="Image 2">
+      <div class="caption">нажми меня!</div>
     </div>
   </div>
 
@@ -222,7 +229,7 @@ setInterval(() => {
 
   document.body.appendChild(slice);
   setTimeout(() => slice.remove(), 120);
-}, 120); // +30% безумия тут
+}, 120);
 
 /* GREEN SPLASH */
 function greenSplash(x, y) {
@@ -271,7 +278,6 @@ document.body.addEventListener('click', () => {
 }, { once:true });
 </script>
 
-<!-- ГОТОВО -->
-
 </body>
 </html>
+
