@@ -75,49 +75,8 @@ body {
     0 0 8px rgba(0,0,0,.9);
 }
 
-/* ================= OVERLAY ================= */
-.overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,.65);
-  z-index: 10;
-  opacity: 0;
-  pointer-events: none;
-  transition: .25s;
-}
-
-.overlay.active {
-  opacity: 1;
-  pointer-events: auto;
-}
-
-/* ================= ZOOM ================= */
-.expanded {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  max-width: 45vw;
-  max-height: 70vh;
-  transform: translate(-50%,-50%);
-  z-index: 20;
-  animation: zoomIn .35s ease-out forwards;
-}
-
-@keyframes zoomIn {
-  from { scale:.35; opacity:0; }
-  to { scale:1; opacity:1; }
-}
-
-@keyframes zoomOut {
-  to { scale:.25; opacity:0; }
-}
-
-.closing {
-  animation: zoomOut .25s ease-in forwards;
-}
-
-/* ================= PNG GLITCH ================= */
-.zoomable:not(.open):hover {
+/* ================= PNG GLITCH (HOVER) ================= */
+.zoomable:hover {
   animation: sliceGlitch var(--dur) steps(1) infinite;
   filter: contrast(140%) saturate(160%);
 }
@@ -130,16 +89,16 @@ body {
   100% { clip-path: inset(0 0 0 0); }
 }
 
-/* BIT NOISE */
-.zoomable:not(.open):hover::after {
+/* BIT NOISE ON HOVER */
+.zoomable:hover::after {
   content:"";
   position:absolute;
   inset:0;
   background:
     repeating-linear-gradient(
       to right,
-      rgba(255,255,255,.2) 0px,
-      rgba(255,255,255,.2) 2px,
+      rgba(255,255,255,.25) 0px,
+      rgba(255,255,255,.25) 2px,
       transparent 6px,
       transparent 12px
     );
@@ -147,7 +106,7 @@ body {
   pointer-events:none;
 }
 
-/* ================= GIF (SEPARATE STYLE) ================= */
+/* ================= GIF (OWN STYLE) ================= */
 .noglitch {
   animation: gifTear 11s steps(1) infinite;
 }
@@ -158,7 +117,29 @@ body {
   98% { transform: translateX(16px); }
 }
 
-/* ================= RANDOM GLITCH BARS ================= */
+/* ================= MICRO GLITCH NOISE ================= */
+.micro-noise {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 100;
+  background:
+    repeating-linear-gradient(
+      0deg,
+      rgba(255,255,255,.08) 0px,
+      rgba(255,255,255,.08) 1px,
+      transparent 2px,
+      transparent 4px
+    );
+  mix-blend-mode: overlay;
+  animation: noiseFlash .12s steps(1) forwards;
+}
+
+@keyframes noiseFlash {
+  to { opacity: 0; }
+}
+
+/* ================= GLITCH BARS ================= */
 .glitch-bar {
   position: fixed;
   left: 0;
@@ -197,32 +178,10 @@ body {
   100% { transform:none; filter:none; }
 }
 
-/* ================= PARTICLES ================= */
-.particle {
-  position: fixed;
-  width: 6px;
-  height: 6px;
-  background: #39ff14;
-  box-shadow: 0 0 10px #39ff14;
-  border-radius: 50%;
-  pointer-events:none;
-  z-index:40;
-  animation: splash .9s ease-out forwards;
-}
-
-@keyframes splash {
-  to {
-    transform: translate(var(--x),var(--y)) scale(.15);
-    opacity:0;
-  }
-}
-
 </style>
 </head>
 
 <body>
-
-<div class="overlay" id="overlay"></div>
 
 <div class="logo">
   <img src="img/logo3.png">
@@ -248,11 +207,8 @@ body {
 </div>
 
 <script>
-const zoomables = document.querySelectorAll('.zoomable');
-const overlay = document.getElementById('overlay');
-
 /* PNG GLITCH RANDOMIZER */
-zoomables.forEach(img=>{
+document.querySelectorAll('.zoomable').forEach(img=>{
   img.addEventListener('mouseenter',()=>{
     img.style.setProperty('--dur',(Math.random()*.25+.15)+'s');
     ['a','b','c','d','e','f'].forEach(v=>{
@@ -261,40 +217,15 @@ zoomables.forEach(img=>{
   });
 });
 
-/* SPLASH */
-function splash(x,y){
-  for(let i=0;i<22;i++){
-    const p=document.createElement('div');
-    p.className='particle';
-    p.style.left=x+'px';
-    p.style.top=y+'px';
-    const a=Math.random()*Math.PI*2;
-    const r=Math.random()*160+30;
-    p.style.setProperty('--x',Math.cos(a)*r+'px');
-    p.style.setProperty('--y',Math.sin(a)*r+'px');
-    document.body.appendChild(p);
-    setTimeout(()=>p.remove(),900);
-  }
-}
+/* MICRO NOISE GLITCH (1.5s) */
+setInterval(()=>{
+  const n=document.createElement('div');
+  n.className='micro-noise';
+  document.body.appendChild(n);
+  setTimeout(()=>n.remove(),120);
+},1500);
 
-/* ZOOM */
-zoomables.forEach(img=>{
-  img.addEventListener('click',e=>{
-    img.classList.add('expanded','open');
-    overlay.classList.add('active');
-    splash(e.clientX,e.clientY);
-  });
-});
-
-overlay.onclick=()=>{
-  document.querySelectorAll('.expanded').forEach(img=>{
-    img.classList.add('closing');
-    setTimeout(()=>img.classList.remove('expanded','open','closing'),250);
-  });
-  overlay.classList.remove('active');
-};
-
-/* RANDOM BARS + MICRO SHIFTS (3s) */
+/* RANDOM BARS + SMALL SHIFTS (3s) */
 setInterval(()=>{
   const bar=document.createElement('div');
   bar.className='glitch-bar';
@@ -302,7 +233,10 @@ setInterval(()=>{
   document.body.appendChild(bar);
   setTimeout(()=>bar.remove(),180);
 
-  const targets=[...document.querySelectorAll('.image-block'),document.querySelector('.logo')];
+  const targets=[
+    ...document.querySelectorAll('.image-block'),
+    document.querySelector('.logo')
+  ];
   const el=targets[Math.floor(Math.random()*targets.length)];
   el.style.transform=`translateX(${Math.random()*40-20}px)`;
   setTimeout(()=>el.style.transform='',120);
@@ -317,3 +251,5 @@ setInterval(()=>{
 
 </body>
 </html>
+
+
