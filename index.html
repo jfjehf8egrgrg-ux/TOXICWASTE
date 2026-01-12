@@ -88,61 +88,62 @@ body {
     0 0 8px rgba(0,0,0,.9);
 }
 
-/* ================= EVENT MICRO GLITCH ================= */
+/* ================= MICRO GLITCH (EVENT) ================= */
 .micro-glitch {
   position: fixed;
-  width: 140px;
-  height: 18px;
+  width: 120px;
+  height: 16px;
   background: linear-gradient(
     to right,
     transparent,
-    rgba(255,255,255,.85),
+    rgba(255,255,255,.9),
     transparent
   );
-  mix-blend-mode: difference;
   pointer-events: none;
-  z-index: 80;
-  animation: microMove .18s steps(1) forwards;
+  z-index: 100;
+  animation: microFlash .18s steps(1) forwards;
 }
 
-@keyframes microMove {
+@keyframes microFlash {
   40% {
-    transform: translate(-14px, 6px);
+    transform: translate(-18px, 6px);
     filter:
-      drop-shadow(-3px 0 red)
-      drop-shadow(3px 0 cyan);
+      drop-shadow(-4px 0 red)
+      drop-shadow(4px 0 cyan);
   }
   100% { opacity: 0; }
 }
 
-/* ================= CONSTANT NOISE GLITCH ================= */
+/* ================= MICRO NOISE (CONSTANT) ================= */
 .noise-glitch {
   position: fixed;
-  background: rgba(255,255,255,.25);
   pointer-events: none;
-  z-index: 20;
-  mix-blend-mode: difference;
+  z-index: 90;
+  background: rgba(255,255,255,.7);
+  filter:
+    drop-shadow(-2px 0 red)
+    drop-shadow(2px 0 cyan);
 }
 
 /* ================= MEGA GLITCH ================= */
 .site-glitch {
-  animation: siteGlitch .35s steps(1);
+  animation: siteGlitch .4s steps(1);
 }
 
 @keyframes siteGlitch {
   0% { transform:none; filter:none; }
   20% {
-    transform: translateX(-90px);
+    transform: translateX(-110px);
     filter:
-      drop-shadow(-14px 0 red)
-      drop-shadow(14px 0 cyan);
+      drop-shadow(-18px 0 red)
+      drop-shadow(18px 0 cyan);
   }
-  40% { transform: translateX(120px); }
+  40% { transform: translateX(140px); }
   60% {
-    transform: translateX(-40px);
+    transform: translateX(-60px);
     filter:
-      drop-shadow(-8px 0 magenta)
-      drop-shadow(8px 0 cyan);
+      drop-shadow(-12px 0 magenta)
+      drop-shadow(12px 0 cyan);
   }
   100% { transform:none; filter:none; }
 }
@@ -172,6 +173,7 @@ body {
   from { transform: scale(.4); opacity:0; }
   to { transform: scale(1); opacity:1; }
 }
+
 @keyframes zoomOut {
   to { transform: scale(.25); opacity:0; }
 }
@@ -232,13 +234,13 @@ body {
 
 /* ================= GREEN SPLASH ================= */
 function greenSplash(x,y){
-  for(let i=0;i<26;i++){
+  for(let i=0;i<28;i++){
     const p=document.createElement('div');
     p.className='particle';
     p.style.left=x+'px';
     p.style.top=y+'px';
     const a=Math.random()*Math.PI*2;
-    const r=Math.random()*160+40;
+    const r=Math.random()*180+40;
     p.style.setProperty('--x',Math.cos(a)*r+'px');
     p.style.setProperty('--y',Math.sin(a)*r+'px');
     document.body.appendChild(p);
@@ -274,33 +276,34 @@ setInterval(()=>{
   const g=document.createElement('div');
   g.className='micro-glitch';
   g.style.top=Math.random()*innerHeight+'px';
-  g.style.left=Math.random()*(innerWidth-160)+'px';
+  g.style.left=Math.random()*(innerWidth-140)+'px';
   document.body.appendChild(g);
   setTimeout(()=>g.remove(),180);
-},1500);
+},1400);
 
-/* CONSTANT NOISE GLITCH */
+/* CONSTANT MICRO NOISE */
 setInterval(()=>{
-  const n=document.createElement('div');
-  n.className='noise-glitch';
-  n.style.width = Math.random()*10 + 2 + 'px';
-  n.style.height = Math.random()*2 + 1 + 'px';
-  n.style.left = Math.random()*innerWidth + 'px';
-  n.style.top = Math.random()*innerHeight + 'px';
-  n.style.opacity = Math.random()*0.25 + 0.1;
-  document.body.appendChild(n);
-  setTimeout(()=>n.remove(),60);
+  for(let i=0;i<3;i++){
+    const n=document.createElement('div');
+    n.className='noise-glitch';
+    const w=Math.random()*18+4;
+    const h=Math.random()*3+1;
+    n.style.width=w+'px';
+    n.style.height=h+'px';
+    n.style.left=Math.random()*(innerWidth-w)+'px';
+    n.style.top=Math.random()*(innerHeight-h)+'px';
+    document.body.appendChild(n);
+    setTimeout(()=>n.remove(),Math.random()*180+120);
+  }
 },90);
 
 /* MEGA GLITCH */
 setInterval(()=>{
   document.body.classList.add('site-glitch');
-  setTimeout(()=>document.body.classList.remove('site-glitch'),350);
+  setTimeout(()=>document.body.classList.remove('site-glitch'),400);
 },6500);
 
 </script>
 
 </body>
 </html>
-
-
