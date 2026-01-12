@@ -9,32 +9,13 @@
 body {
   margin:0;
   min-height:100vh;
+  font-family:Arial,sans-serif;
   background:url("img/background.gif") no-repeat center center fixed;
   background-size:cover;
-  font-family:Arial,sans-serif;
   display:flex;
   flex-direction:column;
   align-items:center;
   overflow-x:hidden;
-}
-
-/* HARD FREEZE */
-.freeze,
-.freeze * {
-  animation: none !important;
-  transition: none !important;
-  pointer-events: none !important;
-}
-.freeze {
-  cursor: none !important;
-}
-
-/* RGB */
-body.rgb-glitch {
-  filter:
-    drop-shadow(10px 0 red)
-    drop-shadow(-10px 0 cyan)
-    drop-shadow(0 10px magenta);
 }
 
 /* LOGO */
@@ -48,10 +29,11 @@ body.rgb-glitch {
 
 /* IMAGES */
 .images { display:flex; gap:90px; margin-top:140px; }
+.image-block { text-align:center; }
 .zoomable {
   max-width:260px;
   cursor:pointer;
-  transition:transform .3s;
+  transition:transform .3s ease;
 }
 .zoomable:hover { transform:scale(1.06); }
 .noglitch { max-width:260px; }
@@ -73,7 +55,7 @@ body.rgb-glitch {
 @keyframes zin { from{transform:scale(.4);opacity:0} to{transform:scale(1);opacity:1} }
 @keyframes zout { to{transform:scale(.25);opacity:0} }
 
-/* SPLASH */
+/* GREEN SPLASH */
 .particle {
   position:fixed;
   width:6px;height:6px;
@@ -82,72 +64,77 @@ body.rgb-glitch {
   border-radius:50%;
   pointer-events:none;
   z-index:300;
-  animation:splash .8s forwards;
+  animation:splash .8s ease-out forwards;
 }
 @keyframes splash {
   to { transform:translate(var(--x),var(--y)) scale(.1); opacity:0; }
 }
 
-/* GLITCH STRIPS */
-.glitch-strip {
+/* MICRO GLITCH */
+.noise {
   position:fixed;
-  left:0;
-  width:100vw;
-  z-index:600;
-  mix-blend-mode:difference;
+  background:rgba(255,255,255,.6);
+  pointer-events:none;
+  z-index:90;
 }
 
-/* FACE */
-.face {
+/* MEGA GLITCH */
+.site-glitch {
+  animation:siteGlitch .6s steps(1);
+}
+@keyframes siteGlitch {
+  20% { transform:translate(-10px,6px); }
+  40% { transform:translate(12px,-8px); }
+  60% { transform:translate(-6px,10px); }
+}
+
+/* DEAD SCREEN */
+.dead-screen {
   position:fixed;
   inset:0;
   background:black;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  z-index:9999;
+  z-index:999999;
+  pointer-events:all;
+  cursor:none;
+  overflow:hidden;
 }
-.face img {
-  max-width:80vw;
-  filter:contrast(180%) saturate(0);
+
+/* GLITCH STRIP */
+.dead-strip {
+  position:absolute;
+  left:0;
+  width:100%;
+  mix-blend-mode:difference;
 }
 </style>
 </head>
 
 <body>
 
-<audio id="exitSound" src="music/exit-glitch.mp3"></audio>
+<audio id="exitSound" src="music/exit-glitch.mp3" preload="auto"></audio>
 
 <div class="logo" id="exitLogo">
   <img src="img/logo3.png">
 </div>
 
 <div class="images">
-  <img src="img/1.png" class="zoomable">
-  <img src="img/2.png" class="zoomable">
-  <img src="img/animation.gif" class="noglitch">
+  <div class="image-block"><img src="img/1.png" class="zoomable"></div>
+  <div class="image-block"><img src="img/2.png" class="zoomable"></div>
+  <div class="image-block"><img src="img/animation.gif" class="noglitch"></div>
 </div>
 
 <div class="viewer" id="viewer"><img id="viewerImg"></div>
 
 <script>
-let frozen = false;
-
-/* BLOCK ALL EVENTS WHEN FROZEN */
-document.addEventListener('click',e=>{
-  if(frozen){ e.stopImmediatePropagation(); e.preventDefault(); }
-},true);
-
 /* SPLASH */
 document.addEventListener('click',e=>{
-  if(frozen) return;
-  for(let i=0;i<16;i++){
+  for(let i=0;i<18;i++){
     const p=document.createElement('div');
     p.className='particle';
     p.style.left=e.clientX+'px';
     p.style.top=e.clientY+'px';
     const a=Math.random()*Math.PI*2;
-    const r=Math.random()*140+40;
+    const r=Math.random()*160+40;
     p.style.setProperty('--x',Math.cos(a)*r+'px');
     p.style.setProperty('--y',Math.sin(a)*r+'px');
     document.body.appendChild(p);
@@ -155,12 +142,13 @@ document.addEventListener('click',e=>{
   }
 });
 
-/* VIEWER */
+/* VIEWER PNG ONLY */
 const viewer=document.getElementById('viewer');
 const viewerImg=document.getElementById('viewerImg');
 document.querySelectorAll('.zoomable').forEach(img=>{
   img.onclick=e=>{
-    if(frozen || !img.src.endsWith('.png')) return;
+    if(!img.src.endsWith('.png')) return;
+    e.stopPropagation();
     viewerImg.src=img.src;
     viewerImg.className='zoom-in';
     viewer.classList.add('active');
@@ -171,28 +159,51 @@ viewer.onclick=()=>{
   setTimeout(()=>viewer.classList.remove('active'),200);
 };
 
-/* EXIT SEQUENCE */
+/* MICRO GLITCH LOOP */
+setInterval(()=>{
+  const n=document.createElement('div');
+  n.className='noise';
+  const w=Math.random()*20+5;
+  const h=Math.random()*3+1;
+  n.style.width=w+'px';
+  n.style.height=h+'px';
+  n.style.left=Math.random()*(innerWidth-w)+'px';
+  n.style.top=Math.random()*(innerHeight-h)+'px';
+  document.body.appendChild(n);
+  setTimeout(()=>n.remove(),100);
+},40);
+
+/* MEGA GLITCH */
+setInterval(()=>{
+  document.body.classList.add('site-glitch');
+  setTimeout(()=>document.body.classList.remove('site-glitch'),600);
+},6000);
+
+/* FNATI EXIT */
 const logo=document.getElementById('exitLogo');
 const sound=document.getElementById('exitSound');
 
 logo.onclick=e=>{
-  if(frozen) return;
-  frozen = true;
-
+  e.stopPropagation();
+  sound.currentTime=0;
   sound.play();
-  document.body.classList.add('freeze','rgb-glitch');
 
-  /* 2.5s BIG STRIPS */
+  const dead=document.createElement('div');
+  dead.className='dead-screen';
+  document.body.appendChild(dead);
+
   const colors=['#ff0000','#ffff00','#00ff00','#00ffff','#ff00ff'];
+
+  /* 2.5s STRIPS */
   const strips=[];
-  for(let i=0;i<5;i++){
+  for(let i=0;i<6;i++){
     const s=document.createElement('div');
-    s.className='glitch-strip';
+    s.className='dead-strip';
     s.style.top=Math.random()*innerHeight+'px';
-    s.style.height=(Math.random()*140+80)+'px';
+    s.style.height=(Math.random()*160+80)+'px';
     s.style.background=colors[Math.floor(Math.random()*colors.length)];
-    s.style.opacity=0.5;
-    document.body.appendChild(s);
+    s.style.opacity=0.6;
+    dead.appendChild(s);
     strips.push(s);
   }
 
@@ -200,25 +211,31 @@ logo.onclick=e=>{
     strips.forEach(s=>s.remove());
 
     /* 1.5s DISTORT */
-    document.body.style.transform='translate(6px,-4px)';
+    dead.style.filter='drop-shadow(14px 0 red) drop-shadow(-14px 0 cyan)';
+    dead.style.transform='translate(8px,-6px)';
 
     setTimeout(()=>{
-      const face=document.createElement('div');
-      face.className='face';
-      face.innerHTML='<img src="img/face.png">';
-      document.body.appendChild(face);
+      const face=document.createElement('img');
+      face.src='img/face.png';
+      face.style.position='absolute';
+      face.style.maxWidth='80vw';
+      face.style.top='50%';
+      face.style.left='50%';
+      face.style.transform='translate(-50%,-50%)';
+      face.style.filter='contrast(180%) grayscale(1)';
+      dead.appendChild(face);
 
       requestAnimationFrame(()=>{
         requestAnimationFrame(()=>location.reload());
       });
     },1500);
-
   },2500);
 };
 </script>
 
 </body>
 </html>
+
 
 
 
