@@ -53,10 +53,16 @@ body {
   text-align: center;
 }
 
+/* 🔹 SPARE HOVER — ONLY LIFT */
 .image-block img {
   max-width: 260px;
   cursor: pointer;
   position: relative;
+  transition: transform .25s ease-out;
+}
+
+.image-block img:hover {
+  transform: translateY(-8px);
 }
 
 /* ================= TEXT ================= */
@@ -65,36 +71,10 @@ body {
   font-size: 18px;
   font-weight: bold;
   color: #fff;
-  text-shadow: 2px 0 red, -2px 0 cyan, 0 0 8px rgba(0,0,0,.9);
-}
-
-/* ================= ACTIVE HOVER GLITCH ================= */
-.zoomable:hover {
-  animation: activeGlitch var(--dur) steps(1) infinite;
-  filter: contrast(140%) saturate(160%);
-}
-
-@keyframes activeGlitch {
-  0% { transform: translate(0,0) rotate(0); }
-  20% {
-    transform:
-      translate(var(--x1), var(--y1))
-      rotate(.6deg);
-    clip-path: inset(4% 0 8% 0);
-  }
-  50% {
-    transform:
-      translate(var(--x2), var(--y2))
-      rotate(-.6deg);
-    clip-path: inset(10% 0 4% 0);
-  }
-  80% {
-    transform:
-      translate(var(--x3), var(--y3))
-      rotate(.4deg);
-    clip-path: inset(6% 0 6% 0);
-  }
-  100% { transform: translate(0,0) rotate(0); }
+  text-shadow:
+    2px 0 red,
+    -2px 0 cyan,
+    0 0 8px rgba(0,0,0,.9);
 }
 
 /* ================= GIF ================= */
@@ -103,60 +83,54 @@ body {
 }
 
 @keyframes gifTear {
-  97% { transform: translate(-8px,2px); }
-  98% { transform: translate(12px,-3px); }
+  97% { transform: translateX(-8px); }
+  98% { transform: translateX(12px); }
 }
 
 /* ================= LOCAL MICRO GLITCH ================= */
 .micro-glitch {
   position: fixed;
   width: 140px;
-  height: 24px;
+  height: 22px;
   background: linear-gradient(
     to right,
     transparent,
-    rgba(255,255,255,.9),
+    rgba(255,255,255,.85),
     transparent
   );
   mix-blend-mode: difference;
   pointer-events: none;
   z-index: 80;
-  animation: microMove .18s steps(1) forwards;
+  animation: microMove .16s steps(1) forwards;
 }
 
 @keyframes microMove {
   40% {
-    transform: translate(-18px, 10px);
+    transform: translate(-14px, 6px);
     filter:
-      drop-shadow(-4px 0 red)
-      drop-shadow(4px 0 cyan);
+      drop-shadow(-3px 0 red)
+      drop-shadow(3px 0 cyan);
   }
   100% { opacity: 0; }
 }
 
-/* ================= MEGA SCREEN GLITCH ================= */
-.mega-glitch {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,40,255,.18);
-  pointer-events: none;
-  z-index: 500;
-  animation: megaFlash .22s steps(1) forwards;
+/* ================= OLD-STYLE MEGA GLITCH ================= */
+.site-glitch {
+  animation: siteGlitch .2s steps(1);
 }
 
-@keyframes megaFlash {
+@keyframes siteGlitch {
+  0% { filter:none; transform:none; }
   30% {
-    transform: translate(-120px,40px) skewX(-10deg);
     filter:
-      hue-rotate(120deg)
       drop-shadow(-12px 0 red)
       drop-shadow(12px 0 cyan);
+    transform: translateX(-70px);
   }
   60% {
-    transform: translate(160px,-60px) skewX(12deg);
-    background: rgba(255,0,80,.18);
+    transform: translateX(90px);
   }
-  100% { opacity: 0; }
+  100% { filter:none; transform:none; }
 }
 
 /* ================= VIEWER ================= */
@@ -222,6 +196,7 @@ body {
 </div>
 
 <div class="images">
+
   <div class="image-block">
     <img src="img/1.png" class="zoomable">
     <div class="hint">нажми меня!</div>
@@ -236,6 +211,7 @@ body {
     <img src="img/animation.gif" class="noglitch">
     <div class="caption">14.1</div>
   </div>
+
 </div>
 
 <div class="viewer" id="viewer">
@@ -243,19 +219,6 @@ body {
 </div>
 
 <script>
-/* HOVER RANDOMIZER */
-document.querySelectorAll('.zoomable').forEach(img=>{
-  img.onmouseenter=()=>{
-    img.style.setProperty('--dur',(Math.random()*.45+.35)+'s');
-    img.style.setProperty('--x1',(Math.random()*10-5)+'px');
-    img.style.setProperty('--y1',(Math.random()*10-5)+'px');
-    img.style.setProperty('--x2',(Math.random()*18-9)+'px');
-    img.style.setProperty('--y2',(Math.random()*18-9)+'px');
-    img.style.setProperty('--x3',(Math.random()*10-5)+'px');
-    img.style.setProperty('--y3',(Math.random()*10-5)+'px');
-  };
-});
-
 /* GREEN SPLASH */
 function greenSplash(x,y){
   for(let i=0;i<26;i++){
@@ -297,16 +260,14 @@ setInterval(()=>{
   g.style.top=Math.random()*innerHeight+'px';
   g.style.left=Math.random()*(innerWidth-160)+'px';
   document.body.appendChild(g);
-  setTimeout(()=>g.remove(),180);
+  setTimeout(()=>g.remove(),160);
 },1500);
 
-/* MEGA GLITCH */
+/* OLD-STYLE MEGA GLITCH */
 setInterval(()=>{
-  const m=document.createElement('div');
-  m.className='mega-glitch';
-  document.body.appendChild(m);
-  setTimeout(()=>m.remove(),220);
-},7200);
+  document.body.classList.add('site-glitch');
+  setTimeout(()=>document.body.classList.remove('site-glitch'),200);
+},6500);
 </script>
 
 </body>
