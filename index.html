@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>TOXIC WASTE</title>
+
 <style>
 body {
   margin:0; min-height:100vh; font-family:Arial,sans-serif;
@@ -34,19 +35,12 @@ body {
 }
 
 /* MEGA GLITCH */
-.site-glitch {
-  animation: siteGlitch var(--megaDur) steps(1);
-}
+.site-glitch { animation: siteGlitch var(--megaDur) steps(1);}
 @keyframes siteGlitch {
   0% { transform:none; }
   20% { transform: translate(var(--gx), var(--gy)); }
-  40% {
-    transform: translate(calc(var(--gx)*-1), calc(var(--gy)*0.5));
-    filter:
-      drop-shadow(-20px 0 var(--c1))
-      drop-shadow(20px 0 var(--c2))
-      drop-shadow(0 20px var(--c3));
-  }
+  40% { transform: translate(calc(var(--gx)*-1), calc(var(--gy)*0.5));
+       filter: drop-shadow(-20px 0 var(--c1)) drop-shadow(20px 0 var(--c2)) drop-shadow(0 20px var(--c3)); }
   70% { transform: translate(var(--gx), calc(var(--gy)*-1)); }
   100% { transform:none; filter:none; }
 }
@@ -68,6 +62,7 @@ body {
 @keyframes splash { to { transform:translate(var(--x),var(--y)) scale(.1); opacity:0;} }
 </style>
 </head>
+
 <body>
 
 <div class="logo"><img src="img/logo3.png"></div>
@@ -83,7 +78,6 @@ body {
 <script>
 let clickCount = 0;
 
-/* GREEN SPLASH */
 function greenSplash(x,y){
   for(let i=0;i<26;i++){
     const p=document.createElement('div');
@@ -96,7 +90,6 @@ function greenSplash(x,y){
   }
 }
 
-/* RANDOM COLOR */
 function randomColor(){ const r=Math.floor(Math.random()*255), g=Math.floor(Math.random()*255), b=Math.floor(Math.random()*255);
 return `rgb(${r},${g},${b})`;}
 
@@ -124,27 +117,20 @@ viewer.addEventListener('click',()=>{
 function updateGlobalGlitch(){
   const level = Math.floor(clickCount/10);
 
-  // сдвиги и длительность мега-глитча растут с уровнем
   document.body.style.setProperty('--gx', 12 + level*18 + 'px');
   document.body.style.setProperty('--gy', 8 + level*12 + 'px');
   document.body.style.setProperty('--megaDur', 0.35 + level*0.04 + 's');
-
-  // каждый 10-й клик — новые цвета
-  if(clickCount>0 && clickCount % 10 === 0){
-    document.body.style.setProperty('--c1', randomColor());
-    document.body.style.setProperty('--c2', randomColor());
-    document.body.style.setProperty('--c3', randomColor());
-    document.body.classList.add('site-glitch');
-    setTimeout(()=>document.body.classList.remove('site-glitch'),
-      400 + level*60
-    );
-  }
+  // RGB colors каждый 10-й клик
+  document.body.style.setProperty('--c1', randomColor());
+  document.body.style.setProperty('--c2', randomColor());
+  document.body.style.setProperty('--c3', randomColor());
 }
 
 /* CONSTANT MICRO GLITCH */
 setInterval(()=>{
   const level = Math.floor(clickCount/10);
   const amount = 2 + level*3;
+
   for(let i=0;i<amount;i++){
     const n=document.createElement('div');
     n.className='noise-glitch';
@@ -156,12 +142,17 @@ setInterval(()=>{
   }
 },40);
 
-/* GLOBAL CLICK */
-document.addEventListener('click', e=>{
-  clickCount++;
-  greenSplash(e.clientX,e.clientY);
-  updateGlobalGlitch();
+/* MEGA GLITCH — каждый 10-й клик гарантирован */
+document.addEventListener('click',()=>{
+  if(clickCount > 0 && clickCount % 10 === 0){
+    updateGlobalGlitch();
+    document.body.classList.add('site-glitch');
+    setTimeout(()=>document.body.classList.remove('site-glitch'),400 + Math.floor(clickCount/10)*60);
+  }
 });
+
+/* GLOBAL CLICK SPLASH */
+document.addEventListener('click',e=>{ greenSplash(e.clientX,e.clientY); });
 </script>
 
 </body>
