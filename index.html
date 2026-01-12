@@ -63,6 +63,19 @@ body {
   transform: scale(1.06);
 }
 
+/* ================= GIF ================= */
+.noglitch {
+  max-width: 260px;
+  height: auto;
+  cursor: default;
+  animation: gifTear 11s steps(1) infinite;
+}
+
+@keyframes gifTear {
+  97% { transform: translateX(-8px); }
+  98% { transform: translateX(12px); }
+}
+
 /* ================= TEXT ================= */
 .caption,.hint {
   margin-top: 10px;
@@ -73,17 +86,6 @@ body {
     2px 0 red,
     -2px 0 cyan,
     0 0 8px rgba(0,0,0,.9);
-}
-
-/* ================= GIF ================= */
-.noglitch {
-  cursor: default;
-  animation: gifTear 11s steps(1) infinite;
-}
-
-@keyframes gifTear {
-  97% { transform: translateX(-8px); }
-  98% { transform: translateX(12px); }
 }
 
 /* ================= LOCAL MICRO GLITCH ================= */
@@ -158,19 +160,13 @@ body {
   max-height: 70vh;
 }
 
-.zoom-in {
-  animation: zoomIn .25s ease-out forwards;
-}
-
-.zoom-out {
-  animation: zoomOut .25s ease-in forwards;
-}
+.zoom-in { animation: zoomIn .25s ease-out forwards; }
+.zoom-out { animation: zoomOut .25s ease-in forwards; }
 
 @keyframes zoomIn {
   from { transform: scale(.4); opacity:0; }
   to { transform: scale(1); opacity:1; }
 }
-
 @keyframes zoomOut {
   to { transform: scale(.25); opacity:0; }
 }
@@ -256,7 +252,7 @@ const viewerImg=document.getElementById('viewerImg');
 
 document.querySelectorAll('.zoomable').forEach(img=>{
   img.addEventListener('click',e=>{
-    e.stopPropagation(); // чтобы не закрывало сразу
+    e.stopPropagation();
     viewerImg.src=img.src;
     viewerImg.className='zoom-in';
     viewer.classList.add('active');
