@@ -1,3 +1,4 @@
+привет, вот мой код
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -9,10 +10,13 @@ body{
   margin:0;
   min-height:100vh;
   font-family:Arial,sans-serif;
-  overflow:hidden;
-  position:relative;
   background:url("img/background.gif") no-repeat center center fixed;
   background-size:cover;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  overflow-x:hidden;
+  transition: transform 0.05s linear;
 }
 
 /* LOGO */
@@ -48,9 +52,23 @@ body{
 .viewer.active{display:flex;}
 .viewer img{max-width:50vw;max-height:70vh;}
 .zoom-in{animation:zin .25s ease-out forwards;}
-.zoom-out{animation:zout .2s ease-in forwards}
+.zoom-out{animation:zout .2s ease-in forwards;}
 @keyframes zin{from{transform:scale(.4);opacity:0}to{transform:scale(1);opacity:1}}
 @keyframes zout{to{transform:scale(.25);opacity:0}}
+
+/* PARTIAL GLITCH ON MAIN SITE */
+.glitch-overlay{
+  position:fixed;
+  top:20%;
+  left:10%;
+  width:80%;
+  height:60%;
+  pointer-events:none;
+  z-index:999;
+  mix-blend-mode:difference;
+  opacity:0.6;
+  border-radius:4px;
+}
 
 /* DEAD SCREEN */
 .dead-screen{
@@ -67,31 +85,16 @@ body{
   width:100vw;
   height:100vh;
   object-fit:cover;
-  z-index:101;
+  z-index:100;
 }
 
 /* DEAD SCREEN GLITCH STRIPS */
 .dead-strip{
   position:absolute;
   width:100%;
-  height:30px;
+  height:10px;
   mix-blend-mode:difference;
   opacity:0.8;
-}
-
-/* GLITCH SQUARES */
-.glitch-square{
-  position:absolute;
-  width:30px;
-  height:30px;
-  pointer-events:none;
-  background:url("img/background.gif") no-repeat;
-  background-size:cover;
-  mix-blend-mode:difference;
-  opacity:0.8;
-  z-index:0;
-  filter: drop-shadow(0 0 red) drop-shadow(0 0 green) drop-shadow(0 0 blue);
-  transition: transform 0.05s linear, filter 0.05s linear;
 }
 </style>
 </head>
@@ -112,7 +115,7 @@ body{
 <div class="viewer" id="viewer"><img id="viewerImg"></div>
 
 <script>
-/* VIEWER */
+/* VIEWER PNG */
 const viewer=document.getElementById('viewer');
 const viewerImg=document.getElementById('viewerImg');
 document.querySelectorAll('.zoomable').forEach(img=>{
@@ -129,106 +132,98 @@ viewer.onclick=()=>{
   setTimeout(()=>viewer.classList.remove('active'),200);
 };
 
-/* --- HAOTIC BACKGROUND GLITCH SQUARES --- */
-function spawnGlitchSquare(){
-  const square = document.createElement('div');
-  square.className = 'glitch-square';
-
-  // случайная позиция квадрата
-  const size = 20 + Math.random()*30; // 20-50px
-  square.style.width = square.style.height = size+'px';
-  const x = Math.random() * window.innerWidth;
-  const y = Math.random() * window.innerHeight;
-  square.style.left = x+'px';
-  square.style.top = y+'px';
-
-  // случайный offset для background
-  const bgX = -(x) + 'px';
-  const bgY = -(y) + 'px';
-  square.style.backgroundPosition = `${bgX} ${bgY}`;
-
-  document.body.appendChild(square);
-
-  // хаотичная трансформация и RGB
-  const offsetX = (Math.random()-0.5)*20;
-  const offsetY = (Math.random()-0.5)*20;
-  const rotate = (Math.random()-0.5)*20;
-  const rOffset = (Math.random()-0.5)*15;
-  const gOffset = (Math.random()-0.5)*15;
-  const bOffset = (Math.random()-0.5)*15;
-
-  square.style.transform = `translate(${offsetX}px, ${offsetY}px) rotate(${rotate}deg)`;
-  square.style.filter = `drop-shadow(${rOffset}px 0 red) drop-shadow(${gOffset}px 0 green) drop-shadow(${bOffset}px 0 blue)`;
-
-  setTimeout(()=>square.remove(),150); // исчезает быстро
+/* PARTIAL GLITCH ON MAIN SITE */
+function randomColor(){
+  const r=Math.floor(Math.random()*256);
+  const g=Math.floor(Math.random()*256);
+  const b=Math.floor(Math.random()*256);
+  return `rgba(${r},${g},${b},0.6)`;
 }
 
-// каждые 100мс создаём новые квадраты
-setInterval(spawnGlitchSquare,100);
+function spawnPartialGlitch(){
+  const overlay=document.createElement('div');
+  overlay.className='glitch-overlay';
+  overlay.style.backgroundColor=randomColor();
+  document.body.appendChild(overlay);
 
-/* --- ELEMENTS CHAOTIC GLITCH --- */
-function glitchElements(){
-  const allElements = [...document.body.querySelectorAll("*:not(.glitch-square)")];
-  allElements.forEach(el=>{
-    const offsetX = (Math.random()-0.5)*15;
-    const offsetY = (Math.random()-0.5)*15;
-    const rotate = (Math.random()-0.5)*10;
-    const scale = 1 + (Math.random()-0.5)*0.05;
-    const rOffset = (Math.random()-0.5)*8;
-    const gOffset = (Math.random()-0.5)*8;
-    const bOffset = (Math.random()-0.5)*8;
-    el.style.transform = `translate(${offsetX}px, ${offsetY}px) rotate(${rotate}deg) scale(${scale})`;
-    el.style.filter = `drop-shadow(${rOffset}px 0 red) drop-shadow(${gOffset}px 0 green) drop-shadow(${bOffset}px 0 blue)`;
-  });
-  setTimeout(()=>{
-    allElements.forEach(el=>{
-      el.style.transform='';
-      el.style.filter='';
-    });
-  },120);
+  let count=0;
+  const glitchInterval=setInterval(()=>{
+    const offsetX=(Math.random()-0.5)*15;
+    const offsetY=(Math.random()-0.5)*15;
+    overlay.style.transform=`translate(${offsetX}px, ${offsetY}px) rotate(${(Math.random()-0.5)*1}deg)`;
+    count++;
+    if(count>=6){ // ~0.6 сек
+      clearInterval(glitchInterval);
+      overlay.remove();
+    }
+  },100);
 }
-setInterval(glitchElements,1200);
 
-/* --- FNATI EXIT --- */
+// каждые 6 секунд
+setInterval(spawnPartialGlitch,6000);
+
+/* FNATI EXIT ON LOGO */
 const logo=document.getElementById('exitLogo');
 const sound=document.getElementById('exitSound');
+
 logo.onclick=e=>{
   e.stopPropagation();
   sound.currentTime=0;
   sound.play();
 
+  // Черный экран
   const dead=document.createElement('div');
   dead.className='dead-screen';
   document.body.appendChild(dead);
 
+  // Функция генерации маленьких полос глитча на дедскрине
   const deadGlitchInterval = setInterval(()=>{
     const strip=document.createElement('div');
     strip.className='dead-strip';
     strip.style.top=Math.random()*window.innerHeight+'px';
     strip.style.backgroundColor=`rgba(${Math.floor(Math.random()*256)},${Math.floor(Math.random()*256)},${Math.floor(Math.random()*256)},0.8)`;
     dead.appendChild(strip);
-    setTimeout(()=>strip.remove(),50);
+    setTimeout(()=>strip.remove(),100);
+  },100); // каждые 0.1 сек
 
-    // RGB на черном фоне
-    const rOffset = (Math.random()-0.5)*25;
-    const gOffset = (Math.random()-0.5)*25;
-    const bOffset = (Math.random()-0.5)*25;
-    dead.style.filter = `drop-shadow(${rOffset}px 0 red) drop-shadow(${gOffset}px 0 green) drop-shadow(${bOffset}px 0 blue)`;
-  },30);
-
+  // Через 4 секунды показать лицо
   setTimeout(()=>{
-    clearInterval(deadGlitchInterval);
+    clearInterval(deadGlitchInterval); // остановка генерации полос
     const face=document.createElement('img');
     face.src='img/face.png';
     face.className='dead-face';
-    face.style.filter='none';
     dead.appendChild(face);
+
     setTimeout(()=>location.reload(),100);
   },4000);
 };
 </script>
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
