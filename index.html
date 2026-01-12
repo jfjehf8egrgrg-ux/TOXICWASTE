@@ -11,21 +11,8 @@ body{
   font-family:Arial,sans-serif;
   overflow:hidden;
   position:relative;
-}
-
-/* BACKGROUND GLITCH SQUARE */
-.bg-glitch{
-  position:fixed;
-  width:200px;   /* размер квадрата */
-  height:200px;
-  top:50%;
-  left:50%;
-  transform:translate(-50%,-50%);
-  background:url("img/background.gif") no-repeat center center;
+  background:url("img/background.gif") no-repeat center center fixed;
   background-size:cover;
-  pointer-events:none;
-  z-index:-1;
-  transition: transform 0.05s linear, filter 0.05s linear;
 }
 
 /* LOGO */
@@ -91,13 +78,26 @@ body{
   mix-blend-mode:difference;
   opacity:0.8;
 }
+
+/* GLITCH SQUARES */
+.glitch-square{
+  position:absolute;
+  width:30px;
+  height:30px;
+  pointer-events:none;
+  background:url("img/background.gif") no-repeat;
+  background-size:cover;
+  mix-blend-mode:difference;
+  opacity:0.8;
+  z-index:0;
+  filter: drop-shadow(0 0 red) drop-shadow(0 0 green) drop-shadow(0 0 blue);
+  transition: transform 0.05s linear, filter 0.05s linear;
+}
 </style>
 </head>
 <body>
 
 <audio id="exitSound" src="music/exit-glitch.mp3" preload="auto"></audio>
-
-<div class="bg-glitch" id="bgGlitch"></div>
 
 <div class="logo" id="exitLogo">
   <img src="img/logo3.png">
@@ -129,52 +129,69 @@ viewer.onclick=()=>{
   setTimeout(()=>viewer.classList.remove('active'),200);
 };
 
-/* --- HAOTIC GLITCH MAIN PAGE --- */
-function glitchSite(){
-  const allElements = [...document.body.querySelectorAll("*:not(.bg-glitch)")];
-  const bg = document.getElementById('bgGlitch');
+/* --- HAOTIC BACKGROUND GLITCH SQUARES --- */
+function spawnGlitchSquare(){
+  const square = document.createElement('div');
+  square.className = 'glitch-square';
 
-  // дергаем фоновый квадрат
-  const bgX = (Math.random()-0.5)*20;
-  const bgY = (Math.random()-0.5)*20;
-  const bgRotate = (Math.random()-0.5)*10;
+  // случайная позиция квадрата
+  const size = 20 + Math.random()*30; // 20-50px
+  square.style.width = square.style.height = size+'px';
+  const x = Math.random() * window.innerWidth;
+  const y = Math.random() * window.innerHeight;
+  square.style.left = x+'px';
+  square.style.top = y+'px';
+
+  // случайный offset для background
+  const bgX = -(x) + 'px';
+  const bgY = -(y) + 'px';
+  square.style.backgroundPosition = `${bgX} ${bgY}`;
+
+  document.body.appendChild(square);
+
+  // хаотичная трансформация и RGB
+  const offsetX = (Math.random()-0.5)*20;
+  const offsetY = (Math.random()-0.5)*20;
+  const rotate = (Math.random()-0.5)*20;
   const rOffset = (Math.random()-0.5)*15;
   const gOffset = (Math.random()-0.5)*15;
   const bOffset = (Math.random()-0.5)*15;
 
-  bg.style.transform = `translate(calc(-50% + ${bgX}px), calc(-50% + ${bgY}px)) rotate(${bgRotate}deg)`;
-  bg.style.filter = `drop-shadow(${rOffset}px 0 red) drop-shadow(${gOffset}px 0 green) drop-shadow(${bOffset}px 0 blue)`;
+  square.style.transform = `translate(${offsetX}px, ${offsetY}px) rotate(${rotate}deg)`;
+  square.style.filter = `drop-shadow(${rOffset}px 0 red) drop-shadow(${gOffset}px 0 green) drop-shadow(${bOffset}px 0 blue)`;
 
-  // дергаем отдельные элементы хаотично
+  setTimeout(()=>square.remove(),150); // исчезает быстро
+}
+
+// каждые 100мс создаём новые квадраты
+setInterval(spawnGlitchSquare,100);
+
+/* --- ELEMENTS CHAOTIC GLITCH --- */
+function glitchElements(){
+  const allElements = [...document.body.querySelectorAll("*:not(.glitch-square)")];
   allElements.forEach(el=>{
-    const offsetX = (Math.random()-0.5)*20;
-    const offsetY = (Math.random()-0.5)*20;
+    const offsetX = (Math.random()-0.5)*15;
+    const offsetY = (Math.random()-0.5)*15;
     const rotate = (Math.random()-0.5)*10;
     const scale = 1 + (Math.random()-0.5)*0.05;
-
-    const rOffset = (Math.random()-0.5)*10;
-    const gOffset = (Math.random()-0.5)*10;
-    const bOffset = (Math.random()-0.5)*10;
-
+    const rOffset = (Math.random()-0.5)*8;
+    const gOffset = (Math.random()-0.5)*8;
+    const bOffset = (Math.random()-0.5)*8;
     el.style.transform = `translate(${offsetX}px, ${offsetY}px) rotate(${rotate}deg) scale(${scale})`;
     el.style.filter = `drop-shadow(${rOffset}px 0 red) drop-shadow(${gOffset}px 0 green) drop-shadow(${bOffset}px 0 blue)`;
   });
-
   setTimeout(()=>{
-    bg.style.transform='';
-    bg.style.filter='';
     allElements.forEach(el=>{
       el.style.transform='';
       el.style.filter='';
     });
   },120);
 }
-setInterval(glitchSite,1200);
+setInterval(glitchElements,1200);
 
 /* --- FNATI EXIT --- */
 const logo=document.getElementById('exitLogo');
 const sound=document.getElementById('exitSound');
-
 logo.onclick=e=>{
   e.stopPropagation();
   sound.currentTime=0;
@@ -212,6 +229,8 @@ logo.onclick=e=>{
 </script>
 </body>
 </html>
+
+
 
 
 
