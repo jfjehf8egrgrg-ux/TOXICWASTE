@@ -34,7 +34,7 @@ body {
 }
 
 /* MEGA GLITCH */
-.site-glitch {
+.site-glitch, .element-glitch {
   animation: siteGlitch var(--megaDur) steps(1);
 }
 @keyframes siteGlitch {
@@ -97,8 +97,10 @@ function greenSplash(x,y){
 }
 
 /* RANDOM COLOR */
-function randomColor(){ const r=Math.floor(Math.random()*255), g=Math.floor(Math.random()*255), b=Math.floor(Math.random()*255);
-return `rgb(${r},${g},${b})`;}
+function randomColor(){ 
+  const r=Math.floor(Math.random()*255), g=Math.floor(Math.random()*255), b=Math.floor(Math.random()*255);
+  return `rgb(${r},${g},${b})`;
+}
 
 /* IMAGE VIEWER + RESET */
 const viewer=document.getElementById('viewer');
@@ -129,15 +131,20 @@ function updateGlobalGlitch(){
   document.body.style.setProperty('--gy', 8 + level*12 + 'px');
   document.body.style.setProperty('--megaDur', 0.35 + level*0.04 + 's');
 
-  // каждый 10-й клик — новые цвета
+  // каждый 10-й клик — новые цвета и глитч на все элементы
   if(clickCount>0 && clickCount % 10 === 0){
-    document.body.style.setProperty('--c1', randomColor());
-    document.body.style.setProperty('--c2', randomColor());
-    document.body.style.setProperty('--c3', randomColor());
-    document.body.classList.add('site-glitch');
-    setTimeout(()=>document.body.classList.remove('site-glitch'),
-      400 + level*60
-    );
+    const c1 = randomColor();
+    const c2 = randomColor();
+    const c3 = randomColor();
+    document.body.style.setProperty('--c1', c1);
+    document.body.style.setProperty('--c2', c2);
+    document.body.style.setProperty('--c3', c3);
+
+    // применяем глитч ко всем элементам
+    document.querySelectorAll('body *').forEach(el=>{
+      el.classList.add('element-glitch');
+      setTimeout(()=>el.classList.remove('element-glitch'), 400 + level*60);
+    });
   }
 }
 
@@ -166,7 +173,3 @@ document.addEventListener('click', e=>{
 
 </body>
 </html>
-
-
-
-
