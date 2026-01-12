@@ -13,14 +13,14 @@ body {
 
 /* LOGO */
 .logo { margin-top:30px; pointer-events:none; animation: logoFloat 3.5s ease-in-out infinite; }
-.logo img { max-width:220px; transition:text-shadow .2s ease; }
+.logo img { max-width:220px; transition:text-shadow .2s ease, filter .2s ease; }
 @keyframes logoFloat {50% {transform: translateY(-14px);}}
 
 /* IMAGES */
 .images { display:flex; gap:90px; margin-top:140px; }
 .image-block { position:relative; text-align:center; }
 .zoomable { max-width:260px; cursor:pointer; transition: transform .35s cubic-bezier(.2,.8,.2,1), filter .2s ease; }
-.noglitch { max-width:260px; cursor:default; }
+.noglitch { max-width:260px; cursor:default; transition: filter .2s ease; }
 
 /* TEXT */
 .caption,.hint { margin-top:10px; font-size:18px; font-weight:bold; color:#fff;
@@ -64,16 +64,18 @@ body {
 <div class="images">
   <div class="image-block"><img src="img/1.png" class="zoomable"><div class="hint">нажми меня!</div></div>
   <div class="image-block"><img src="img/2.png" class="zoomable"><div class="caption">нажми меня!</div></div>
-  <div class="image-block"><img src="img/animation.gif" class="noglitch"><div class="caption">14.1</div></div>
+  <div class="image-block"><img src="img/animation.gif" class="zoomable"><div class="caption">14.1</div></div>
 </div>
 
 <div class="viewer" id="viewer"><img id="viewerImg"></div>
 
 <script>
 let clickCount = 0;
-window.nextParticleColors = ['#39ff14','#39ff14','#39ff14'];
 
-/* RANDOM COLOR */
+// массив накопленных цветов для всех элементов
+let accumulatedColors = ['#39ff14','#ff0055','#00ffff'];
+
+// генерация случайного цвета
 function randomColor(){
   const r=Math.floor(Math.random()*255),
         g=Math.floor(Math.random()*255),
@@ -81,9 +83,9 @@ function randomColor(){
   return `rgb(${r},${g},${b})`;
 }
 
-/* GREEN SPLASH */
+// GREEN SPLASH
 function greenSplash(x,y){
-  const [c1,c2,c3] = window.nextParticleColors;
+  const [c1,c2,c3] = accumulatedColors;
   for(let i=0;i<26;i++){
     const p=document.createElement('div');
     p.className='particle';
@@ -98,28 +100,24 @@ function greenSplash(x,y){
   }
 }
 
-/* UPDATE COLORS EVERY 10TH CLICK */
-function updateColors(){
-  const c1=randomColor();
-  const c2=randomColor();
-  const c3=randomColor();
-  window.nextParticleColors = [c1,c2,c3];
+// обновление цветов для всех элементов
+function addNewColor(){
+  const newColor = randomColor();
+  accumulatedColors.push(newColor);
 
-  // логотип
+  // логотип и GIF
   const logo = document.querySelector('.logo img');
-  logo.style.textShadow = `2px 0 ${c1}, -2px 0 ${c2}, 0 0 8px ${c3}`;
+  const gifImg = document.querySelectorAll('.zoomable');
+  const shadows = accumulatedColors.map(c=>`2px 0 ${c}`).join(',') + ',' + accumulatedColors.map(c=>`-2px 0 ${c}`).join(',');
+  logo.style.textShadow = shadows;
+  gifImg.forEach(img=>{
+    img.style.filter = accumulatedColors.map(c=>`drop-shadow(2px 0 ${c}) drop-shadow(-2px 0 ${c})`).join(' ');
+  });
 
   // текст
   document.querySelectorAll('.caption,.hint').forEach(t=>{
-    t.style.textShadow = `2px 0 ${c1}, -2px 0 ${c2}, 0 0 8px ${c3}`;
+    t.style.textShadow = shadows;
   });
-
-  // фото
-  document.querySelectorAll('.zoomable').forEach(img=>{
-    img.style.filter = `drop-shadow(2px 0 ${c1}) drop-shadow(-2px 0 ${c2})`;
-  });
-
-  return [c1,c2,c3];
 }
 
 /* IMAGE VIEWER */
@@ -129,8 +127,8 @@ const viewerImg=document.getElementById('viewerImg');
 document.querySelectorAll('.zoomable').forEach(img=>{
   img.addEventListener('click',e=>{
     e.stopPropagation();
-    clickCount=0; // сброс уровня хаоса
-    updateGlobalGlitch();
+    clickCount=0; // сброс всего хаоса
+    accumulatedColors = ['#39ff14','#ff0055','#00ffff'];
     viewerImg.src = img.src;
     viewerImg.className='zoom-in';
     viewer.classList.add('active');
@@ -149,9 +147,12 @@ function updateGlobalGlitch(){
   document.body.style.setProperty('--gy', 8 + level*12 + 'px');
   document.body.style.setProperty('--megaDur', 0.35 + level*0.04 + 's');
 
-  // каждый 10-й клик
-  if(clickCount>0 && clickCount % 10 === 0){
-    const [c1,c2,c3] = updateColors();
+  // каждый 10-й клик — мега-глитч + новый цвет
+  if(clickCount>0 && clickCount%10===0){
+    addNewColor();
+    const c1 = accumulatedColors[accumulatedColors.length-3] || '#ff0';
+    const c2 = accumulatedColors[accumulatedColors.length-2] || '#0ff';
+    const c3 = accumulatedColors[accumulatedColors.length-1] || '#f0f';
     document.body.style.setProperty('--c1', c1);
     document.body.style.setProperty('--c2', c2);
     document.body.style.setProperty('--c3', c3);
@@ -176,7 +177,7 @@ setInterval(()=>{
 },40);
 
 /* GLOBAL CLICK HANDLER */
-document.addEventListener('click',e=>{
+document.addEventListener('click', e=>{
   clickCount++;
   greenSplash(e.clientX,e.clientY);
   updateGlobalGlitch();
@@ -185,6 +186,8 @@ document.addEventListener('click',e=>{
 
 </body>
 </html>
+
+
 
 
 
