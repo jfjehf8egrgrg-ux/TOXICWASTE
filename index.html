@@ -4,131 +4,239 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>TOXIC WASTE</title>
+
 <style>
+
+/* ================= BASE ================= */
 body {
-  margin:0; min-height:100vh; font-family:Arial,sans-serif;
-  overflow-x:hidden; background:url("img/background.gif") no-repeat center center fixed;
-  background-size:cover; display:flex; flex-direction:column; align-items:center;
+  margin: 0;
+  min-height: 100vh;
+  font-family: Arial, sans-serif;
+  overflow-x: hidden;
+  background: url("img/background.gif") no-repeat center center fixed;
+  background-size: cover;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-/* LOGO */
-.logo { margin-top:30px; pointer-events:none; animation: logoFloat 3.5s ease-in-out infinite; }
-.logo img { max-width:220px; transition:text-shadow .2s ease, filter .2s ease; }
-@keyframes logoFloat {50% {transform: translateY(-14px);}}
+/* ================= LOGO ================= */
+.logo {
+  margin-top: 30px;
+  pointer-events: none;
+  animation:
+    logoFloat 3.5s ease-in-out infinite,
+    logoGlitch 8s steps(1) infinite;
+}
 
-/* IMAGES */
-.images { display:flex; gap:90px; margin-top:140px; }
-.image-block { position:relative; text-align:center; }
-.zoomable { max-width:260px; cursor:pointer; transition: transform .35s cubic-bezier(.2,.8,.2,1), filter .2s ease; }
-.noglitch { max-width:260px; cursor:default; transition: filter .2s ease; }
+.logo img { max-width: 220px; }
 
-/* TEXT */
-.caption,.hint { margin-top:10px; font-size:18px; font-weight:bold; color:#fff;
-  transition:text-shadow .2s ease; }
+@keyframes logoFloat {
+  50% { transform: translateY(-14px); }
+}
 
-/* MICRO GLITCH */
-.noise-glitch { position:fixed; pointer-events:none; z-index:90; background:rgba(255,255,255,.75);
-  filter: drop-shadow(-2px 0 red) drop-shadow(2px 0 cyan); }
+@keyframes logoGlitch {
+  96% { filter: drop-shadow(-6px 0 red); }
+  97% { filter: drop-shadow(6px 0 cyan); }
+  98% { filter: drop-shadow(-10px 0 magenta); }
+}
 
-/* MEGA GLITCH */
-.site-glitch { animation: siteGlitch var(--megaDur) steps(1); }
+/* ================= IMAGES ================= */
+.images {
+  display: flex;
+  gap: 90px;
+  margin-top: 140px;
+}
+
+.image-block {
+  position: relative;
+  text-align: center;
+}
+
+.zoomable {
+  max-width: 260px;
+  cursor: pointer;
+  transition: transform .35s cubic-bezier(.2,.8,.2,1);
+}
+
+.zoomable:hover {
+  transform: scale(1.06);
+}
+
+/* ================= GIF ================= */
+.noglitch {
+  max-width: 260px;
+  height: auto;
+  cursor: default;
+}
+
+/* ================= TEXT ================= */
+.caption,.hint {
+  margin-top: 10px;
+  font-size: 18px;
+  font-weight: bold;
+  color: #fff;
+  text-shadow:
+    2px 0 red,
+    -2px 0 cyan,
+    0 0 8px rgba(0,0,0,.9);
+}
+
+/* ================= CONSTANT MICRO NOISE ================= */
+.noise-glitch {
+  position: fixed;
+  pointer-events: none;
+  z-index: 90;
+  background: rgba(255,255,255,.7);
+  filter:
+    drop-shadow(-2px 0 red)
+    drop-shadow(2px 0 cyan);
+}
+
+/* ================= MEGA GLITCH ================= */
+.site-glitch {
+  animation: siteGlitch .55s steps(1);
+}
+
 @keyframes siteGlitch {
-  0% { transform:none; }
-  20% { transform: translate(var(--gx), var(--gy)); }
-  40% { transform: translate(calc(var(--gx)*-1), calc(var(--gy)*0.5));
-       filter: drop-shadow(-20px 0 var(--c1)) drop-shadow(20px 0 var(--c2)) drop-shadow(0 20px var(--c3)); }
-  70% { transform: translate(var(--gx), calc(var(--gy)*-1)); }
+  0% { transform:none; filter:none; }
+  25% {
+    transform: translateX(-140px);
+    filter:
+      drop-shadow(-22px 0 red)
+      drop-shadow(22px 0 cyan);
+  }
+  50% {
+    transform: translateY(60px);
+    filter:
+      drop-shadow(-18px 0 magenta)
+      drop-shadow(18px 0 cyan);
+  }
+  75% {
+    transform: translateX(120px);
+  }
   100% { transform:none; filter:none; }
 }
 
-/* VIEWER */
-.viewer { position:fixed; inset:0; background:rgba(0,0,0,.65);
-  display:none; justify-content:center; align-items:center; z-index:200; }
-.viewer.active { display:flex; }
-.viewer img { max-width:50vw; max-height:70vh; transition: filter .2s ease; }
-.zoom-in { animation:zoomIn .28s ease-out forwards; }
-.zoom-out { animation:zoomOut .25s ease-in forwards; }
-@keyframes zoomIn { from {transform:scale(.4); opacity:0;} to {transform:scale(1); opacity:1;} }
-@keyframes zoomOut { to {transform:scale(.25); opacity:0;} }
-
-/* GREEN SPLASH */
-.particle { position:fixed; width:6px; height:6px; border-radius:50%; pointer-events:none; z-index:300;
-  animation:splash .8s ease-out forwards; transition:background .2s ease, box-shadow .2s ease;}
-@keyframes splash { to { transform:translate(var(--x),var(--y)) scale(.1); opacity:0;} }
-</style>
-</head>
-<body>
-
-<div class="logo"><img src="img/logo3.png"></div>
-
-<div class="images">
-  <div class="image-block"><img src="img/1.png" class="zoomable"><div class="hint">нажми меня!</div></div>
-  <div class="image-block"><img src="img/2.png" class="zoomable"><div class="caption">нажми меня!</div></div>
-  <div class="image-block"><img src="img/animation.gif" class="zoomable"><div class="caption">14.1</div></div>
-</div>
-
-<div class="viewer" id="viewer"><img id="viewerImg"></div>
-
-<script>
-let clickCount = 0;
-
-// массив накопленных цветов для всех элементов
-let accumulatedColors = ['#39ff14','#ff0055','#00ffff'];
-
-// генерация случайного цвета
-function randomColor(){
-  const r=Math.floor(Math.random()*255),
-        g=Math.floor(Math.random()*255),
-        b=Math.floor(Math.random()*255);
-  return `rgb(${r},${g},${b})`;
+/* ================= IMAGE VIEWER ================= */
+.viewer {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.65);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 200;
 }
 
-// GREEN SPLASH
+.viewer.active { display: flex; }
+
+.viewer img {
+  max-width: 50vw;
+  max-height: 70vh;
+}
+
+.zoom-in { animation: zoomIn .28s ease-out forwards; }
+.zoom-out { animation: zoomOut .25s ease-in forwards; }
+
+@keyframes zoomIn {
+  from { transform: scale(.4); opacity:0; }
+  to { transform: scale(1); opacity:1; }
+}
+
+@keyframes zoomOut {
+  to { transform: scale(.25); opacity:0; }
+}
+
+/* ================= GREEN SPLASH ================= */
+.particle {
+  position: fixed;
+  width: 6px;
+  height: 6px;
+  background: #39ff14;
+  box-shadow: 0 0 12px #39ff14;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 300;
+  animation: splash .8s ease-out forwards;
+}
+
+@keyframes splash {
+  to {
+    transform: translate(var(--x),var(--y)) scale(.1);
+    opacity: 0;
+  }
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="logo">
+  <img src="img/logo3.png">
+</div>
+
+<div class="images">
+
+  <div class="image-block">
+    <img src="img/1.png" class="zoomable">
+    <div class="hint">нажми меня!</div>
+  </div>
+
+  <div class="image-block">
+    <img src="img/2.png" class="zoomable">
+    <div class="caption">нажми меня!</div>
+  </div>
+
+  <div class="image-block">
+    <img src="img/animation.gif" class="noglitch">
+    <div class="caption">14.1</div>
+  </div>
+
+</div>
+
+<div class="viewer" id="viewer">
+  <img id="viewerImg">
+</div>
+
+<script>
+
+/* ================= STATE ================= */
+let clickCount = 0;
+
+/* ================= GREEN SPLASH ================= */
 function greenSplash(x,y){
-  const [c1,c2,c3] = accumulatedColors;
   for(let i=0;i<26;i++){
     const p=document.createElement('div');
     p.className='particle';
-    p.style.left=x+'px'; p.style.top=y+'px';
-    const a=Math.random()*Math.PI*2, r=Math.random()*180+40;
+    p.style.left=x+'px';
+    p.style.top=y+'px';
+    const a=Math.random()*Math.PI*2;
+    const r=Math.random()*180+40;
     p.style.setProperty('--x',Math.cos(a)*r+'px');
     p.style.setProperty('--y',Math.sin(a)*r+'px');
-    p.style.background = c1;
-    p.style.boxShadow = `0 0 12px ${c2}`;
     document.body.appendChild(p);
     setTimeout(()=>p.remove(),800);
   }
 }
 
-// обновление цветов для всех элементов
-function addNewColor(){
-  const newColor = randomColor();
-  accumulatedColors.push(newColor);
+/* ================= GLOBAL CLICK ================= */
+document.addEventListener('click',e=>{
+  clickCount++;
+  greenSplash(e.clientX,e.clientY);
+});
 
-  // логотип и GIF
-  const logo = document.querySelector('.logo img');
-  const gifImg = document.querySelectorAll('.zoomable');
-  const shadows = accumulatedColors.map(c=>`2px 0 ${c}`).join(',') + ',' + accumulatedColors.map(c=>`-2px 0 ${c}`).join(',');
-  logo.style.textShadow = shadows;
-  gifImg.forEach(img=>{
-    img.style.filter = accumulatedColors.map(c=>`drop-shadow(2px 0 ${c}) drop-shadow(-2px 0 ${c})`).join(' ');
-  });
-
-  // текст
-  document.querySelectorAll('.caption,.hint').forEach(t=>{
-    t.style.textShadow = shadows;
-  });
-}
-
-/* IMAGE VIEWER */
+/* ================= IMAGE VIEWER + RESET ================= */
 const viewer=document.getElementById('viewer');
 const viewerImg=document.getElementById('viewerImg');
 
 document.querySelectorAll('.zoomable').forEach(img=>{
   img.addEventListener('click',e=>{
     e.stopPropagation();
-    clickCount=0; // сброс всего хаоса
-    accumulatedColors = ['#39ff14','#ff0055','#00ffff'];
+
+    clickCount = 0; // 🔥 ПОЛНЫЙ СБРОС
+
     viewerImg.src = img.src;
     viewerImg.className='zoom-in';
     viewer.classList.add('active');
@@ -140,57 +248,39 @@ viewer.addEventListener('click',()=>{
   setTimeout(()=>viewer.classList.remove('active'),250);
 });
 
-/* ================= GLOBAL GLITCH ================= */
-function updateGlobalGlitch(){
-  const level = Math.floor(clickCount/10);
-  document.body.style.setProperty('--gx', 12 + level*18 + 'px');
-  document.body.style.setProperty('--gy', 8 + level*12 + 'px');
-  document.body.style.setProperty('--megaDur', 0.35 + level*0.04 + 's');
-
-  // каждый 10-й клик — мега-глитч + новый цвет
-  if(clickCount>0 && clickCount%10===0){
-    addNewColor();
-    const c1 = accumulatedColors[accumulatedColors.length-3] || '#ff0';
-    const c2 = accumulatedColors[accumulatedColors.length-2] || '#0ff';
-    const c3 = accumulatedColors[accumulatedColors.length-1] || '#f0f';
-    document.body.style.setProperty('--c1', c1);
-    document.body.style.setProperty('--c2', c2);
-    document.body.style.setProperty('--c3', c3);
-    document.body.classList.add('site-glitch');
-    setTimeout(()=>document.body.classList.remove('site-glitch'), 400 + level*60);
-  }
-}
-
-/* CONSTANT MICRO GLITCH */
+/* ================= CONSTANT MICRO GLITCH ================= */
 setInterval(()=>{
-  const level = Math.floor(clickCount/10);
-  const amount = 2 + level*3;
+  const level = Math.floor(clickCount / 10); // усиление каждые 10 кликов
+  const amount = 2 + level * 2;
+
   for(let i=0;i<amount;i++){
     const n=document.createElement('div');
     n.className='noise-glitch';
-    const w=Math.random()*(14+level*3)+4, h=Math.random()*3+1;
-    n.style.width=w+'px'; n.style.height=h+'px';
-    n.style.left=Math.random()*(innerWidth-w)+'px'; n.style.top=Math.random()*(innerHeight-h)+'px';
-    document.body.appendChild(n);
-    setTimeout(()=>n.remove(), Math.max(30,110 - level*6));
-  }
-},40);
 
-/* GLOBAL CLICK HANDLER */
-document.addEventListener('click', e=>{
-  clickCount++;
-  greenSplash(e.clientX,e.clientY);
-  updateGlobalGlitch();
-});
+    const w=Math.random()*(14+level*2)+4;
+    const h=Math.random()*3+1;
+
+    n.style.width=w+'px';
+    n.style.height=h+'px';
+    n.style.left=Math.random()*(innerWidth-w)+'px';
+    n.style.top=Math.random()*(innerHeight-h)+'px';
+
+    document.body.appendChild(n);
+
+    setTimeout(()=>n.remove(), Math.max(40,120 - level*5));
+  }
+}, 45);
+
+/* ================= MEGA GLITCH ================= */
+setInterval(()=>{
+  const level = Math.floor(clickCount / 10);
+  if(level > 0){
+    document.body.classList.add('site-glitch');
+    setTimeout(()=>document.body.classList.remove('site-glitch'), 400 + level*30);
+  }
+}, 6500);
+
 </script>
 
 </body>
 </html>
-
-
-
-
-
-
-
-
