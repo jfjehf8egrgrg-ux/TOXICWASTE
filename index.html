@@ -19,92 +19,38 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-
-  animation: siteGlitch 2.6s infinite;
 }
 
-/* ================= SITE SHIFT ================= */
-@keyframes siteGlitch {
-  0%, 72%, 100% {
-    transform: translate(0);
-    filter: none;
-  }
-  73% {
-    transform: translate(-10px, 3px);
-  }
-  74% {
-    transform: translate(10px, -3px);
-  }
-  75% {
-    transform: translate(-18px, 0);
-    filter: contrast(1.25);
-  }
-  76% {
-    transform: translate(18px, 0);
-  }
+/* ================= GLOBAL GLITCH CONTAINER ================= */
+.glitch-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  animation: globalShake 2.4s infinite;
 }
 
-/* ================= RGB ZONE ================= */
-.rgb-zone {
+@keyframes globalShake {
+  0%, 70%, 100% { transform: translate(0); }
+  71% { transform: translate(-10px, 3px); }
+  72% { transform: translate(10px, -3px); }
+  73% { transform: translate(-18px, 0); }
+  74% { transform: translate(18px, 0); }
+}
+
+/* ================= GLITCH SLICES ================= */
+.glitch-slice {
   position: fixed;
-  z-index: 70;
+  left: 0;
+  width: 100%;
+  height: var(--h);
+  top: var(--y);
   pointer-events: none;
+  z-index: 50;
 
-  background: transparent;
-  box-shadow:
-    -6px 0 rgba(255,0,0,0.65),
-     6px 0 rgba(0,255,255,0.65);
-
-  animation: rgbZoneFlicker 0.25s steps(2) infinite;
-}
-
-@keyframes rgbZoneFlicker {
-  0% { opacity: 0.8; }
-  50% { opacity: 0.4; }
-  100% { opacity: 0.8; }
-}
-
-/* ================= RGB STRIP ================= */
-.rgb-strip {
-  position: fixed;
-  left: 0;
-  width: 100%;
-  height: 4px;
-  z-index: 80;
-  background: linear-gradient(
-    to right,
-    transparent,
-    rgba(255,0,0,0.8),
-    rgba(0,255,255,0.8),
-    transparent
-  );
-  animation: rgbMove 0.12s linear infinite;
-}
-
-@keyframes rgbMove {
-  from { transform: translateX(-60px); }
-  to { transform: translateX(60px); }
-}
-
-/* ================= SIGNAL TEAR ================= */
-.signal-tear {
-  position: fixed;
-  left: 0;
-  width: 100%;
-  height: 6px;
-  background: linear-gradient(
-    to right,
-    transparent,
-    rgba(255,255,255,0.85),
-    transparent
-  );
-  z-index: 90;
-  animation: tearMove 0.08s linear infinite;
-}
-
-@keyframes tearMove {
-  from { transform: translateX(-80px); }
-  to { transform: translateX(80px); }
+  transform: translateX(var(--x));
+  filter:
+    drop-shadow(-6px 0 red)
+    drop-shadow(6px 0 cyan);
 }
 
 /* ================= LOGO ================= */
@@ -122,7 +68,7 @@ body {
   max-width: 220px;
 }
 
-/* ================= IMAGES ================= */
+/* ================= CONTENT ================= */
 .images {
   display: flex;
   gap: 40px;
@@ -152,201 +98,4 @@ body {
 
 /* ================= OVERLAY ================= */
 .overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.7);
-  z-index: 10;
-  opacity: 0;
-  pointer-events: none;
-  transition: 0.25s;
-}
-
-.overlay.active {
-  opacity: 1;
-  pointer-events: auto;
-}
-
-/* ================= ZOOM ================= */
-@keyframes zoomIn {
-  from {
-    transform: translate(-50%,-50%) scale(0.35);
-    opacity: 0;
-  }
-  to {
-    transform: translate(-50%,-50%) scale(1);
-    opacity: 1;
-  }
-}
-
-@keyframes zoomOut {
-  from {
-    transform: translate(-50%,-50%) scale(1);
-    opacity: 1;
-  }
-  to {
-    transform: translate(-50%,-50%) scale(0.25);
-    opacity: 0;
-  }
-}
-
-.expanded {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  max-width: 45vw !important;
-  max-height: 70vh;
-  z-index: 20;
-  animation: zoomIn 0.35s ease-out forwards;
-}
-
-.closing {
-  animation: zoomOut 0.25s ease-in forwards;
-}
-
-/* ================= GREEN SPLASH ================= */
-.particle {
-  position: fixed;
-  width: 6px;
-  height: 6px;
-  background: #39ff14;
-  box-shadow: 0 0 10px #39ff14;
-  border-radius: 50%;
-  pointer-events: none;
-  z-index: 30;
-  animation: splash 0.9s ease-out forwards;
-}
-
-@keyframes splash {
-  from {
-    transform: translate(0,0) scale(1);
-    opacity: 1;
-  }
-  to {
-    transform: translate(var(--x), var(--y)) scale(0.15);
-    opacity: 0;
-  }
-}
-</style>
-</head>
-
-<body>
-
-<div class="overlay" id="overlay"></div>
-
-<audio id="bgMusic" loop>
-  <source src="music/bg.mp3" type="audio/mpeg">
-</audio>
-
-<div class="logo">
-  <img src="img/logo3.png">
-</div>
-
-<div class="images">
-  <div class="image-block">
-    <img src="img/1.png" class="zoomable">
-    <div class="hint">нажми меня!</div>
-  </div>
-
-  <div class="image-block">
-    <img src="img/2.png" class="zoomable">
-    <div class="caption">нажми меня!</div>
-  </div>
-
-  <div class="image-block">
-    <img src="img/animation.gif">
-    <div class="caption">14.1</div>
-  </div>
-</div>
-
-<script>
-const imgs = document.querySelectorAll('.zoomable');
-const overlay = document.getElementById('overlay');
-const music = document.getElementById('bgMusic');
-
-/* SIGNAL TEARS */
-setInterval(() => {
-  const tear = document.createElement('div');
-  tear.className = 'signal-tear';
-  tear.style.top = Math.random() * innerHeight + 'px';
-  document.body.appendChild(tear);
-  setTimeout(() => tear.remove(), 120);
-}, 180);
-
-/* RGB STRIPS */
-setInterval(() => {
-  const rgb = document.createElement('div');
-  rgb.className = 'rgb-strip';
-  rgb.style.top = Math.random() * innerHeight + 'px';
-  document.body.appendChild(rgb);
-  setTimeout(() => rgb.remove(), 100);
-}, 240);
-
-/* RGB ZONES */
-setInterval(() => {
-  const zone = document.createElement('div');
-  zone.className = 'rgb-zone';
-
-  const w = Math.random() * 300 + 120;
-  const h = Math.random() * 120 + 40;
-
-  zone.style.width = w + 'px';
-  zone.style.height = h + 'px';
-  zone.style.left = Math.random() * (innerWidth - w) + 'px';
-  zone.style.top = Math.random() * (innerHeight - h) + 'px';
-
-  document.body.appendChild(zone);
-  setTimeout(() => zone.remove(), 200);
-}, 320);
-
-/* GREEN SPLASH */
-function greenSplash(x, y) {
-  for (let i = 0; i < 24; i++) {
-    const p = document.createElement('div');
-    p.className = 'particle';
-    p.style.left = x + 'px';
-    p.style.top = y + 'px';
-
-    const angle = Math.random() * Math.PI * 2;
-    const radius = Math.random() * 160 + 40;
-
-    p.style.setProperty('--x', Math.cos(angle) * radius + 'px');
-    p.style.setProperty('--y', Math.sin(angle) * radius + 'px');
-
-    document.body.appendChild(p);
-    setTimeout(() => p.remove(), 900);
-  }
-}
-
-/* ZOOM */
-imgs.forEach(img => {
-  img.addEventListener('click', e => {
-    img.classList.remove('closing');
-    img.classList.add('expanded');
-    overlay.classList.add('active');
-    greenSplash(e.clientX, e.clientY);
-  });
-});
-
-overlay.addEventListener('click', () => {
-  imgs.forEach(img => {
-    if (img.classList.contains('expanded')) {
-      img.classList.add('closing');
-      setTimeout(() => {
-        img.classList.remove('expanded', 'closing');
-      }, 250);
-    }
-  });
-  overlay.classList.remove('active');
-});
-
-/* MUSIC */
-document.body.addEventListener('click', () => {
-  music.play().catch(()=>{});
-}, { once:true });
-</script>
-
-<!-- ГОТОВО -->
-
-</body>
-</html>
-
+  posi
