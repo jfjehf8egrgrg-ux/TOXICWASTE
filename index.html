@@ -324,22 +324,21 @@ setInterval(()=>{
   }
 }, 40);
 
-/* ================= MEGA GLITCH EVERY 6.5S ================= */
+/* ================= MEGA GLITCH EVERY 6s ================= */
 setInterval(()=>{
   const level = Math.floor(clickCount / 10);
-  if(level > 0){
-    document.body.classList.add('site-glitch');
-    setTimeout(()=>document.body.classList.remove('site-glitch'),
-      400 + level * 60
-    );
-  }
-}, 6500);
+
+  document.body.classList.add('site-glitch');
+  setTimeout(()=>{
+    document.body.classList.remove('site-glitch');
+  }, 400 + level * 60);
+
+}, 6000); // каждые 6 секунд
 
 </script>
 
 </body>
 </html>
-
 
 
 
