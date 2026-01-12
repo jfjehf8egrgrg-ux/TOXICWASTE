@@ -20,46 +20,64 @@ body {
   flex-direction: column;
   align-items: center;
 
-  animation: siteGlitch 2.8s infinite;
+  animation: siteGlitch 2.6s infinite;
 }
 
-/* ================= SITE GLITCH ================= */
+/* ================= SITE SHIFT ================= */
 @keyframes siteGlitch {
-  0%, 70%, 100% {
+  0%, 72%, 100% {
     transform: translate(0);
     filter: none;
   }
-  71% {
-    transform: translate(-8px, 2px);
-    filter: hue-rotate(10deg);
-  }
-  72% {
-    transform: translate(8px, -2px);
-  }
   73% {
-    transform: translate(-14px, 0);
-    filter: contrast(1.25);
+    transform: translate(-10px, 3px);
   }
   74% {
-    transform: translate(14px, 0);
+    transform: translate(10px, -3px);
+  }
+  75% {
+    transform: translate(-18px, 0);
+    filter: contrast(1.25);
+  }
+  76% {
+    transform: translate(18px, 0);
   }
 }
 
-/* ================= RGB STRIPES ================= */
+/* ================= RGB ZONE ================= */
+.rgb-zone {
+  position: fixed;
+  z-index: 70;
+  pointer-events: none;
+
+  background: transparent;
+  box-shadow:
+    -6px 0 rgba(255,0,0,0.65),
+     6px 0 rgba(0,255,255,0.65);
+
+  animation: rgbZoneFlicker 0.25s steps(2) infinite;
+}
+
+@keyframes rgbZoneFlicker {
+  0% { opacity: 0.8; }
+  50% { opacity: 0.4; }
+  100% { opacity: 0.8; }
+}
+
+/* ================= RGB STRIP ================= */
 .rgb-strip {
   position: fixed;
   left: 0;
   width: 100%;
   height: 4px;
   z-index: 80;
-  background:
-    linear-gradient(
-      to right,
-      transparent,
-      rgba(255,0,0,0.8),
-      rgba(0,255,255,0.8),
-      transparent
-    );
+  background: linear-gradient(
+    to right,
+    transparent,
+    rgba(255,0,0,0.8),
+    rgba(0,255,255,0.8),
+    transparent
+  );
   animation: rgbMove 0.12s linear infinite;
 }
 
@@ -68,7 +86,7 @@ body {
   to { transform: translateX(60px); }
 }
 
-/* ================= WHITE SIGNAL TEAR ================= */
+/* ================= SIGNAL TEAR ================= */
 .signal-tear {
   position: fixed;
   left: 0;
@@ -245,22 +263,40 @@ const imgs = document.querySelectorAll('.zoomable');
 const overlay = document.getElementById('overlay');
 const music = document.getElementById('bgMusic');
 
-/* WHITE + RGB STRIPES */
+/* SIGNAL TEARS */
 setInterval(() => {
   const tear = document.createElement('div');
   tear.className = 'signal-tear';
   tear.style.top = Math.random() * innerHeight + 'px';
   document.body.appendChild(tear);
   setTimeout(() => tear.remove(), 120);
-}, 200);
+}, 180);
 
+/* RGB STRIPS */
 setInterval(() => {
   const rgb = document.createElement('div');
   rgb.className = 'rgb-strip';
   rgb.style.top = Math.random() * innerHeight + 'px';
   document.body.appendChild(rgb);
   setTimeout(() => rgb.remove(), 100);
-}, 260);
+}, 240);
+
+/* RGB ZONES */
+setInterval(() => {
+  const zone = document.createElement('div');
+  zone.className = 'rgb-zone';
+
+  const w = Math.random() * 300 + 120;
+  const h = Math.random() * 120 + 40;
+
+  zone.style.width = w + 'px';
+  zone.style.height = h + 'px';
+  zone.style.left = Math.random() * (innerWidth - w) + 'px';
+  zone.style.top = Math.random() * (innerHeight - h) + 'px';
+
+  document.body.appendChild(zone);
+  setTimeout(() => zone.remove(), 200);
+}, 320);
 
 /* GREEN SPLASH */
 function greenSplash(x, y) {
@@ -281,7 +317,7 @@ function greenSplash(x, y) {
   }
 }
 
-/* ZOOM LOGIC */
+/* ZOOM */
 imgs.forEach(img => {
   img.addEventListener('click', e => {
     img.classList.remove('closing');
