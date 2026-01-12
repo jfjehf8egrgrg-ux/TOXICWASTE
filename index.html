@@ -20,25 +20,25 @@ body {
   align-items: center;
 }
 
+/* ================= GLOBAL RGB GLITCH ================= */
+body.rgb-glitch {
+  filter:
+    drop-shadow(var(--rgbR) 0 red)
+    drop-shadow(calc(var(--rgbR) * -1) 0 cyan)
+    drop-shadow(0 var(--rgbR) magenta);
+}
+
 /* ================= LOGO ================= */
 .logo {
   margin-top: 30px;
   pointer-events: none;
-  animation:
-    logoFloat 3.5s ease-in-out infinite,
-    logoGlitch 8s steps(1) infinite;
+  animation: logoFloat 3.5s ease-in-out infinite;
 }
 
 .logo img { max-width: 220px; }
 
 @keyframes logoFloat {
   50% { transform: translateY(-14px); }
-}
-
-@keyframes logoGlitch {
-  96% { filter: drop-shadow(-6px 0 red); }
-  97% { filter: drop-shadow(6px 0 cyan); }
-  98% { filter: drop-shadow(-10px 0 magenta); }
 }
 
 /* ================= IMAGES ================= */
@@ -63,10 +63,8 @@ body {
   transform: scale(1.06);
 }
 
-/* ================= GIF ================= */
 .noglitch {
   max-width: 260px;
-  height: auto;
   cursor: default;
 }
 
@@ -82,12 +80,12 @@ body {
     0 0 8px rgba(0,0,0,.9);
 }
 
-/* ================= CONSTANT MICRO NOISE ================= */
+/* ================= MICRO GLITCH ================= */
 .noise-glitch {
   position: fixed;
   pointer-events: none;
   z-index: 90;
-  background: rgba(255,255,255,.7);
+  background: rgba(255,255,255,.75);
   filter:
     drop-shadow(-2px 0 red)
     drop-shadow(2px 0 cyan);
@@ -95,30 +93,24 @@ body {
 
 /* ================= MEGA GLITCH ================= */
 .site-glitch {
-  animation: siteGlitch .55s steps(1);
+  animation: siteGlitch var(--megaDur) steps(1);
 }
 
 @keyframes siteGlitch {
-  0% { transform:none; filter:none; }
-  25% {
-    transform: translateX(-140px);
+  0% { transform:none; }
+  20% { transform: translate(var(--gx), var(--gy)); }
+  40% {
+    transform: translate(calc(var(--gx) * -1), calc(var(--gy) * .5));
     filter:
-      drop-shadow(-22px 0 red)
-      drop-shadow(22px 0 cyan);
+      drop-shadow(-20px 0 red)
+      drop-shadow(20px 0 cyan)
+      drop-shadow(0 20px magenta);
   }
-  50% {
-    transform: translateY(60px);
-    filter:
-      drop-shadow(-18px 0 magenta)
-      drop-shadow(18px 0 cyan);
-  }
-  75% {
-    transform: translateX(120px);
-  }
+  70% { transform: translate(var(--gx), calc(var(--gy) * -1)); }
   100% { transform:none; filter:none; }
 }
 
-/* ================= IMAGE VIEWER ================= */
+/* ================= VIEWER ================= */
 .viewer {
   position: fixed;
   inset: 0;
@@ -234,9 +226,8 @@ const viewerImg=document.getElementById('viewerImg');
 document.querySelectorAll('.zoomable').forEach(img=>{
   img.addEventListener('click',e=>{
     e.stopPropagation();
-
-    clickCount = 0; // 🔥 ПОЛНЫЙ СБРОС
-
+    clickCount = 0;
+    updateGlobalGlitch();
     viewerImg.src = img.src;
     viewerImg.className='zoom-in';
     viewer.classList.add('active');
@@ -248,16 +239,34 @@ viewer.addEventListener('click',()=>{
   setTimeout(()=>viewer.classList.remove('active'),250);
 });
 
+/* ================= GLOBAL GLITCH UPDATE ================= */
+function updateGlobalGlitch(){
+  const level = Math.floor(clickCount / 10);
+
+  document.body.style.setProperty('--rgbR', level * 1.6 + 'px');
+  document.body.style.setProperty('--gx', level * 18 + 'px');
+  document.body.style.setProperty('--gy', level * 12 + 'px');
+  document.body.style.setProperty('--megaDur', 0.35 + level * 0.04 + 's');
+
+  if(level > 0){
+    document.body.classList.add('rgb-glitch');
+  } else {
+    document.body.classList.remove('rgb-glitch');
+  }
+}
+
 /* ================= CONSTANT MICRO GLITCH ================= */
 setInterval(()=>{
-  const level = Math.floor(clickCount / 10); // усиление каждые 10 кликов
-  const amount = 2 + level * 2;
+  const level = Math.floor(clickCount / 10);
+  updateGlobalGlitch();
+
+  const amount = 2 + level * 3;
 
   for(let i=0;i<amount;i++){
     const n=document.createElement('div');
     n.className='noise-glitch';
 
-    const w=Math.random()*(14+level*2)+4;
+    const w=Math.random()*(14+level*3)+4;
     const h=Math.random()*3+1;
 
     n.style.width=w+'px';
@@ -267,16 +276,18 @@ setInterval(()=>{
 
     document.body.appendChild(n);
 
-    setTimeout(()=>n.remove(), Math.max(40,120 - level*5));
+    setTimeout(()=>n.remove(), Math.max(30,110 - level*6));
   }
-}, 45);
+}, 40);
 
 /* ================= MEGA GLITCH ================= */
 setInterval(()=>{
   const level = Math.floor(clickCount / 10);
   if(level > 0){
     document.body.classList.add('site-glitch');
-    setTimeout(()=>document.body.classList.remove('site-glitch'), 400 + level*30);
+    setTimeout(()=>document.body.classList.remove('site-glitch'),
+      400 + level * 60
+    );
   }
 }, 6500);
 
@@ -284,3 +295,4 @@ setInterval(()=>{
 
 </body>
 </html>
+
