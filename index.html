@@ -80,7 +80,8 @@ body {
 
 <script>
 let clickCount = 0;
-let permaGlitchActive = false;
+let permaShake = false;
+let microIntervalTime = 40; // начальное время микроглитча
 
 /* GREEN SPLASH */
 function greenSplash(x,y){
@@ -101,7 +102,7 @@ function randomColor(){
   return `rgb(${r},${g},${b})`;
 }
 
-/* IMAGE VIEWER + RESET */
+/* IMAGE VIEWER */
 const viewer=document.getElementById('viewer');
 const viewerImg=document.getElementById('viewerImg');
 
@@ -109,7 +110,7 @@ document.querySelectorAll('.zoomable').forEach(img=>{
   img.addEventListener('click',e=>{
     e.stopPropagation();
     clickCount = 0; 
-    updateGlobalGlitch();
+    updateGlitchProgress();
     viewerImg.src = img.src;
     viewerImg.className='zoom-in';
     viewer.classList.add('active');
@@ -121,37 +122,36 @@ viewer.addEventListener('click',()=>{
   setTimeout(()=>viewer.classList.remove('active'),250);
 });
 
-/* ================= UPDATE GLOBAL GLITCH ================= */
-function updateGlobalGlitch(){
+/* ================= UPDATE GLITCH PROGRESS ================= */
+function updateGlitchProgress(){
   const level = Math.floor(clickCount/10);
-  document.body.style.setProperty('--gx', 12 + level*20 + 'px');
-  document.body.style.setProperty('--gy', 8 + level*15 + 'px');
-  document.body.style.setProperty('--megaDur', 0.35 + level*0.05 + 's');
 
-  // если накоплено 10+ кликов, включаем постоянную тряску
-  if(clickCount >= 10 && !permaGlitchActive){
-    permaGlitchActive = true;
+  // ускорение микроглитчей
+  microIntervalTime = Math.max(10, 40 - level*3);
+
+  // каждые 10 кликов: включаем постоянную тряску + сильный мега-глитч
+  if(clickCount >= 10 && !permaShake){
+    permaShake = true;
     document.querySelectorAll('body *').forEach(el=>{
-      el.classList.add('perma-glitch');
+      el.classList.add('perma-glitch'); // постоянная тряска
     });
   }
 
-  // каждые 10 кликов делаем дополнительный временный сильный глитч
   if(clickCount>0 && clickCount % 10 === 0){
     const c1=randomColor(), c2=randomColor(), c3=randomColor();
     document.body.style.setProperty('--c1', c1);
     document.body.style.setProperty('--c2', c2);
     document.body.style.setProperty('--c3', c3);
+    const gx = 12 + level*20 + 'px';
+    const gy = 8 + level*15 + 'px';
+    const dur = 0.35 + level*0.05 + 's';
+    document.body.style.setProperty('--gx', gx);
+    document.body.style.setProperty('--gy', gy);
+    document.body.style.setProperty('--megaDur', dur);
 
     document.querySelectorAll('body *').forEach(el=>{
       el.classList.add('element-glitch');
-      const offsetX = (Math.random()-0.5)*50 + 'px';
-      const offsetY = (Math.random()-0.5)*50 + 'px';
-      el.style.transform = `translate(${offsetX},${offsetY}) rotate(${(Math.random()-0.5)*20}deg)`;
-      setTimeout(()=>{
-        el.classList.remove('element-glitch');
-        el.style.transform = '';
-      }, 400 + level*100);
+      setTimeout(()=>el.classList.remove('element-glitch'), 400 + level*100);
     });
   }
 }
@@ -169,7 +169,7 @@ setInterval(()=>{
     document.body.appendChild(n);
     setTimeout(()=>n.remove(), Math.max(30,110 - level*6));
   }
-},40);
+}, microIntervalTime);
 
 /* AUTOMATIC MEGA GLITCH каждые 6 секунд */
 setInterval(()=>{
@@ -183,16 +183,7 @@ setInterval(()=>{
 
   document.querySelectorAll('body *').forEach(el=>{
     el.classList.add('element-glitch');
-    const offsetX = (Math.random()-0.5)*150 + 'px';
-    const offsetY = (Math.random()-0.5)*150 + 'px';
-    const rot = (Math.random()-0.5)*45;
-    el.style.transform = `translate(${offsetX},${offsetY}) rotate(${rot}deg) scale(1.1)`;
-    setTimeout(()=>{
-      el.classList.remove('element-glitch');
-      // если постоянная тряска включена, оставляем перманентный класс
-      if(permaGlitchActive) el.classList.add('perma-glitch');
-      el.style.transform = '';
-    }, 600 + Math.random()*400);
+    setTimeout(()=>el.classList.remove('element-glitch'), 600 + Math.random()*400);
   });
 },6000);
 
@@ -200,12 +191,14 @@ setInterval(()=>{
 document.addEventListener('click', e=>{
   clickCount++;
   greenSplash(e.clientX,e.clientY);
-  updateGlobalGlitch();
+  updateGlitchProgress();
 });
 </script>
 
 </body>
 </html>
+
+
 
 
 
