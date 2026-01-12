@@ -57,6 +57,7 @@ body {
   max-width: 260px;
   cursor: pointer;
   position: relative;
+  transition: transform .25s ease-out;
 }
 
 /* ================= TEXT ================= */
@@ -65,19 +66,36 @@ body {
   font-size: 18px;
   font-weight: bold;
   color: #fff;
-  text-shadow: 2px 0 red, -2px 0 cyan, 0 0 8px rgba(0,0,0,.9);
+  text-shadow:
+    2px 0 red,
+    -2px 0 cyan,
+    0 0 8px rgba(0,0,0,.9);
 }
 
-/* ================= PNG HOVER GLITCH ================= */
+/* ================= CALM HOVER GLITCH ================= */
 .zoomable:hover {
-  animation: sliceGlitch var(--dur) steps(1) infinite;
-  filter: contrast(140%) saturate(160%);
+  animation: calmGlitch var(--dur) steps(1) infinite;
+  filter: contrast(130%) saturate(140%);
 }
 
-@keyframes sliceGlitch {
-  25% { clip-path: inset(var(--a) 0 var(--b) 0); }
-  50% { clip-path: inset(var(--c) 0 var(--d) 0); }
-  75% { clip-path: inset(var(--e) 0 var(--f) 0); }
+@keyframes calmGlitch {
+  0% { transform: translate(0,0); }
+  25% {
+    transform:
+      translate(var(--x1), var(--y1));
+    clip-path: inset(0 0 8% 0);
+  }
+  50% {
+    transform:
+      translate(var(--x2), var(--y2));
+    clip-path: inset(6% 0 2% 0);
+  }
+  75% {
+    transform:
+      translate(var(--x3), var(--y3));
+    clip-path: inset(2% 0 6% 0);
+  }
+  100% { transform: translate(0,0); }
 }
 
 /* ================= GIF ================= */
@@ -86,8 +104,8 @@ body {
 }
 
 @keyframes gifTear {
-  97% { transform: translateX(-10px); }
-  98% { transform: translateX(16px); }
+  97% { transform: translate(-8px,2px); }
+  98% { transform: translate(12px,-3px); }
 }
 
 /* ================= LOCAL MICRO GLITCH ================= */
@@ -95,25 +113,41 @@ body {
   position: fixed;
   width: 120px;
   height: 20px;
-  background:
-    linear-gradient(
-      to right,
-      transparent,
-      rgba(255,255,255,.8),
-      transparent
-    );
+  background: linear-gradient(
+    to right,
+    transparent,
+    rgba(255,255,255,.8),
+    transparent
+  );
   mix-blend-mode: difference;
   pointer-events: none;
   z-index: 80;
-  animation: microMove .16s steps(1) forwards;
+  animation: microMove .18s steps(1) forwards;
 }
 
 @keyframes microMove {
   40% {
-    transform: translateX(-14px);
+    transform: translate(-12px, 6px);
     filter:
       drop-shadow(-4px 0 red)
       drop-shadow(4px 0 cyan);
+  }
+  100% { opacity: 0; }
+}
+
+/* ================= FULLSCREEN COLOR GLITCH ================= */
+.screen-glitch {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 150;
+  animation: screenFlash .18s steps(1) forwards;
+}
+
+@keyframes screenFlash {
+  50% {
+    filter: contrast(140%);
+    transform: translate(-12px,6px);
   }
   100% { opacity: 0; }
 }
@@ -202,13 +236,16 @@ body {
 </div>
 
 <script>
-/* PNG HOVER RANDOMIZER */
+/* CALM HOVER RANDOMIZER */
 document.querySelectorAll('.zoomable').forEach(img=>{
   img.onmouseenter=()=>{
-    img.style.setProperty('--dur',(Math.random()*.25+.15)+'s');
-    ['a','b','c','d','e','f'].forEach(v=>{
-      img.style.setProperty('--'+v,Math.random()*70+'%');
-    });
+    img.style.setProperty('--dur',(Math.random()*.8+.6)+'s');
+    img.style.setProperty('--x1',(Math.random()*6-3)+'px');
+    img.style.setProperty('--y1',(Math.random()*6-3)+'px');
+    img.style.setProperty('--x2',(Math.random()*10-5)+'px');
+    img.style.setProperty('--y2',(Math.random()*10-5)+'px');
+    img.style.setProperty('--x3',(Math.random()*6-3)+'px');
+    img.style.setProperty('--y3',(Math.random()*6-3)+'px');
   };
 });
 
@@ -243,12 +280,10 @@ document.querySelectorAll('.zoomable').forEach(img=>{
 
 viewer.onclick=()=>{
   viewerImg.className='zoom-out';
-  setTimeout(()=>{
-    viewer.classList.remove('active');
-  },250);
+  setTimeout(()=>viewer.classList.remove('active'),250);
 };
 
-/* LOCAL MICRO GLITCH EVERY 1.5s */
+/* LOCAL MICRO GLITCH 1.5s */
 setInterval(()=>{
   const g=document.createElement('div');
   g.className='micro-glitch';
@@ -258,10 +293,26 @@ setInterval(()=>{
   setTimeout(()=>g.remove(),180);
 },1500);
 
+/* FULLSCREEN COLOR GLITCH (BLUE / RED / GREEN / PURPLE) */
+const colors=[
+  'drop-shadow(-8px 0 cyan)',
+  'drop-shadow(-8px 0 red)',
+  'drop-shadow(-8px 0 lime)',
+  'drop-shadow(-8px 0 magenta)'
+];
+
+setInterval(()=>{
+  const g=document.createElement('div');
+  g.className='screen-glitch';
+  g.style.filter=colors[Math.floor(Math.random()*colors.length)];
+  document.body.appendChild(g);
+  setTimeout(()=>g.remove(),180);
+},4200);
 </script>
 
 </body>
 </html>
+
 
 
 
