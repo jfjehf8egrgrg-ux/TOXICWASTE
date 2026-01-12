@@ -57,7 +57,6 @@ body {
   max-width: 260px;
   cursor: pointer;
   position: relative;
-  transition: transform .25s ease-out;
 }
 
 /* ================= TEXT ================= */
@@ -66,36 +65,36 @@ body {
   font-size: 18px;
   font-weight: bold;
   color: #fff;
-  text-shadow:
-    2px 0 red,
-    -2px 0 cyan,
-    0 0 8px rgba(0,0,0,.9);
+  text-shadow: 2px 0 red, -2px 0 cyan, 0 0 8px rgba(0,0,0,.9);
 }
 
-/* ================= CALM HOVER GLITCH ================= */
+/* ================= ACTIVE HOVER GLITCH ================= */
 .zoomable:hover {
-  animation: calmGlitch var(--dur) steps(1) infinite;
-  filter: contrast(130%) saturate(140%);
+  animation: activeGlitch var(--dur) steps(1) infinite;
+  filter: contrast(140%) saturate(160%);
 }
 
-@keyframes calmGlitch {
-  0% { transform: translate(0,0); }
-  25% {
+@keyframes activeGlitch {
+  0% { transform: translate(0,0) rotate(0); }
+  20% {
     transform:
-      translate(var(--x1), var(--y1));
-    clip-path: inset(0 0 8% 0);
+      translate(var(--x1), var(--y1))
+      rotate(.6deg);
+    clip-path: inset(4% 0 8% 0);
   }
   50% {
     transform:
-      translate(var(--x2), var(--y2));
-    clip-path: inset(6% 0 2% 0);
+      translate(var(--x2), var(--y2))
+      rotate(-.6deg);
+    clip-path: inset(10% 0 4% 0);
   }
-  75% {
+  80% {
     transform:
-      translate(var(--x3), var(--y3));
-    clip-path: inset(2% 0 6% 0);
+      translate(var(--x3), var(--y3))
+      rotate(.4deg);
+    clip-path: inset(6% 0 6% 0);
   }
-  100% { transform: translate(0,0); }
+  100% { transform: translate(0,0) rotate(0); }
 }
 
 /* ================= GIF ================= */
@@ -111,12 +110,12 @@ body {
 /* ================= LOCAL MICRO GLITCH ================= */
 .micro-glitch {
   position: fixed;
-  width: 120px;
-  height: 20px;
+  width: 140px;
+  height: 24px;
   background: linear-gradient(
     to right,
     transparent,
-    rgba(255,255,255,.8),
+    rgba(255,255,255,.9),
     transparent
   );
   mix-blend-mode: difference;
@@ -127,7 +126,7 @@ body {
 
 @keyframes microMove {
   40% {
-    transform: translate(-12px, 6px);
+    transform: translate(-18px, 10px);
     filter:
       drop-shadow(-4px 0 red)
       drop-shadow(4px 0 cyan);
@@ -135,19 +134,27 @@ body {
   100% { opacity: 0; }
 }
 
-/* ================= FULLSCREEN COLOR GLITCH ================= */
-.screen-glitch {
+/* ================= MEGA SCREEN GLITCH ================= */
+.mega-glitch {
   position: fixed;
   inset: 0;
+  background: rgba(0,40,255,.18);
   pointer-events: none;
-  z-index: 150;
-  animation: screenFlash .18s steps(1) forwards;
+  z-index: 500;
+  animation: megaFlash .22s steps(1) forwards;
 }
 
-@keyframes screenFlash {
-  50% {
-    filter: contrast(140%);
-    transform: translate(-12px,6px);
+@keyframes megaFlash {
+  30% {
+    transform: translate(-120px,40px) skewX(-10deg);
+    filter:
+      hue-rotate(120deg)
+      drop-shadow(-12px 0 red)
+      drop-shadow(12px 0 cyan);
+  }
+  60% {
+    transform: translate(160px,-60px) skewX(12deg);
+    background: rgba(255,0,80,.18);
   }
   100% { opacity: 0; }
 }
@@ -236,28 +243,28 @@ body {
 </div>
 
 <script>
-/* CALM HOVER RANDOMIZER */
+/* HOVER RANDOMIZER */
 document.querySelectorAll('.zoomable').forEach(img=>{
   img.onmouseenter=()=>{
-    img.style.setProperty('--dur',(Math.random()*.8+.6)+'s');
-    img.style.setProperty('--x1',(Math.random()*6-3)+'px');
-    img.style.setProperty('--y1',(Math.random()*6-3)+'px');
-    img.style.setProperty('--x2',(Math.random()*10-5)+'px');
-    img.style.setProperty('--y2',(Math.random()*10-5)+'px');
-    img.style.setProperty('--x3',(Math.random()*6-3)+'px');
-    img.style.setProperty('--y3',(Math.random()*6-3)+'px');
+    img.style.setProperty('--dur',(Math.random()*.45+.35)+'s');
+    img.style.setProperty('--x1',(Math.random()*10-5)+'px');
+    img.style.setProperty('--y1',(Math.random()*10-5)+'px');
+    img.style.setProperty('--x2',(Math.random()*18-9)+'px');
+    img.style.setProperty('--y2',(Math.random()*18-9)+'px');
+    img.style.setProperty('--x3',(Math.random()*10-5)+'px');
+    img.style.setProperty('--y3',(Math.random()*10-5)+'px');
   };
 });
 
 /* GREEN SPLASH */
 function greenSplash(x,y){
-  for(let i=0;i<24;i++){
+  for(let i=0;i<26;i++){
     const p=document.createElement('div');
     p.className='particle';
     p.style.left=x+'px';
     p.style.top=y+'px';
     const a=Math.random()*Math.PI*2;
-    const r=Math.random()*140+30;
+    const r=Math.random()*160+40;
     p.style.setProperty('--x',Math.cos(a)*r+'px');
     p.style.setProperty('--y',Math.sin(a)*r+'px');
     document.body.appendChild(p);
@@ -283,38 +290,24 @@ viewer.onclick=()=>{
   setTimeout(()=>viewer.classList.remove('active'),250);
 };
 
-/* LOCAL MICRO GLITCH 1.5s */
+/* LOCAL MICRO GLITCH */
 setInterval(()=>{
   const g=document.createElement('div');
   g.className='micro-glitch';
   g.style.top=Math.random()*innerHeight+'px';
-  g.style.left=Math.random()*(innerWidth-150)+'px';
+  g.style.left=Math.random()*(innerWidth-160)+'px';
   document.body.appendChild(g);
   setTimeout(()=>g.remove(),180);
 },1500);
 
-/* FULLSCREEN COLOR GLITCH (BLUE / RED / GREEN / PURPLE) */
-const colors=[
-  'drop-shadow(-8px 0 cyan)',
-  'drop-shadow(-8px 0 red)',
-  'drop-shadow(-8px 0 lime)',
-  'drop-shadow(-8px 0 magenta)'
-];
-
+/* MEGA GLITCH */
 setInterval(()=>{
-  const g=document.createElement('div');
-  g.className='screen-glitch';
-  g.style.filter=colors[Math.floor(Math.random()*colors.length)];
-  document.body.appendChild(g);
-  setTimeout(()=>g.remove(),180);
-},4200);
+  const m=document.createElement('div');
+  m.className='mega-glitch';
+  document.body.appendChild(m);
+  setTimeout(()=>m.remove(),220);
+},7200);
 </script>
 
 </body>
 </html>
-
-
-
-
-
-
