@@ -29,9 +29,7 @@ body {
     logoGlitch 7s steps(1) infinite;
 }
 
-.logo img {
-  max-width: 220px;
-}
+.logo img { max-width: 220px; }
 
 @keyframes logoFloat {
   50% { transform: translateY(-14px); }
@@ -55,13 +53,13 @@ body {
   text-align: center;
 }
 
-.image-block img {
+.zoomable {
   max-width: 260px;
   cursor: pointer;
   transition: transform .35s cubic-bezier(.2,.8,.2,1);
 }
 
-.image-block img:hover {
+.zoomable:hover {
   transform: scale(1.06);
 }
 
@@ -79,6 +77,7 @@ body {
 
 /* ================= GIF ================= */
 .noglitch {
+  cursor: default;
   animation: gifTear 11s steps(1) infinite;
 }
 
@@ -114,16 +113,13 @@ body {
   100% { opacity: 0; }
 }
 
-/* ================= MEGA GLITCH (OLD STYLE) ================= */
+/* ================= MEGA GLITCH ================= */
 .site-glitch {
   animation: siteGlitch .35s steps(1);
 }
 
 @keyframes siteGlitch {
-  0% {
-    transform: none;
-    filter: none;
-  }
+  0% { transform:none; filter:none; }
 
   20% {
     transform: translateX(-90px);
@@ -132,9 +128,7 @@ body {
       drop-shadow(14px 0 cyan);
   }
 
-  40% {
-    transform: translateX(120px);
-  }
+  40% { transform: translateX(120px); }
 
   60% {
     transform: translateX(-40px);
@@ -143,10 +137,7 @@ body {
       drop-shadow(8px 0 cyan);
   }
 
-  100% {
-    transform: none;
-    filter: none;
-  }
+  100% { transform:none; filter:none; }
 }
 
 /* ================= VIEWER ================= */
@@ -160,9 +151,7 @@ body {
   z-index: 200;
 }
 
-.viewer.active {
-  display: flex;
-}
+.viewer.active { display: flex; }
 
 .viewer img {
   max-width: 50vw;
@@ -172,6 +161,7 @@ body {
 .zoom-in {
   animation: zoomIn .25s ease-out forwards;
 }
+
 .zoom-out {
   animation: zoomOut .25s ease-in forwards;
 }
@@ -180,6 +170,7 @@ body {
   from { transform: scale(.4); opacity:0; }
   to { transform: scale(1); opacity:1; }
 }
+
 @keyframes zoomOut {
   to { transform: scale(.25); opacity:0; }
 }
@@ -254,23 +245,28 @@ function greenSplash(x,y){
   }
 }
 
+/* ================= GLOBAL CLICK SPLASH ================= */
+document.addEventListener('click',e=>{
+  greenSplash(e.clientX,e.clientY);
+});
+
 /* ================= IMAGE VIEWER ================= */
 const viewer=document.getElementById('viewer');
 const viewerImg=document.getElementById('viewerImg');
 
 document.querySelectorAll('.zoomable').forEach(img=>{
-  img.onclick=e=>{
+  img.addEventListener('click',e=>{
+    e.stopPropagation(); // чтобы не закрывало сразу
     viewerImg.src=img.src;
     viewerImg.className='zoom-in';
     viewer.classList.add('active');
-    greenSplash(e.clientX,e.clientY);
-  };
+  });
 });
 
-viewer.onclick=()=>{
+viewer.addEventListener('click',()=>{
   viewerImg.className='zoom-out';
   setTimeout(()=>viewer.classList.remove('active'),250);
-};
+});
 
 /* ================= MICRO GLITCH ================= */
 setInterval(()=>{
