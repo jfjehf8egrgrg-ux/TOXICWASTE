@@ -6,227 +6,101 @@
 <title>TOXIC WASTE</title>
 
 <style>
-
-/* ================= BASE ================= */
 body {
-  margin: 0;
-  min-height: 100vh;
-  font-family: Arial, sans-serif;
-  overflow-x: hidden;
-  background: url("img/background.gif") no-repeat center center fixed;
-  background-size: cover;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  margin:0; min-height:100vh; font-family:Arial,sans-serif;
+  overflow-x:hidden; background:url("img/background.gif") no-repeat center center fixed;
+  background-size:cover; display:flex; flex-direction:column; align-items:center;
 }
 
-/* ================= GLOBAL RGB GLITCH ================= */
-body.rgb-glitch {
-  filter:
-    drop-shadow(var(--rgbR) 0 red)
-    drop-shadow(calc(var(--rgbR) * -1) 0 cyan)
-    drop-shadow(0 var(--rgbR) magenta);
+/* LOGO */
+.logo { margin-top:30px; pointer-events:none; animation: logoFloat 3.5s ease-in-out infinite; }
+.logo img { max-width:220px; }
+@keyframes logoFloat {50% {transform: translateY(-14px);}}
+
+/* IMAGES */
+.images { display:flex; gap:90px; margin-top:140px; }
+.image-block { position:relative; text-align:center; }
+.zoomable { max-width:260px; cursor:pointer; transition: transform .35s cubic-bezier(.2,.8,.2,1); }
+.zoomable:hover { transform: scale(1.06);}
+.noglitch { max-width:260px; cursor:default; }
+
+/* TEXT */
+.caption,.hint { margin-top:10px; font-size:18px; font-weight:bold; color:#fff;
+  text-shadow:2px 0 red,-2px 0 cyan,0 0 8px rgba(0,0,0,.9);
 }
 
-/* ================= LOGO ================= */
-.logo {
-  margin-top: 30px;
-  pointer-events: none;
-  animation: logoFloat 3.5s ease-in-out infinite;
+/* MICRO GLITCH */
+.noise-glitch { position:fixed; pointer-events:none; z-index:90; background:rgba(255,255,255,.75);
+  filter: drop-shadow(-2px 0 red) drop-shadow(2px 0 cyan);
 }
 
-.logo img { max-width: 220px; }
-
-@keyframes logoFloat {
-  50% { transform: translateY(-14px); }
-}
-
-/* ================= IMAGES ================= */
-.images {
-  display: flex;
-  gap: 90px;
-  margin-top: 140px;
-}
-
-.image-block {
-  position: relative;
-  text-align: center;
-}
-
-.zoomable {
-  max-width: 260px;
-  cursor: pointer;
-  transition: transform .35s cubic-bezier(.2,.8,.2,1);
-}
-
-.zoomable:hover {
-  transform: scale(1.06);
-}
-
-.noglitch {
-  max-width: 260px;
-  cursor: default;
-}
-
-/* ================= TEXT ================= */
-.caption,.hint {
-  margin-top: 10px;
-  font-size: 18px;
-  font-weight: bold;
-  color: #fff;
-  text-shadow:
-    2px 0 red,
-    -2px 0 cyan,
-    0 0 8px rgba(0,0,0,.9);
-}
-
-/* ================= MICRO GLITCH ================= */
-.noise-glitch {
-  position: fixed;
-  pointer-events: none;
-  z-index: 90;
-  background: rgba(255,255,255,.75);
-  filter:
-    drop-shadow(-2px 0 red)
-    drop-shadow(2px 0 cyan);
-}
-
-/* ================= MEGA GLITCH ================= */
-.site-glitch {
-  animation: siteGlitch var(--megaDur) steps(1);
-}
-
+/* MEGA GLITCH */
+.site-glitch { animation: siteGlitch var(--megaDur) steps(1);}
 @keyframes siteGlitch {
   0% { transform:none; }
   20% { transform: translate(var(--gx), var(--gy)); }
-  40% {
-    transform: translate(calc(var(--gx) * -1), calc(var(--gy) * .5));
-    filter:
-      drop-shadow(-20px 0 red)
-      drop-shadow(20px 0 cyan)
-      drop-shadow(0 20px magenta);
-  }
-  70% { transform: translate(var(--gx), calc(var(--gy) * -1)); }
+  40% { transform: translate(calc(var(--gx)*-1), calc(var(--gy)*0.5));
+       filter: drop-shadow(-20px 0 var(--c1)) drop-shadow(20px 0 var(--c2)) drop-shadow(0 20px var(--c3)); }
+  70% { transform: translate(var(--gx), calc(var(--gy)*-1)); }
   100% { transform:none; filter:none; }
 }
 
-/* ================= VIEWER ================= */
-.viewer {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,.65);
-  display: none;
-  justify-content: center;
-  align-items: center;
-  z-index: 200;
-}
+/* VIEWER */
+.viewer { position:fixed; inset:0; background:rgba(0,0,0,.65);
+  display:none; justify-content:center; align-items:center; z-index:200; }
+.viewer.active { display:flex; }
+.viewer img { max-width:50vw; max-height:70vh; }
+.zoom-in { animation:zoomIn .28s ease-out forwards; }
+.zoom-out { animation:zoomOut .25s ease-in forwards; }
+@keyframes zoomIn { from {transform:scale(.4); opacity:0;} to {transform:scale(1); opacity:1;} }
+@keyframes zoomOut { to {transform:scale(.25); opacity:0;} }
 
-.viewer.active { display: flex; }
-
-.viewer img {
-  max-width: 50vw;
-  max-height: 70vh;
-}
-
-.zoom-in { animation: zoomIn .28s ease-out forwards; }
-.zoom-out { animation: zoomOut .25s ease-in forwards; }
-
-@keyframes zoomIn {
-  from { transform: scale(.4); opacity:0; }
-  to { transform: scale(1); opacity:1; }
-}
-
-@keyframes zoomOut {
-  to { transform: scale(.25); opacity:0; }
-}
-
-/* ================= GREEN SPLASH ================= */
-.particle {
-  position: fixed;
-  width: 6px;
-  height: 6px;
-  background: #39ff14;
-  box-shadow: 0 0 12px #39ff14;
-  border-radius: 50%;
-  pointer-events: none;
-  z-index: 300;
-  animation: splash .8s ease-out forwards;
-}
-
-@keyframes splash {
-  to {
-    transform: translate(var(--x),var(--y)) scale(.1);
-    opacity: 0;
-  }
-}
-
+/* GREEN SPLASH */
+.particle { position:fixed; width:6px; height:6px; background:#39ff14;
+  box-shadow:0 0 12px #39ff14; border-radius:50%; pointer-events:none; z-index:300;
+  animation:splash .8s ease-out forwards; }
+@keyframes splash { to { transform:translate(var(--x),var(--y)) scale(.1); opacity:0;} }
 </style>
 </head>
 
 <body>
 
-<div class="logo">
-  <img src="img/logo3.png">
-</div>
+<div class="logo"><img src="img/logo3.png"></div>
 
 <div class="images">
-
-  <div class="image-block">
-    <img src="img/1.png" class="zoomable">
-    <div class="hint">нажми меня!</div>
-  </div>
-
-  <div class="image-block">
-    <img src="img/2.png" class="zoomable">
-    <div class="caption">нажми меня!</div>
-  </div>
-
-  <div class="image-block">
-    <img src="img/animation.gif" class="noglitch">
-    <div class="caption">14.1</div>
-  </div>
-
+  <div class="image-block"><img src="img/1.png" class="zoomable"><div class="hint">нажми меня!</div></div>
+  <div class="image-block"><img src="img/2.png" class="zoomable"><div class="caption">нажми меня!</div></div>
+  <div class="image-block"><img src="img/animation.gif" class="noglitch"><div class="caption">14.1</div></div>
 </div>
 
-<div class="viewer" id="viewer">
-  <img id="viewerImg">
-</div>
+<div class="viewer" id="viewer"><img id="viewerImg"></div>
 
 <script>
-
-/* ================= STATE ================= */
 let clickCount = 0;
 
-/* ================= GREEN SPLASH ================= */
 function greenSplash(x,y){
   for(let i=0;i<26;i++){
     const p=document.createElement('div');
     p.className='particle';
-    p.style.left=x+'px';
-    p.style.top=y+'px';
-    const a=Math.random()*Math.PI*2;
-    const r=Math.random()*180+40;
-    p.style.setProperty('--x',Math.cos(a)*r+'px');
-    p.style.setProperty('--y',Math.sin(a)*r+'px');
+    p.style.left=x+'px'; p.style.top=y+'px';
+    const a=Math.random()*Math.PI*2, r=Math.random()*180+40;
+    p.style.setProperty('--x',Math.cos(a)*r+'px'); p.style.setProperty('--y',Math.sin(a)*r+'px');
     document.body.appendChild(p);
     setTimeout(()=>p.remove(),800);
   }
 }
 
-/* ================= GLOBAL CLICK ================= */
-document.addEventListener('click',e=>{
-  clickCount++;
-  greenSplash(e.clientX,e.clientY);
-});
+function randomColor(){ const r=Math.floor(Math.random()*255), g=Math.floor(Math.random()*255), b=Math.floor(Math.random()*255);
+return `rgb(${r},${g},${b})`;}
 
-/* ================= IMAGE VIEWER + RESET ================= */
+/* IMAGE VIEWER + RESET */
 const viewer=document.getElementById('viewer');
 const viewerImg=document.getElementById('viewerImg');
 
 document.querySelectorAll('.zoomable').forEach(img=>{
   img.addEventListener('click',e=>{
     e.stopPropagation();
-    clickCount = 0;
+    clickCount = 0; // сброс всего
     updateGlobalGlitch();
     viewerImg.src = img.src;
     viewerImg.className='zoom-in';
@@ -239,61 +113,51 @@ viewer.addEventListener('click',()=>{
   setTimeout(()=>viewer.classList.remove('active'),250);
 });
 
-/* ================= GLOBAL GLITCH UPDATE ================= */
+/* ================= UPDATE GLOBAL GLITCH ================= */
 function updateGlobalGlitch(){
-  const level = Math.floor(clickCount / 10);
+  const level = Math.floor(clickCount/10);
 
-  document.body.style.setProperty('--rgbR', level * 1.6 + 'px');
-  document.body.style.setProperty('--gx', level * 18 + 'px');
-  document.body.style.setProperty('--gy', level * 12 + 'px');
-  document.body.style.setProperty('--megaDur', 0.35 + level * 0.04 + 's');
-
-  if(level > 0){
-    document.body.classList.add('rgb-glitch');
-  } else {
-    document.body.classList.remove('rgb-glitch');
-  }
+  document.body.style.setProperty('--gx', 12 + level*18 + 'px');
+  document.body.style.setProperty('--gy', 8 + level*12 + 'px');
+  document.body.style.setProperty('--megaDur', 0.35 + level*0.04 + 's');
+  // RGB colors каждый 10-й клик
+  document.body.style.setProperty('--c1', randomColor());
+  document.body.style.setProperty('--c2', randomColor());
+  document.body.style.setProperty('--c3', randomColor());
 }
 
-/* ================= CONSTANT MICRO GLITCH ================= */
+/* CONSTANT MICRO GLITCH */
 setInterval(()=>{
-  const level = Math.floor(clickCount / 10);
-  updateGlobalGlitch();
-
-  const amount = 2 + level * 3;
+  const level = Math.floor(clickCount/10);
+  const amount = 2 + level*3;
 
   for(let i=0;i<amount;i++){
     const n=document.createElement('div');
     n.className='noise-glitch';
-
-    const w=Math.random()*(14+level*3)+4;
-    const h=Math.random()*3+1;
-
-    n.style.width=w+'px';
-    n.style.height=h+'px';
-    n.style.left=Math.random()*(innerWidth-w)+'px';
-    n.style.top=Math.random()*(innerHeight-h)+'px';
-
+    const w=Math.random()*(14+level*3)+4, h=Math.random()*3+1;
+    n.style.width=w+'px'; n.style.height=h+'px';
+    n.style.left=Math.random()*(innerWidth-w)+'px'; n.style.top=Math.random()*(innerHeight-h)+'px';
     document.body.appendChild(n);
-
     setTimeout(()=>n.remove(), Math.max(30,110 - level*6));
   }
-}, 40);
+},40);
 
-/* ================= MEGA GLITCH ================= */
-setInterval(()=>{
-  const level = Math.floor(clickCount / 10);
-  if(level > 0){
+/* MEGA GLITCH — каждый 10-й клик гарантирован */
+document.addEventListener('click',()=>{
+  if(clickCount > 0 && clickCount % 10 === 0){
+    updateGlobalGlitch();
     document.body.classList.add('site-glitch');
-    setTimeout(()=>document.body.classList.remove('site-glitch'),
-      400 + level * 60
-    );
+    setTimeout(()=>document.body.classList.remove('site-glitch'),400 + Math.floor(clickCount/10)*60);
   }
-}, 6500);
+});
 
+/* GLOBAL CLICK SPLASH */
+document.addEventListener('click',e=>{ greenSplash(e.clientX,e.clientY); });
 </script>
 
 </body>
 </html>
+
+
 
 
