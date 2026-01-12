@@ -35,17 +35,17 @@ body {
 }
 
 /* MEGA GLITCH */
-.site-glitch, .element-glitch {
+.site-glitch, .element-glitch, .perma-glitch {
   animation: siteGlitch var(--megaDur) steps(1);
 }
 @keyframes siteGlitch {
   0% { transform:none; }
-  10% { transform: translate(var(--gx), var(--gy)) rotate(1deg) scale(1.02); }
-  25% { transform: translate(calc(var(--gx)*-1), calc(var(--gy)*0.5)) rotate(-1deg) scale(1.01);
-       filter: drop-shadow(-20px 0 var(--c1)) drop-shadow(20px 0 var(--c2)) drop-shadow(0 20px var(--c3)); }
-  50% { transform: translate(var(--gx), calc(var(--gy)*-1)) rotate(2deg) scale(1.03); }
-  75% { transform: translate(calc(var(--gx)*-0.5), var(--gy)) rotate(-2deg) scale(1.02);
-       filter: drop-shadow(-15px 0 var(--c1)) drop-shadow(15px 0 var(--c2)) drop-shadow(0 15px var(--c3)); }
+  10% { transform: translate(var(--gx), var(--gy)) rotate(5deg) scale(1.1); }
+  25% { transform: translate(calc(var(--gx)*-1), calc(var(--gy)*0.5)) rotate(-5deg) scale(1.05);
+       filter: drop-shadow(-40px 0 var(--c1)) drop-shadow(40px 0 var(--c2)) drop-shadow(0 40px var(--c3)); }
+  50% { transform: translate(var(--gx), calc(var(--gy)*-1)) rotate(8deg) scale(1.12); }
+  75% { transform: translate(calc(var(--gx)*-0.5), var(--gy)) rotate(-8deg) scale(1.08);
+       filter: drop-shadow(-30px 0 var(--c1)) drop-shadow(30px 0 var(--c2)) drop-shadow(0 30px var(--c3)); }
   100% { transform:none; filter:none; }
 }
 
@@ -80,6 +80,7 @@ body {
 
 <script>
 let clickCount = 0;
+let permaGlitchActive = false;
 
 /* GREEN SPLASH */
 function greenSplash(x,y){
@@ -127,18 +128,25 @@ function updateGlobalGlitch(){
   document.body.style.setProperty('--gy', 8 + level*15 + 'px');
   document.body.style.setProperty('--megaDur', 0.35 + level*0.05 + 's');
 
+  // если накоплено 10+ кликов, включаем постоянную тряску
+  if(clickCount >= 10 && !permaGlitchActive){
+    permaGlitchActive = true;
+    document.querySelectorAll('body *').forEach(el=>{
+      el.classList.add('perma-glitch');
+    });
+  }
+
+  // каждые 10 кликов делаем дополнительный временный сильный глитч
   if(clickCount>0 && clickCount % 10 === 0){
     const c1=randomColor(), c2=randomColor(), c3=randomColor();
     document.body.style.setProperty('--c1', c1);
     document.body.style.setProperty('--c2', c2);
     document.body.style.setProperty('--c3', c3);
 
-    // Глитч для всех элементов
     document.querySelectorAll('body *').forEach(el=>{
       el.classList.add('element-glitch');
-      // случайная небольшая тряска для отдельного элемента
-      const offsetX = (Math.random()-0.5)*30*level + 'px';
-      const offsetY = (Math.random()-0.5)*30*level + 'px';
+      const offsetX = (Math.random()-0.5)*50 + 'px';
+      const offsetY = (Math.random()-0.5)*50 + 'px';
       el.style.transform = `translate(${offsetX},${offsetY}) rotate(${(Math.random()-0.5)*20}deg)`;
       setTimeout(()=>{
         el.classList.remove('element-glitch');
@@ -163,6 +171,31 @@ setInterval(()=>{
   }
 },40);
 
+/* AUTOMATIC MEGA GLITCH каждые 6 секунд */
+setInterval(()=>{
+  const c1=randomColor(), c2=randomColor(), c3=randomColor();
+  document.body.style.setProperty('--c1', c1);
+  document.body.style.setProperty('--c2', c2);
+  document.body.style.setProperty('--c3', c3);
+  document.body.style.setProperty('--gx', (Math.random()*80-40)+'px');
+  document.body.style.setProperty('--gy', (Math.random()*80-40)+'px');
+  document.body.style.setProperty('--megaDur', (0.5 + Math.random()*0.5)+'s');
+
+  document.querySelectorAll('body *').forEach(el=>{
+    el.classList.add('element-glitch');
+    const offsetX = (Math.random()-0.5)*150 + 'px';
+    const offsetY = (Math.random()-0.5)*150 + 'px';
+    const rot = (Math.random()-0.5)*45;
+    el.style.transform = `translate(${offsetX},${offsetY}) rotate(${rot}deg) scale(1.1)`;
+    setTimeout(()=>{
+      el.classList.remove('element-glitch');
+      // если постоянная тряска включена, оставляем перманентный класс
+      if(permaGlitchActive) el.classList.add('perma-glitch');
+      el.style.transform = '';
+    }, 600 + Math.random()*400);
+  });
+},6000);
+
 /* GLOBAL CLICK */
 document.addEventListener('click', e=>{
   clickCount++;
@@ -173,5 +206,6 @@ document.addEventListener('click', e=>{
 
 </body>
 </html>
+
 
 
