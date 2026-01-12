@@ -55,89 +55,33 @@ body{
 @keyframes zin{from{transform:scale(.4);opacity:0}to{transform:scale(1);opacity:1}}
 @keyframes zout{to{transform:scale(.25);opacity:0}}
 
-/* GREEN SPLASH */
-.particle{
-  position:fixed;
-  width:6px;height:6px;
-  background:#39ff14;
-  box-shadow:0 0 12px #39ff14;
-  border-radius:50%;
-  pointer-events:none;
-  z-index:300;
-  animation:splash .8s ease-out forwards;
-}
-@keyframes splash{
-  to{transform:translate(var(--x),var(--y)) scale(.1);opacity:0;}
-}
-
-/* MICRO GLITCH */
-.noise{
-  position:fixed;
-  background:rgba(255,255,255,.6);
-  pointer-events:none;
-  z-index:90;
-}
-
-/* MEGA GLITCH */
-.site-glitch{
-  animation:siteGlitch .6s steps(1);
-}
-@keyframes siteGlitch{
-  20%{transform:translate(-10px,6px);}
-  40%{transform:translate(12px,-8px);}
-  60%{transform:translate(-6px,10px);}
-}
-
-/* DEAD SCREEN */
-.dead-screen{
-  position:fixed;
-  inset:0;
-  z-index:999999;
-  background:black;
-  pointer-events:all;
-  cursor:none;
-  overflow:hidden;
-}
-.dead-screen *{
-  animation:none!important;
-  transition:none!important;
-  pointer-events:none!important;
-}
-
-/* SNAPSHOT */
-.snapshot{
-  position:absolute;
-  inset:0;
-}
-
-/* BIG STRIPS */
+/* GLITCH STRIPS */
 .dead-strip{
   position:absolute;
   left:0;
   width:100%;
-  height:65vh;
+  height:15vh;
   mix-blend-mode:difference;
-  animation:stripMove .18s steps(1) infinite;
+  background:rgba(255,255,255,0.2);
 }
-@keyframes stripMove{
-  0%{transform:translateY(-30px);}
-  50%{transform:translateY(30px);}
-  100%{transform:translateY(-20px);}
-}
-
-/* FACE */
 .dead-face{
   position:fixed;
   inset:0;
   width:100vw;
   height:100vh;
   object-fit:cover;
-  z-index:1000000;
-  filter:contrast(200%) grayscale(1);
+  z-index:100;
+}
+.dead-screen{
+  position:fixed;
+  inset:0;
+  background:black;
+  z-index:9999;
+  cursor:none;
+  overflow:hidden;
 }
 </style>
 </head>
-
 <body>
 
 <audio id="exitSound" src="music/exit-glitch.mp3" preload="auto"></audio>
@@ -155,22 +99,6 @@ body{
 <div class="viewer" id="viewer"><img id="viewerImg"></div>
 
 <script>
-/* SPLASH */
-document.addEventListener('click',e=>{
-  for(let i=0;i<16;i++){
-    const p=document.createElement('div');
-    p.className='particle';
-    p.style.left=e.clientX+'px';
-    p.style.top=e.clientY+'px';
-    const a=Math.random()*Math.PI*2;
-    const r=Math.random()*150+40;
-    p.style.setProperty('--x',Math.cos(a)*r+'px');
-    p.style.setProperty('--y',Math.sin(a)*r+'px');
-    document.body.appendChild(p);
-    setTimeout(()=>p.remove(),800);
-  }
-});
-
 /* VIEWER PNG */
 const viewer=document.getElementById('viewer');
 const viewerImg=document.getElementById('viewerImg');
@@ -188,26 +116,6 @@ viewer.onclick=()=>{
   setTimeout(()=>viewer.classList.remove('active'),200);
 };
 
-/* MICRO GLITCH */
-setInterval(()=>{
-  const n=document.createElement('div');
-  n.className='noise';
-  const w=Math.random()*20+5;
-  const h=Math.random()*3+1;
-  n.style.width=w+'px';
-  n.style.height=h+'px';
-  n.style.left=Math.random()*(innerWidth-w)+'px';
-  n.style.top=Math.random()*(innerHeight-h)+'px';
-  document.body.appendChild(n);
-  setTimeout(()=>n.remove(),100);
-},40);
-
-/* MEGA GLITCH */
-setInterval(()=>{
-  document.body.classList.add('site-glitch');
-  setTimeout(()=>document.body.classList.remove('site-glitch'),600);
-},6000);
-
 /* FNATI EXIT */
 const logo=document.getElementById('exitLogo');
 const sound=document.getElementById('exitSound');
@@ -217,79 +125,36 @@ logo.onclick=e=>{
   sound.currentTime=0;
   sound.play();
 
-  const dead=document.createElement('div');
-  dead.className='dead-screen';
-
-  const snap=document.body.cloneNode(true);
-  snap.className='snapshot';
-  dead.appendChild(snap);
+  // Создаём чёрный фон
+  const dead = document.createElement('div');
+  dead.className = 'dead-screen';
   document.body.appendChild(dead);
 
-  const colors=['#ff0000','#ffff00','#00ffff'];
-  const strips=[];
-
-  /* BIG STRIPS 2.5s */
-  for(let i=0;i<3;i++){
-    const s=document.createElement('div');
-    s.className='dead-strip';
-    s.style.top=(i*30)+'vh';
-    s.style.background=colors[Math.floor(Math.random()*colors.length)];
-    s.style.opacity=0.8;
-    dead.appendChild(s);
-    strips.push(s);
-  }
-
+  // Через 4 секунды добавляем полосы глитча
   setTimeout(()=>{
-    // 1.5 сек Freeze Frame Glitch
-    strips.forEach(s => s.remove()); // убираем старые полосы
-
-    // Останавливаем все анимации на странице
-    document.body.style.animation='none';
-    document.body.style.transition='none';
-    snap.style.animation='none';
-    snap.style.transition='none';
-
-    // Добавляем крупные полосы для эффекта смещения кадра
-    const glitchStrips = [];
     for(let i=0;i<5;i++){
-      const s=document.createElement('div');
-      s.className='dead-strip';
-      s.style.top=(i*15)+'vh';
-      s.style.height='20vh';
-      s.style.background='rgba(255,255,255,0.2)';
-      s.style.mixBlendMode='difference';
-      dead.appendChild(s);
-      glitchStrips.push(s);
+      const strip = document.createElement('div');
+      strip.className='dead-strip';
+      strip.style.top = (i*15)+'vh';
+      dead.appendChild(strip);
     }
 
-    // Горизонтальное смещение кадра для эффекта "разрыва"
-    const offsets=['translate(12px,0)','translate(-10px,0)','translate(8px,0)','translate(-6px,0)'];
-    let idx=0;
-    const glitchFrame=setInterval(()=>{
-      snap.style.transform=offsets[idx%offsets.length];
-      idx++;
-      if(idx>offsets.length*4){ // ~1.5 сек
-        clearInterval(glitchFrame);
-        snap.style.transform='';
+    // Через 0.5 сек после полос → лицо
+    setTimeout(()=>{
+      const face = document.createElement('img');
+      face.src='img/face.png';
+      face.className='dead-face';
+      dead.appendChild(face);
 
-        // Появление лица
-        const face=document.createElement('img');
-        face.src='img/face.png';
-        face.className='dead-face';
-        dead.appendChild(face);
-
-        requestAnimationFrame(()=>{
-          requestAnimationFrame(()=>location.reload());
-        });
-      }
-    },100);
-
-  },2500);
+      // Перезагрузка через 0.1 сек
+      setTimeout(()=>location.reload(),100);
+    },500);
+  },4000);
 };
 </script>
-
 </body>
 </html>
+
 
 
 
