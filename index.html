@@ -95,6 +95,24 @@ body{
   mix-blend-mode:difference;
   opacity:0.8;
 }
+
+/* TV GLITCH ЭФФЕКТ */
+.tv-glitch {
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:999;
+  background:transparent;
+  mix-blend-mode:screen;
+  overflow:hidden;
+}
+.tv-glitch div {
+  position:absolute;
+  width:100%;
+  height:2px;
+  background:transparent;
+  opacity:0.7;
+}
 </style>
 </head>
 <body>
@@ -157,9 +175,33 @@ function spawnPartialGlitch(){
     }
   },100);
 }
-
-// каждые 6 секунд
 setInterval(spawnPartialGlitch,6000);
+
+/* TV GLITCH КАЖДЫЕ 6-7 СЕКУНД */
+function spawnIntervalGlitch() {
+  const glitch = document.createElement('div');
+  glitch.className = 'tv-glitch';
+  document.body.appendChild(glitch);
+
+  const strips = [];
+  for (let i = 0; i < 25; i++) {
+    const strip = document.createElement('div');
+    strip.style.top = Math.random() * window.innerHeight + 'px';
+    strip.style.height = (1 + Math.random() * 4) + 'px';
+    strip.style.backgroundColor = `rgba(${Math.floor(Math.random()*256)},${Math.floor(Math.random()*256)},${Math.floor(Math.random()*256)},${0.4 + Math.random()*0.4})`;
+    glitch.appendChild(strip);
+    strips.push(strip);
+  }
+
+  strips.forEach(strip => {
+    const offsetX = (Math.random() - 0.5) * 20;
+    const offsetY = (Math.random() - 0.5) * 10;
+    strip.style.transform = `translate(${offsetX}px, ${offsetY}px) rotate(${(Math.random()-0.5)*2}deg)`;
+  });
+
+  setTimeout(()=>glitch.remove(),500);
+}
+setInterval(spawnIntervalGlitch, 6000 + Math.random()*1000);
 
 /* FNATI EXIT ON LOGO */
 const logo=document.getElementById('exitLogo');
@@ -183,7 +225,7 @@ logo.onclick=e=>{
     strip.style.backgroundColor=`rgba(${Math.floor(Math.random()*256)},${Math.floor(Math.random()*256)},${Math.floor(Math.random()*256)},0.8)`;
     dead.appendChild(strip);
     setTimeout(()=>strip.remove(),100);
-  },100); // каждые 0.1 сек
+  },100);
 
   // Через 4 секунды показать лицо
   setTimeout(()=>{
@@ -199,6 +241,8 @@ logo.onclick=e=>{
 </script>
 </body>
 </html>
+
+
 
 
 
