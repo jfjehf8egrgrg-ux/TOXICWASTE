@@ -55,11 +55,11 @@ body {
 
 /* ================= LOGO ================= */
 .logo {
-  margin: 30px 0 40px;
+  margin: 10px 0 30px; /* выше логотип */
   animation: floatY 3s infinite;
 
   display: flex;
-  justify-content: center; /* центрируем по горизонтали */
+  justify-content: center;
 }
 
 @keyframes floatY {
@@ -74,20 +74,37 @@ body {
 /* ================= CONTENT ================= */
 .images {
   display: flex;
-  justify-content: space-between; /* слева, центр, справа */
+  justify-content: center; /* центрируем блоки относительно центра */
   align-items: center;
+  position: relative;
   width: 100%;
-  max-width: 1200px; /* ограничение на большие экраны */
-  padding: 0 20px;
+  max-width: 1200px;
 }
 
 .image-block {
+  position: absolute; /* чтобы можно было смещать относительно центра */
   text-align: center;
 }
 
 .image-block img {
   max-width: 260px;
   cursor: pointer;
+}
+
+/* Смещения для картинок */
+.image-left {
+  left: 40%; /* чуть левее центра */
+  transform: translateX(-100%); /* подвинуть точно на левую сторону */
+}
+
+.image-center {
+  left: 50%; /* центр */
+  transform: translateX(-50%);
+}
+
+.image-right {
+  left: 60%; /* чуть правее центра */
+  transform: translateX(0%);
 }
 
 /* ================= TEXT ================= */
@@ -191,19 +208,19 @@ body {
   </div>
 
   <div class="images">
-    <div class="image-block">
+    <div class="image-block image-left">
       <img src="img/1.png" class="zoomable" alt="Image 1">
       <div class="hint">нажми меня!</div>
     </div>
 
-    <div class="image-block">
-      <img src="img/animation.gif" class="zoomable" alt="Gif">
-      <div class="caption">14.1</div>
-    </div>
-
-    <div class="image-block">
+    <div class="image-block image-center">
       <img src="img/2.png" class="zoomable" alt="Image 2">
       <div class="caption">нажми меня!</div>
+    </div>
+
+    <div class="image-block image-right">
+      <img src="img/animation.gif" class="zoomable" alt="Gif">
+      <div class="caption">14.1</div>
     </div>
   </div>
 
@@ -216,19 +233,21 @@ const music = document.getElementById('bgMusic');
 
 /* REAL GLITCH SLICES */
 setInterval(() => {
-  const slice = document.createElement('div');
-  slice.className = 'glitch-slice';
+  for(let i=0;i<3;i++){ // увеличим количество глитчей сразу
+    const slice = document.createElement('div');
+    slice.className = 'glitch-slice';
 
-  const h = Math.random() * 60 + 20;
-  const y = Math.random() * innerHeight;
-  const x = (Math.random() - 0.5) * 80;
+    const h = Math.random() * 60 + 20;
+    const y = Math.random() * innerHeight;
+    const x = (Math.random() - 0.5) * 80;
 
-  slice.style.setProperty('--h', h + 'px');
-  slice.style.setProperty('--y', y + 'px');
-  slice.style.setProperty('--x', x + 'px');
+    slice.style.setProperty('--h', h + 'px');
+    slice.style.setProperty('--y', y + 'px');
+    slice.style.setProperty('--x', x + 'px');
 
-  document.body.appendChild(slice);
-  setTimeout(() => slice.remove(), 120);
+    document.body.appendChild(slice);
+    setTimeout(() => slice.remove(), 120);
+  }
 }, 120);
 
 /* GREEN SPLASH */
@@ -280,4 +299,3 @@ document.body.addEventListener('click', () => {
 
 </body>
 </html>
-
