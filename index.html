@@ -145,34 +145,33 @@ logo.onclick=e=>{
   },4000);
 };
 
-/* TV-LIKE GLITCH с RGB-сдвигами */
+/* TV-LIKE GLITCH с RGB-сдвигами и тряской элементов */
 function glitchPage() {
-  const elements = [...document.querySelectorAll('body, .logo, .images, .image-block, .zoomable, .noglitch, .viewer')];
-  
-  // смещение и RGB для элементов
+  // Фон RGB-сдвиг (не дергаем)
+  const rBg = (Math.random()-0.5)*8;
+  const gBg = (Math.random()-0.5)*8;
+  const bBg = (Math.random()-0.5)*8;
+  document.body.style.filter = `drop-shadow(${rBg}px 0 red) drop-shadow(0 ${gBg}px lime) drop-shadow(${bBg}px ${bBg}px blue)`;
+
+  // Элементы трясутся + RGB
+  const elements = [...document.querySelectorAll('.logo, .images, .image-block, .zoomable, .noglitch, .viewer')];
   elements.forEach(el => {
-    // не трогаем фон — только логотип и элементы
-    if(el.tagName !== 'BODY') {
-      const xShift = (Math.random()-0.5)*6;
-      const yShift = (Math.random()-0.5)*6;
-      el.style.transform = `translate(${xShift}px, ${yShift}px) rotate(${(Math.random()-0.5)*2}deg)`;
-    }
-    // RGB-сдвиги через drop-shadow
-    const rShift = (Math.random()-0.5)*6;
-    const gShift = (Math.random()-0.5)*6;
-    const bShift = (Math.random()-0.5)*6;
-    el.style.filter = `drop-shadow(${rShift}px 0 red) drop-shadow(0 ${gShift}px lime) drop-shadow(${bShift}px ${bShift}px blue)`;
+    const xShift = (Math.random()-0.5)*6;
+    const yShift = (Math.random()-0.5)*6;
+    const r = (Math.random()-0.5)*6;
+    const g = (Math.random()-0.5)*6;
+    const b = (Math.random()-0.5)*6;
+    el.style.transform = `translate(${xShift}px, ${yShift}px) rotate(${(Math.random()-0.5)*2}deg)`;
+    el.style.filter = `drop-shadow(${r}px 0 red) drop-shadow(0 ${g}px lime) drop-shadow(${b}px ${b}px blue)`;
   });
 
-  // фон (body) получает только RGB, не двигается
-  document.body.style.filter = `drop-shadow(${(Math.random()-0.5)*6}px 0 red) drop-shadow(0 ${(Math.random()-0.5)*6}px lime) drop-shadow(${(Math.random()-0.5)*6}px ${(Math.random()-0.5)*6}px blue)`;
-
+  // Возврат через 0.5 сек
   setTimeout(()=>{
-    elements.forEach(el=>{
+    document.body.style.filter = '';
+    elements.forEach(el => {
       el.style.transform = '';
       el.style.filter = '';
     });
-    document.body.style.filter = '';
   }, 500);
 }
 
@@ -182,7 +181,6 @@ setInterval(glitchPage, 6000 + Math.random()*1000);
 </script>
 </body>
 </html>
-
 
 
 
