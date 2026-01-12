@@ -21,19 +21,67 @@ body {
   align-items: center;
 }
 
-/* ================= GLOBAL GLITCH ================= */
+/* ================= RGB GLOBAL OVERLAY ================= */
+body::before,
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 5;
+  opacity: 0;
+  mix-blend-mode: screen;
+}
+
+body::before {
+  background: rgba(255,0,0,0.15);
+  animation: rgbRed 4.5s infinite;
+}
+
+body::after {
+  background: rgba(0,255,255,0.15);
+  animation: rgbCyan 4.5s infinite;
+}
+
+@keyframes rgbRed {
+  0%,90%,100% {
+    transform: translate(0);
+    opacity: 0;
+  }
+  91% {
+    transform: translate(-2px, 0);
+    opacity: 1;
+  }
+  92% {
+    transform: translate(2px, 0);
+  }
+}
+
+@keyframes rgbCyan {
+  0%,90%,100% {
+    transform: translate(0);
+    opacity: 0;
+  }
+  91% {
+    transform: translate(2px, 0);
+    opacity: 1;
+  }
+  92% {
+    transform: translate(-2px, 0);
+  }
+}
+
+/* ================= GLOBAL SHAKE ================= */
 .glitch-wrapper {
   width: 100%;
   min-height: 100vh;
-  animation: globalShake 2.8s infinite;
+  animation: globalShake 3.2s infinite;
 }
 
 @keyframes globalShake {
-  0%,92%,100% { transform: translate(0); }
-  93% { transform: translate(-2px,1px); }
-  94% { transform: translate(2px,-1px); }
-  95% { transform: translate(-3px,0); }
-  96% { transform: translate(3px,0); }
+  0%,94%,100% { transform: translate(0); }
+  95% { transform: translate(-2px,1px); }
+  96% { transform: translate(2px,-1px); }
 }
 
 /* ================= GLITCH SLICES ================= */
@@ -47,7 +95,7 @@ body {
   z-index: 90;
 
   transform: translateX(var(--x));
-  background: rgba(255,255,255,0.025);
+  background: rgba(255,255,255,0.02);
   filter:
     drop-shadow(-4px 0 red)
     drop-shadow(4px 0 cyan);
@@ -59,17 +107,23 @@ body {
   display: flex;
   justify-content: center;
   width: 100%;
-  animation: logoGlitch 3.5s infinite;
+  animation:
+    logoFloat 5s ease-in-out infinite,
+    logoGlitch 4s infinite;
 }
 
 .logo img {
   max-width: 220px;
 }
 
+@keyframes logoFloat {
+  0%,100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+}
+
 @keyframes logoGlitch {
   0%,92%,100% {
     filter: none;
-    transform: translate(0);
   }
   93% {
     filter: drop-shadow(-3px 0 red);
@@ -198,17 +252,6 @@ body {
   from { transform: translate(0,0) scale(1); opacity: 1; }
   to   { transform: translate(var(--x), var(--y)) scale(0.15); opacity: 0; }
 }
-
-/* ================= SUBTLE FLICKER ================= */
-@keyframes flicker {
-  0%,97%,100% { opacity: 1; }
-  98% { opacity: 0.85; }
-  99% { opacity: 1; }
-}
-
-body {
-  animation: flicker 7s infinite;
-}
 </style>
 </head>
 
@@ -250,21 +293,21 @@ const imgs = document.querySelectorAll('.zoomable');
 const overlay = document.getElementById('overlay');
 const music = document.getElementById('bgMusic');
 
-/* SOFTER GLITCH SLICES */
+/* SOFT GLOBAL GLITCH SLICES */
 setInterval(() => {
   const count = Math.random() * 3 + 1;
   for (let i = 0; i < count; i++) {
     const slice = document.createElement('div');
     slice.className = 'glitch-slice';
 
-    slice.style.setProperty('--h', Math.random() * 40 + 10 + 'px');
+    slice.style.setProperty('--h', Math.random() * 30 + 10 + 'px');
     slice.style.setProperty('--y', Math.random() * innerHeight + 'px');
-    slice.style.setProperty('--x', (Math.random() - 0.5) * 60 + 'px');
+    slice.style.setProperty('--x', (Math.random() - 0.5) * 50 + 'px');
 
     document.body.appendChild(slice);
     setTimeout(() => slice.remove(), 110);
   }
-}, 160);
+}, 180);
 
 /* GREEN SPLASH */
 function greenSplash(x, y) {
@@ -315,3 +358,5 @@ document.body.addEventListener('click', () => {
 
 </body>
 </html>
+
+
