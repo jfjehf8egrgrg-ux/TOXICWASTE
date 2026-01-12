@@ -7,14 +7,11 @@
 
 <style>
 /* ================= BASE ================= */
-html, body {
-  width: 100%;
-  height: 100%;
-}
 body {
   margin: 0;
-  overflow-x: hidden;
+  min-height: 100vh;
   font-family: Arial, sans-serif;
+  overflow-x: hidden;
 
   background: url("img/background.gif") no-repeat center center fixed;
   background-size: cover;
@@ -23,47 +20,73 @@ body {
   flex-direction: column;
   align-items: center;
 
-  animation: siteShift 3s infinite;
+  animation: siteGlitch 2.8s infinite;
 }
 
-/* ================= СДВИГИ САЙТА ================= */
-@keyframes siteShift {
-  0%, 78%, 100% {
+/* ================= SITE GLITCH ================= */
+@keyframes siteGlitch {
+  0%, 70%, 100% {
     transform: translate(0);
+    filter: none;
   }
-  79% {
-    transform: translate(-12px, 4px);
+  71% {
+    transform: translate(-8px, 2px);
+    filter: hue-rotate(10deg);
   }
-  80% {
-    transform: translate(12px, -4px);
+  72% {
+    transform: translate(8px, -2px);
   }
-  81% {
-    transform: translate(-18px, 0);
+  73% {
+    transform: translate(-14px, 0);
+    filter: contrast(1.25);
   }
-  82% {
-    transform: translate(18px, 0);
+  74% {
+    transform: translate(14px, 0);
   }
 }
 
-/* ================= БЕЛЫЕ ПОЛОСЫ (SIGNAL TEARS) ================= */
+/* ================= RGB STRIPES ================= */
+.rgb-strip {
+  position: fixed;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  z-index: 80;
+  background:
+    linear-gradient(
+      to right,
+      transparent,
+      rgba(255,0,0,0.8),
+      rgba(0,255,255,0.8),
+      transparent
+    );
+  animation: rgbMove 0.12s linear infinite;
+}
+
+@keyframes rgbMove {
+  from { transform: translateX(-60px); }
+  to { transform: translateX(60px); }
+}
+
+/* ================= WHITE SIGNAL TEAR ================= */
 .signal-tear {
   position: fixed;
   left: 0;
   width: 100%;
-  height: 5px;
+  height: 6px;
   background: linear-gradient(
     to right,
     transparent,
-    rgba(255,255,255,0.9),
+    rgba(255,255,255,0.85),
     transparent
   );
   z-index: 90;
-  animation: tearMove 0.1s linear infinite;
+  animation: tearMove 0.08s linear infinite;
 }
 
 @keyframes tearMove {
-  from { transform: translateX(-40px); }
-  to   { transform: translateX(40px); }
+  from { transform: translateX(-80px); }
+  to { transform: translateX(80px); }
 }
 
 /* ================= LOGO ================= */
@@ -106,7 +129,7 @@ body {
   text-shadow:
     2px 0 red,
     -2px 0 cyan,
-    0 0 8px rgba(0,0,0,0.8);
+    0 0 8px rgba(0,0,0,0.9);
 }
 
 /* ================= OVERLAY ================= */
@@ -128,7 +151,7 @@ body {
 /* ================= ZOOM ================= */
 @keyframes zoomIn {
   from {
-    transform: translate(-50%,-50%) scale(0.3);
+    transform: translate(-50%,-50%) scale(0.35);
     opacity: 0;
   }
   to {
@@ -143,7 +166,7 @@ body {
     opacity: 1;
   }
   to {
-    transform: translate(-50%,-50%) scale(0.2);
+    transform: translate(-50%,-50%) scale(0.25);
     opacity: 0;
   }
 }
@@ -162,16 +185,16 @@ body {
   animation: zoomOut 0.25s ease-in forwards;
 }
 
-/* ================= GREEN SPLASH PARTICLES ================= */
+/* ================= GREEN SPLASH ================= */
 .particle {
   position: fixed;
   width: 6px;
   height: 6px;
   background: #39ff14;
-  box-shadow: 0 0 8px #39ff14;
+  box-shadow: 0 0 10px #39ff14;
   border-radius: 50%;
   pointer-events: none;
-  z-index: 25;
+  z-index: 30;
   animation: splash 0.9s ease-out forwards;
 }
 
@@ -181,7 +204,7 @@ body {
     opacity: 1;
   }
   to {
-    transform: translate(var(--x), var(--y)) scale(0.2);
+    transform: translate(var(--x), var(--y)) scale(0.15);
     opacity: 0;
   }
 }
@@ -222,25 +245,33 @@ const imgs = document.querySelectorAll('.zoomable');
 const overlay = document.getElementById('overlay');
 const music = document.getElementById('bgMusic');
 
-/* белые полосы */
+/* WHITE + RGB STRIPES */
 setInterval(() => {
   const tear = document.createElement('div');
   tear.className = 'signal-tear';
   tear.style.top = Math.random() * innerHeight + 'px';
   document.body.appendChild(tear);
   setTimeout(() => tear.remove(), 120);
-}, 220);
+}, 200);
 
-/* зелёный всплеск */
+setInterval(() => {
+  const rgb = document.createElement('div');
+  rgb.className = 'rgb-strip';
+  rgb.style.top = Math.random() * innerHeight + 'px';
+  document.body.appendChild(rgb);
+  setTimeout(() => rgb.remove(), 100);
+}, 260);
+
+/* GREEN SPLASH */
 function greenSplash(x, y) {
-  for (let i = 0; i < 30; i++) {
+  for (let i = 0; i < 24; i++) {
     const p = document.createElement('div');
     p.className = 'particle';
     p.style.left = x + 'px';
     p.style.top = y + 'px';
 
     const angle = Math.random() * Math.PI * 2;
-    const radius = Math.random() * 200 + 50;
+    const radius = Math.random() * 160 + 40;
 
     p.style.setProperty('--x', Math.cos(angle) * radius + 'px');
     p.style.setProperty('--y', Math.sin(angle) * radius + 'px');
@@ -250,7 +281,7 @@ function greenSplash(x, y) {
   }
 }
 
-/* zoom */
+/* ZOOM LOGIC */
 imgs.forEach(img => {
   img.addEventListener('click', e => {
     img.classList.remove('closing');
@@ -272,7 +303,7 @@ overlay.addEventListener('click', () => {
   overlay.classList.remove('active');
 });
 
-/* музыка */
+/* MUSIC */
 document.body.addEventListener('click', () => {
   music.play().catch(()=>{});
 }, { once:true });
@@ -282,3 +313,4 @@ document.body.addEventListener('click', () => {
 
 </body>
 </html>
+
