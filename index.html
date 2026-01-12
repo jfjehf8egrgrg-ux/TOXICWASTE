@@ -13,17 +13,19 @@ body{
   position:relative;
 }
 
-/* BACKGROUND LAYER */
-body::before{
-  content:"";
+/* BACKGROUND GLITCH SQUARE */
+.bg-glitch{
   position:fixed;
-  top:0; left:0;
-  width:100%; height:100%;
+  width:200px;   /* размер квадрата */
+  height:200px;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
   background:url("img/background.gif") no-repeat center center;
   background-size:cover;
-  z-index:-1;
   pointer-events:none;
-  transition: transform 0.05s linear;
+  z-index:-1;
+  transition: transform 0.05s linear, filter 0.05s linear;
 }
 
 /* LOGO */
@@ -59,7 +61,7 @@ body::before{
 .viewer.active{display:flex;}
 .viewer img{max-width:50vw;max-height:70vh;}
 .zoom-in{animation:zin .25s ease-out forwards;}
-.zoom-out{animation:zout .2s ease-in forwards;}
+.zoom-out{animation:zout .2s ease-in forwards}
 @keyframes zin{from{transform:scale(.4);opacity:0}to{transform:scale(1);opacity:1}}
 @keyframes zout{to{transform:scale(.25);opacity:0}}
 
@@ -71,10 +73,6 @@ body::before{
   z-index:10000;
   overflow:hidden;
   cursor:none;
-  width:100%;
-  height:100%;
-  top:0;
-  left:0;
 }
 .dead-face{
   position:fixed;
@@ -98,6 +96,8 @@ body::before{
 <body>
 
 <audio id="exitSound" src="music/exit-glitch.mp3" preload="auto"></audio>
+
+<div class="bg-glitch" id="bgGlitch"></div>
 
 <div class="logo" id="exitLogo">
   <img src="img/logo3.png">
@@ -129,45 +129,46 @@ viewer.onclick=()=>{
   setTimeout(()=>viewer.classList.remove('active'),200);
 };
 
-/* --- HAOTIC GLITCH WITH BACKGROUND --- */
+/* --- HAOTIC GLITCH MAIN PAGE --- */
 function glitchSite(){
-  const allElements = [document.body, ...document.body.querySelectorAll("*")];
-  const bg = document.body.querySelector('::before'); // псевдоэлемент управляется через body.style.setProperty
+  const allElements = [...document.body.querySelectorAll("*:not(.bg-glitch)")];
+  const bg = document.getElementById('bgGlitch');
 
-  // случайный глитч для фонового слоя
-  const bgX = (Math.random()-0.5)*30;
-  const bgY = (Math.random()-0.5)*30;
-  const bgScale = 1 + (Math.random()-0.5)*0.05;
-  document.body.style.setProperty('--bg-transform', `translate(${bgX}px, ${bgY}px) scale(${bgScale})`);
+  // дергаем фоновый квадрат
+  const bgX = (Math.random()-0.5)*20;
+  const bgY = (Math.random()-0.5)*20;
+  const bgRotate = (Math.random()-0.5)*10;
+  const rOffset = (Math.random()-0.5)*15;
+  const gOffset = (Math.random()-0.5)*15;
+  const bOffset = (Math.random()-0.5)*15;
 
-  // элементы страницы
+  bg.style.transform = `translate(calc(-50% + ${bgX}px), calc(-50% + ${bgY}px)) rotate(${bgRotate}deg)`;
+  bg.style.filter = `drop-shadow(${rOffset}px 0 red) drop-shadow(${gOffset}px 0 green) drop-shadow(${bOffset}px 0 blue)`;
+
+  // дергаем отдельные элементы хаотично
   allElements.forEach(el=>{
-    const offsetX = (Math.random()-0.5)*50;
-    const offsetY = (Math.random()-0.5)*50;
-    const rotate = (Math.random()-0.5)*15;
-    const scale = 1 + (Math.random()-0.5)*0.1;
+    const offsetX = (Math.random()-0.5)*20;
+    const offsetY = (Math.random()-0.5)*20;
+    const rotate = (Math.random()-0.5)*10;
+    const scale = 1 + (Math.random()-0.5)*0.05;
 
-    const rOffset = (Math.random()-0.5)*20;
-    const gOffset = (Math.random()-0.5)*20;
-    const bOffset = (Math.random()-0.5)*20;
+    const rOffset = (Math.random()-0.5)*10;
+    const gOffset = (Math.random()-0.5)*10;
+    const bOffset = (Math.random()-0.5)*10;
 
     el.style.transform = `translate(${offsetX}px, ${offsetY}px) rotate(${rotate}deg) scale(${scale})`;
     el.style.filter = `drop-shadow(${rOffset}px 0 red) drop-shadow(${gOffset}px 0 green) drop-shadow(${bOffset}px 0 blue)`;
   });
 
   setTimeout(()=>{
+    bg.style.transform='';
+    bg.style.filter='';
     allElements.forEach(el=>{
       el.style.transform='';
       el.style.filter='';
     });
-    document.body.style.setProperty('--bg-transform','');
   },120);
 }
-
-// CSS переменная для фонового слоя
-document.body.style.setProperty('--bg-transform','');
-
-// каждую 1.2 сек
 setInterval(glitchSite,1200);
 
 /* --- FNATI EXIT --- */
@@ -191,7 +192,7 @@ logo.onclick=e=>{
     dead.appendChild(strip);
     setTimeout(()=>strip.remove(),50);
 
-    // RGB сдвиги без тряски
+    // RGB на черном фоне
     const rOffset = (Math.random()-0.5)*25;
     const gOffset = (Math.random()-0.5)*25;
     const bOffset = (Math.random()-0.5)*25;
@@ -205,19 +206,10 @@ logo.onclick=e=>{
     face.className='dead-face';
     face.style.filter='none';
     dead.appendChild(face);
-
     setTimeout(()=>location.reload(),100);
   },4000);
 };
 </script>
-
-<style>
-/* привязываем переменную к псевдоэлементу */
-body::before {
-  transform: var(--bg-transform, none);
-  transition: transform 0.05s linear;
-}
-</style>
 </body>
 </html>
 
