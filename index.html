@@ -22,22 +22,25 @@ body {
 
 /* ================= GLOBAL RGB GLITCH ================= */
 .glitch-wrapper {
-  position: relative;
   width: 100%;
-  animation: globalRGB 2.2s steps(1) infinite;
+  animation: globalRGB 2.5s steps(1) infinite;
 }
 
 @keyframes globalRGB {
-  0%, 92%, 100% { filter: none; }
-  93% { filter: drop-shadow(-4px 0 red); }
-  94% { filter: drop-shadow(4px 0 cyan); }
-  95% { filter: drop-shadow(-6px 0 magenta); }
+  0%,92%,100% { filter:none; }
+  93% { filter: drop-shadow(-3px 0 red); }
+  94% { filter: drop-shadow(3px 0 cyan); }
+  95% { filter: drop-shadow(-5px 0 magenta); }
 }
 
 /* ================= LOGO ================= */
 .logo {
   margin-top: 30px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
   animation: logoFloat 3.5s ease-in-out infinite;
+  pointer-events: none;
 }
 
 @keyframes logoFloat {
@@ -47,6 +50,7 @@ body {
 
 .logo img {
   max-width: 220px;
+  display: block;
 }
 
 /* ================= IMAGES ================= */
@@ -129,18 +133,18 @@ body {
   animation: zoomOut 0.25s ease-in forwards;
 }
 
-/* ================= PNG HOVER GLITCH ================= */
+/* ================= RANDOMIZED PNG GLITCH ================= */
 .zoomable:not(.open):hover {
-  animation: signalGlitch 0.35s steps(1) infinite;
+  animation:
+    signalGlitch var(--gDur) steps(1) infinite;
   filter: contrast(140%) saturate(150%);
 }
 
 @keyframes signalGlitch {
-  0% { clip-path: inset(0 0 0 0); }
-  20% { clip-path: inset(8% 0 60% 0); }
-  40% { clip-path: inset(45% 0 30% 0); }
-  60% { clip-path: inset(75% 0 10% 0); }
-  80% { clip-path: inset(20% 0 55% 0); }
+  0%   { clip-path: inset(0 0 0 0); }
+  25%  { clip-path: inset(var(--a) 0 var(--b) 0); }
+  50%  { clip-path: inset(var(--c) 0 var(--d) 0); }
+  75%  { clip-path: inset(var(--e) 0 var(--f) 0); }
   100% { clip-path: inset(0 0 0 0); }
 }
 
@@ -155,10 +159,10 @@ body {
       rgba(255,255,255,0.18) 0px,
       rgba(255,255,255,0.18) 2px,
       transparent 4px,
-      transparent 9px
+      transparent 10px
     );
   mix-blend-mode: difference;
-  opacity: 0.7;
+  opacity: 0.6;
   pointer-events: none;
 }
 
@@ -168,6 +172,25 @@ body {
   animation: none !important;
   filter: none !important;
   clip-path: none !important;
+}
+
+/* ================= RANDOM SITE GLITCH ================= */
+.random-glitch {
+  position: fixed;
+  left: 0;
+  width: 100%;
+  pointer-events: none;
+  z-index: 5;
+  filter:
+    drop-shadow(-3px 0 red)
+    drop-shadow(3px 0 cyan);
+  mix-blend-mode: screen;
+  animation: randomFlash 0.15s steps(1) forwards;
+}
+
+@keyframes randomFlash {
+  from { opacity: 1; }
+  to { opacity: 0; }
 }
 
 /* ================= GREEN SPLASH ================= */
@@ -227,6 +250,17 @@ body {
 const imgs = document.querySelectorAll('.zoomable');
 const overlay = document.getElementById('overlay');
 
+/* RANDOMIZE GLITCH PER HOVER */
+imgs.forEach(img => {
+  img.addEventListener('mouseenter', () => {
+    img.style.setProperty('--gDur', (Math.random()*0.25 + 0.15) + 's');
+
+    ['a','b','c','d','e','f'].forEach(v => {
+      img.style.setProperty(`--${v}`, Math.random()*70 + '%');
+    });
+  });
+});
+
 /* SPLASH */
 function greenSplash(x, y) {
   for (let i = 0; i < 22; i++) {
@@ -263,10 +297,22 @@ overlay.addEventListener('click', () => {
   });
   overlay.classList.remove('active');
 });
+
+/* RANDOM SITE GLITCH */
+setInterval(() => {
+  const g = document.createElement('div');
+  g.className = 'random-glitch';
+  g.style.top = Math.random() * innerHeight + 'px';
+  g.style.height = Math.random() * 80 + 30 + 'px';
+  document.body.appendChild(g);
+  setTimeout(() => g.remove(), 180);
+}, 3000);
 </script>
 
 </body>
 </html>
+
+
 
 
 
