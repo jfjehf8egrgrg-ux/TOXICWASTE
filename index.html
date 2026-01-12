@@ -29,12 +29,9 @@ body {
     logoGlitch 7s steps(1) infinite;
 }
 
-.logo img {
-  max-width: 220px;
-}
+.logo img { max-width: 220px; }
 
 @keyframes logoFloat {
-  0%,100% { transform: translateY(0); }
   50% { transform: translateY(-14px); }
 }
 
@@ -75,76 +72,62 @@ body {
     0 0 8px rgba(0,0,0,.9);
 }
 
-/* ================= PNG GLITCH (HOVER) ================= */
+/* ================= PNG HOVER GLITCH ================= */
 .zoomable:hover {
   animation: sliceGlitch var(--dur) steps(1) infinite;
   filter: contrast(140%) saturate(160%);
 }
 
 @keyframes sliceGlitch {
-  0%   { clip-path: inset(0 0 0 0); }
-  20%  { clip-path: inset(var(--a) 0 var(--b) 0); }
-  40%  { clip-path: inset(var(--c) 0 var(--d) 0); }
-  60%  { clip-path: inset(var(--e) 0 var(--f) 0); }
-  100% { clip-path: inset(0 0 0 0); }
+  20% { clip-path: inset(var(--a) 0 var(--b) 0); }
+  40% { clip-path: inset(var(--c) 0 var(--d) 0); }
+  60% { clip-path: inset(var(--e) 0 var(--f) 0); }
 }
 
-/* BIT NOISE ON HOVER */
-.zoomable:hover::after {
-  content:"";
-  position:absolute;
-  inset:0;
-  background:
-    repeating-linear-gradient(
-      to right,
-      rgba(255,255,255,.25) 0px,
-      rgba(255,255,255,.25) 2px,
-      transparent 6px,
-      transparent 12px
-    );
-  mix-blend-mode:difference;
-  pointer-events:none;
-}
-
-/* ================= GIF (OWN STYLE) ================= */
+/* ================= GIF STYLE ================= */
 .noglitch {
   animation: gifTear 11s steps(1) infinite;
 }
 
 @keyframes gifTear {
-  0%,96%,100% { transform:none; filter:none; }
   97% { transform: translateX(-10px); filter: contrast(140%); }
   98% { transform: translateX(16px); }
 }
 
-/* ================= MICRO GLITCH NOISE ================= */
-.micro-noise {
+/* ================= MICRO GLITCH (REAL) ================= */
+.micro-glitch {
   position: fixed;
   inset: 0;
-  pointer-events: none;
   z-index: 100;
+  pointer-events: none;
   background:
     repeating-linear-gradient(
       0deg,
-      rgba(255,255,255,.08) 0px,
-      rgba(255,255,255,.08) 1px,
+      rgba(255,255,255,.12) 0px,
+      rgba(255,255,255,.12) 1px,
       transparent 2px,
       transparent 4px
     );
-  mix-blend-mode: overlay;
-  animation: noiseFlash .12s steps(1) forwards;
+  mix-blend-mode: difference;
+  animation: microFlash .18s steps(1) forwards;
 }
 
-@keyframes noiseFlash {
-  to { opacity: 0; }
+@keyframes microFlash {
+  50% {
+    transform: translateX(-6px);
+    filter:
+      drop-shadow(-4px 0 red)
+      drop-shadow(4px 0 cyan);
+  }
+  100% { opacity: 0; }
 }
 
 /* ================= GLITCH BARS ================= */
 .glitch-bar {
   position: fixed;
-  left: 0;
   width: 100%;
   height: 6px;
+  left: 0;
   background: linear-gradient(
     to right,
     transparent,
@@ -152,7 +135,7 @@ body {
     transparent
   );
   mix-blend-mode: difference;
-  z-index: 50;
+  z-index: 60;
   pointer-events: none;
   animation: barFlash .18s steps(1) forwards;
 }
@@ -161,21 +144,41 @@ body {
   to { opacity:0; }
 }
 
+/* ================= CENTER VIEW ================= */
+.viewer {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.65);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 200;
+}
+
+.viewer.active { display: flex; }
+
+.viewer img {
+  max-width: 50vw;
+  max-height: 70vh;
+  animation: pop .25s ease-out;
+}
+
+@keyframes pop {
+  from { transform: scale(.4); opacity:0; }
+  to { transform: scale(1); opacity:1; }
+}
+
 /* ================= HUGE SITE SHIFT ================= */
 .site-shift {
   animation: siteShift .22s steps(1);
 }
 
 @keyframes siteShift {
-  0% { transform:none; filter:none; }
   30% {
     transform: translateX(-70px) skewX(-10deg);
     filter: hue-rotate(120deg) contrast(150%);
   }
-  60% {
-    transform: translateX(90px) skewX(8deg);
-  }
-  100% { transform:none; filter:none; }
+  60% { transform: translateX(90px) skewX(8deg); }
 }
 
 </style>
@@ -188,7 +191,6 @@ body {
 </div>
 
 <div class="images">
-
   <div class="image-block">
     <img src="img/1.png" class="zoomable">
     <div class="hint">нажми меня!</div>
@@ -203,11 +205,14 @@ body {
     <img src="img/animation.gif" class="noglitch">
     <div class="caption">14.1</div>
   </div>
+</div>
 
+<div class="viewer" id="viewer">
+  <img id="viewerImg">
 </div>
 
 <script>
-/* PNG GLITCH RANDOMIZER */
+/* RANDOM HOVER GLITCH */
 document.querySelectorAll('.zoomable').forEach(img=>{
   img.addEventListener('mouseenter',()=>{
     img.style.setProperty('--dur',(Math.random()*.25+.15)+'s');
@@ -217,32 +222,37 @@ document.querySelectorAll('.zoomable').forEach(img=>{
   });
 });
 
-/* MICRO NOISE GLITCH (1.5s) */
+/* CENTER VIEW */
+const viewer=document.getElementById('viewer');
+const viewerImg=document.getElementById('viewerImg');
+
+document.querySelectorAll('.zoomable').forEach(img=>{
+  img.onclick=()=>{
+    viewerImg.src=img.src;
+    viewer.classList.add('active');
+  };
+});
+
+viewer.onclick=()=>viewer.classList.remove('active');
+
+/* MICRO GLITCH 1.5s */
 setInterval(()=>{
-  const n=document.createElement('div');
-  n.className='micro-noise';
-  document.body.appendChild(n);
-  setTimeout(()=>n.remove(),120);
+  const g=document.createElement('div');
+  g.className='micro-glitch';
+  document.body.appendChild(g);
+  setTimeout(()=>g.remove(),180);
 },1500);
 
-/* RANDOM BARS + SMALL SHIFTS (3s) */
+/* GLITCH BARS + SMALL SHIFTS 3s */
 setInterval(()=>{
   const bar=document.createElement('div');
   bar.className='glitch-bar';
   bar.style.top=Math.random()*innerHeight+'px';
   document.body.appendChild(bar);
   setTimeout(()=>bar.remove(),180);
-
-  const targets=[
-    ...document.querySelectorAll('.image-block'),
-    document.querySelector('.logo')
-  ];
-  const el=targets[Math.floor(Math.random()*targets.length)];
-  el.style.transform=`translateX(${Math.random()*40-20}px)`;
-  setTimeout(()=>el.style.transform='',120);
 },3000);
 
-/* HUGE SITE SHIFT (6s) */
+/* HUGE SITE SHIFT 6s */
 setInterval(()=>{
   document.body.classList.add('site-shift');
   setTimeout(()=>document.body.classList.remove('site-shift'),220);
@@ -251,5 +261,6 @@ setInterval(()=>{
 
 </body>
 </html>
+
 
 
