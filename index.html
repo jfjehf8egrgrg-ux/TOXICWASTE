@@ -15,6 +15,7 @@ body{
   flex-direction:column;
   align-items:center;
   overflow-x:hidden;
+  transition: transform 0.05s linear;
 }
 
 /* LOGO */
@@ -54,18 +55,12 @@ body{
 @keyframes zin{from{transform:scale(.4);opacity:0}to{transform:scale(1);opacity:1}}
 @keyframes zout{to{transform:scale(.25);opacity:0}}
 
-/* BIG GLITCH */
-.big-glitch{
+/* GLITCH OVERLAY */
+.glitch-overlay{
   position:fixed;
   inset:0;
   pointer-events:none;
   z-index:999;
-  overflow:hidden;
-}
-.big-glitch-strip{
-  position:absolute;
-  width:100%;
-  height:20vh;
   mix-blend-mode:difference;
   opacity:0.7;
 }
@@ -78,13 +73,6 @@ body{
   z-index:10000;
   overflow:hidden;
   cursor:none;
-}
-.dead-strip{
-  position:absolute;
-  width:100%;
-  height:15vh;
-  background:rgba(255,255,255,0.2);
-  mix-blend-mode:difference;
 }
 .dead-face{
   position:fixed;
@@ -130,34 +118,39 @@ viewer.onclick=()=>{
   setTimeout(()=>viewer.classList.remove('active'),200);
 };
 
-/* BIG GLITCH PERIODIC */
+/* BIG GLITCH ON MAIN SITE */
 function randomColor(){
   const r=Math.floor(Math.random()*256);
   const g=Math.floor(Math.random()*256);
   const b=Math.floor(Math.random()*256);
-  return `rgba(${r},${g},${b},0.7)`;
+  return `rgba(${r},${g},${b},0.6)`;
 }
 
 function spawnBigGlitch(){
-  const glitch=document.createElement('div');
-  glitch.className='big-glitch';
-  document.body.appendChild(glitch);
+  const overlay = document.createElement('div');
+  overlay.className='glitch-overlay';
+  overlay.style.backgroundColor=randomColor();
+  document.body.appendChild(overlay);
 
-  for(let i=0;i<5;i++){
-    const strip=document.createElement('div');
-    strip.className='big-glitch-strip';
-    strip.style.top=(i*20)+'vh';
-    strip.style.background=randomColor();
-    glitch.appendChild(strip);
-  }
-
-  setTimeout(()=>glitch.remove(),500); // глитч длится 0.5 сек
+  // Случайное смещение и небольшая тряска
+  let count=0;
+  const glitchInterval=setInterval(()=>{
+    const offsetX=(Math.random()-0.5)*20;
+    const offsetY=(Math.random()-0.5)*20;
+    document.body.style.transform=`translate(${offsetX}px, ${offsetY}px) rotate(${(Math.random()-0.5)*1}deg)`;
+    count++;
+    if(count>=6){ // ~0.6 сек
+      clearInterval(glitchInterval);
+      document.body.style.transform='';
+      overlay.remove();
+    }
+  },100);
 }
 
-// каждые 6 секунд
+// Каждые 6 секунд
 setInterval(spawnBigGlitch,6000);
 
-/* FNATI EXIT */
+/* FNATI EXIT ON LOGO */
 const logo=document.getElementById('exitLogo');
 const sound=document.getElementById('exitSound');
 
@@ -171,30 +164,21 @@ logo.onclick=e=>{
   dead.className='dead-screen';
   document.body.appendChild(dead);
 
-  // Через 4 сек полосы глитча
+  // Через 4 сек лицо
   setTimeout(()=>{
-    for(let i=0;i<5;i++){
-      const strip=document.createElement('div');
-      strip.className='dead-strip';
-      strip.style.top=(i*15)+'vh';
-      dead.appendChild(strip);
-    }
+    const face=document.createElement('img');
+    face.src='img/face.png';
+    face.className='dead-face';
+    dead.appendChild(face);
 
-    // Через 0.5 сек лицо
-    setTimeout(()=>{
-      const face=document.createElement('img');
-      face.src='img/face.png';
-      face.className='dead-face';
-      dead.appendChild(face);
-
-      setTimeout(()=>location.reload(),100);
-    },500);
-
+    // Перезагрузка страницы
+    setTimeout(()=>location.reload(),100);
   },4000);
 };
 </script>
 </body>
 </html>
+
 
 
 
