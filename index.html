@@ -9,6 +9,7 @@ body {
   margin:0; min-height:100vh; font-family:Arial,sans-serif;
   overflow-x:hidden; background:url("img/background.gif") no-repeat center center fixed;
   background-size:cover; display:flex; flex-direction:column; align-items:center;
+  --gx:12px; --gy:8px; --megaDur:0.35s; --c1:red; --c2:cyan; --c3:lime;
 }
 
 /* LOGO */
@@ -20,7 +21,7 @@ body {
 .images { display:flex; gap:90px; margin-top:140px; }
 .image-block { position:relative; text-align:center; }
 .zoomable { max-width:260px; cursor:pointer; transition: transform .35s cubic-bezier(.2,.8,.2,1); }
-.zoomable:hover { transform: scale(1.06);}
+.zoomable:hover { transform: scale(1.06); }
 .noglitch { max-width:260px; cursor:default; }
 
 /* TEXT */
@@ -39,15 +40,12 @@ body {
 }
 @keyframes siteGlitch {
   0% { transform:none; }
-  20% { transform: translate(var(--gx), var(--gy)); }
-  40% {
-    transform: translate(calc(var(--gx)*-1), calc(var(--gy)*0.5));
-    filter:
-      drop-shadow(-20px 0 var(--c1))
-      drop-shadow(20px 0 var(--c2))
-      drop-shadow(0 20px var(--c3));
-  }
-  70% { transform: translate(var(--gx), calc(var(--gy)*-1)); }
+  10% { transform: translate(var(--gx), var(--gy)) rotate(1deg) scale(1.02); }
+  25% { transform: translate(calc(var(--gx)*-1), calc(var(--gy)*0.5)) rotate(-1deg) scale(1.01);
+       filter: drop-shadow(-20px 0 var(--c1)) drop-shadow(20px 0 var(--c2)) drop-shadow(0 20px var(--c3)); }
+  50% { transform: translate(var(--gx), calc(var(--gy)*-1)) rotate(2deg) scale(1.03); }
+  75% { transform: translate(calc(var(--gx)*-0.5), var(--gy)) rotate(-2deg) scale(1.02);
+       filter: drop-shadow(-15px 0 var(--c1)) drop-shadow(15px 0 var(--c2)) drop-shadow(0 15px var(--c3)); }
   100% { transform:none; filter:none; }
 }
 
@@ -109,7 +107,7 @@ const viewerImg=document.getElementById('viewerImg');
 document.querySelectorAll('.zoomable').forEach(img=>{
   img.addEventListener('click',e=>{
     e.stopPropagation();
-    clickCount = 0; // сброс всего
+    clickCount = 0; 
     updateGlobalGlitch();
     viewerImg.src = img.src;
     viewerImg.className='zoom-in';
@@ -125,25 +123,27 @@ viewer.addEventListener('click',()=>{
 /* ================= UPDATE GLOBAL GLITCH ================= */
 function updateGlobalGlitch(){
   const level = Math.floor(clickCount/10);
+  document.body.style.setProperty('--gx', 12 + level*20 + 'px');
+  document.body.style.setProperty('--gy', 8 + level*15 + 'px');
+  document.body.style.setProperty('--megaDur', 0.35 + level*0.05 + 's');
 
-  // сдвиги и длительность мега-глитча растут с уровнем
-  document.body.style.setProperty('--gx', 12 + level*18 + 'px');
-  document.body.style.setProperty('--gy', 8 + level*12 + 'px');
-  document.body.style.setProperty('--megaDur', 0.35 + level*0.04 + 's');
-
-  // каждый 10-й клик — новые цвета и глитч на все элементы
   if(clickCount>0 && clickCount % 10 === 0){
-    const c1 = randomColor();
-    const c2 = randomColor();
-    const c3 = randomColor();
+    const c1=randomColor(), c2=randomColor(), c3=randomColor();
     document.body.style.setProperty('--c1', c1);
     document.body.style.setProperty('--c2', c2);
     document.body.style.setProperty('--c3', c3);
 
-    // применяем глитч ко всем элементам
+    // Глитч для всех элементов
     document.querySelectorAll('body *').forEach(el=>{
       el.classList.add('element-glitch');
-      setTimeout(()=>el.classList.remove('element-glitch'), 400 + level*60);
+      // случайная небольшая тряска для отдельного элемента
+      const offsetX = (Math.random()-0.5)*30*level + 'px';
+      const offsetY = (Math.random()-0.5)*30*level + 'px';
+      el.style.transform = `translate(${offsetX},${offsetY}) rotate(${(Math.random()-0.5)*20}deg)`;
+      setTimeout(()=>{
+        el.classList.remove('element-glitch');
+        el.style.transform = '';
+      }, 400 + level*100);
     });
   }
 }
@@ -173,3 +173,5 @@ document.addEventListener('click', e=>{
 
 </body>
 </html>
+
+
