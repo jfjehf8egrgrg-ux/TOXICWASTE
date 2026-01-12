@@ -9,7 +9,6 @@ body {
   margin:0; min-height:100vh; font-family:Arial,sans-serif;
   overflow-x:hidden; background:url("img/background.gif") no-repeat center center fixed;
   background-size:cover; display:flex; flex-direction:column; align-items:center;
-  --gx:12px; --gy:8px; --megaDur:0.35s; --c1:red; --c2:cyan; --c3:lime;
 }
 
 /* LOGO */
@@ -21,7 +20,7 @@ body {
 .images { display:flex; gap:90px; margin-top:140px; }
 .image-block { position:relative; text-align:center; }
 .zoomable { max-width:260px; cursor:pointer; transition: transform .35s cubic-bezier(.2,.8,.2,1); }
-.zoomable:hover { transform: scale(1.06); }
+.zoomable:hover { transform: scale(1.06);}
 .noglitch { max-width:260px; cursor:default; }
 
 /* TEXT */
@@ -35,17 +34,20 @@ body {
 }
 
 /* MEGA GLITCH */
-.site-glitch, .element-glitch, .perma-glitch {
+.site-glitch {
   animation: siteGlitch var(--megaDur) steps(1);
 }
 @keyframes siteGlitch {
   0% { transform:none; }
-  10% { transform: translate(var(--gx), var(--gy)) rotate(5deg) scale(1.1); }
-  25% { transform: translate(calc(var(--gx)*-1), calc(var(--gy)*0.5)) rotate(-5deg) scale(1.05);
-       filter: drop-shadow(-40px 0 var(--c1)) drop-shadow(40px 0 var(--c2)) drop-shadow(0 40px var(--c3)); }
-  50% { transform: translate(var(--gx), calc(var(--gy)*-1)) rotate(8deg) scale(1.12); }
-  75% { transform: translate(calc(var(--gx)*-0.5), var(--gy)) rotate(-8deg) scale(1.08);
-       filter: drop-shadow(-30px 0 var(--c1)) drop-shadow(30px 0 var(--c2)) drop-shadow(0 30px var(--c3)); }
+  20% { transform: translate(var(--gx), var(--gy)); }
+  40% {
+    transform: translate(calc(var(--gx)*-1), calc(var(--gy)*0.5));
+    filter:
+      drop-shadow(-20px 0 var(--c1))
+      drop-shadow(20px 0 var(--c2))
+      drop-shadow(0 20px var(--c3));
+  }
+  70% { transform: translate(var(--gx), calc(var(--gy)*-1)); }
   100% { transform:none; filter:none; }
 }
 
@@ -80,8 +82,6 @@ body {
 
 <script>
 let clickCount = 0;
-let permaShake = false;
-let microIntervalTime = 40; // начальное время микроглитча
 
 /* GREEN SPLASH */
 function greenSplash(x,y){
@@ -97,20 +97,18 @@ function greenSplash(x,y){
 }
 
 /* RANDOM COLOR */
-function randomColor(){ 
-  const r=Math.floor(Math.random()*255), g=Math.floor(Math.random()*255), b=Math.floor(Math.random()*255);
-  return `rgb(${r},${g},${b})`;
-}
+function randomColor(){ const r=Math.floor(Math.random()*255), g=Math.floor(Math.random()*255), b=Math.floor(Math.random()*255);
+return `rgb(${r},${g},${b})`;}
 
-/* IMAGE VIEWER */
+/* IMAGE VIEWER + RESET */
 const viewer=document.getElementById('viewer');
 const viewerImg=document.getElementById('viewerImg');
 
 document.querySelectorAll('.zoomable').forEach(img=>{
   img.addEventListener('click',e=>{
     e.stopPropagation();
-    clickCount = 0; 
-    updateGlitchProgress();
+    clickCount = 0; // сброс всего
+    updateGlobalGlitch();
     viewerImg.src = img.src;
     viewerImg.className='zoom-in';
     viewer.classList.add('active');
@@ -122,37 +120,24 @@ viewer.addEventListener('click',()=>{
   setTimeout(()=>viewer.classList.remove('active'),250);
 });
 
-/* ================= UPDATE GLITCH PROGRESS ================= */
-function updateGlitchProgress(){
+/* ================= UPDATE GLOBAL GLITCH ================= */
+function updateGlobalGlitch(){
   const level = Math.floor(clickCount/10);
 
-  // ускорение микроглитчей
-  microIntervalTime = Math.max(10, 40 - level*3);
+  // сдвиги и длительность мега-глитча растут с уровнем
+  document.body.style.setProperty('--gx', 12 + level*18 + 'px');
+  document.body.style.setProperty('--gy', 8 + level*12 + 'px');
+  document.body.style.setProperty('--megaDur', 0.35 + level*0.04 + 's');
 
-  // каждые 10 кликов: включаем постоянную тряску + сильный мега-глитч
-  if(clickCount >= 10 && !permaShake){
-    permaShake = true;
-    document.querySelectorAll('body *').forEach(el=>{
-      el.classList.add('perma-glitch'); // постоянная тряска
-    });
-  }
-
+  // каждый 10-й клик — новые цвета
   if(clickCount>0 && clickCount % 10 === 0){
-    const c1=randomColor(), c2=randomColor(), c3=randomColor();
-    document.body.style.setProperty('--c1', c1);
-    document.body.style.setProperty('--c2', c2);
-    document.body.style.setProperty('--c3', c3);
-    const gx = 12 + level*20 + 'px';
-    const gy = 8 + level*15 + 'px';
-    const dur = 0.35 + level*0.05 + 's';
-    document.body.style.setProperty('--gx', gx);
-    document.body.style.setProperty('--gy', gy);
-    document.body.style.setProperty('--megaDur', dur);
-
-    document.querySelectorAll('body *').forEach(el=>{
-      el.classList.add('element-glitch');
-      setTimeout(()=>el.classList.remove('element-glitch'), 400 + level*100);
-    });
+    document.body.style.setProperty('--c1', randomColor());
+    document.body.style.setProperty('--c2', randomColor());
+    document.body.style.setProperty('--c3', randomColor());
+    document.body.classList.add('site-glitch');
+    setTimeout(()=>document.body.classList.remove('site-glitch'),
+      400 + level*60
+    );
   }
 }
 
@@ -169,34 +154,21 @@ setInterval(()=>{
     document.body.appendChild(n);
     setTimeout(()=>n.remove(), Math.max(30,110 - level*6));
   }
-}, microIntervalTime);
-
-/* AUTOMATIC MEGA GLITCH каждые 6 секунд */
-setInterval(()=>{
-  const c1=randomColor(), c2=randomColor(), c3=randomColor();
-  document.body.style.setProperty('--c1', c1);
-  document.body.style.setProperty('--c2', c2);
-  document.body.style.setProperty('--c3', c3);
-  document.body.style.setProperty('--gx', (Math.random()*80-40)+'px');
-  document.body.style.setProperty('--gy', (Math.random()*80-40)+'px');
-  document.body.style.setProperty('--megaDur', (0.5 + Math.random()*0.5)+'s');
-
-  document.querySelectorAll('body *').forEach(el=>{
-    el.classList.add('element-glitch');
-    setTimeout(()=>el.classList.remove('element-glitch'), 600 + Math.random()*400);
-  });
-},6000);
+},40);
 
 /* GLOBAL CLICK */
 document.addEventListener('click', e=>{
   clickCount++;
   greenSplash(e.clientX,e.clientY);
-  updateGlitchProgress();
+  updateGlobalGlitch();
 });
 </script>
 
 </body>
 </html>
+
+
+
 
 
 
