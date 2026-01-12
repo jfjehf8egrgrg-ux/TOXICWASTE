@@ -110,18 +110,19 @@ body{
   inset:0;
 }
 
-/* STRIPS */
+/* BIG STRIPS */
 .dead-strip{
   position:absolute;
   left:0;
   width:100%;
+  height:65vh;
   mix-blend-mode:difference;
-  animation:stripMove .25s steps(1) infinite;
+  animation:stripMove .18s steps(1) infinite;
 }
 @keyframes stripMove{
-  0%{transform:translateY(-20px);}
-  50%{transform:translateY(20px);}
-  100%{transform:translateY(-10px);}
+  0%{transform:translateY(-30px);}
+  50%{transform:translateY(30px);}
+  100%{transform:translateY(-20px);}
 }
 
 /* DISTORT + RGB */
@@ -140,12 +141,13 @@ body{
 
 /* FACE */
 .dead-face{
-  position:absolute;
-  top:50%;
-  left:50%;
-  transform:translate(-50%,-50%);
-  max-width:80vw;
-  filter:contrast(180%) grayscale(1);
+  position:fixed;
+  inset:0;
+  width:100vw;
+  height:100vh;
+  object-fit:cover;
+  z-index:1000000;
+  filter:contrast(200%) grayscale(1);
 }
 </style>
 </head>
@@ -237,26 +239,27 @@ logo.onclick=e=>{
   dead.appendChild(snap);
   document.body.appendChild(dead);
 
-  const colors=['#ff0000','#ffff00','#00ff00','#00ffff','#ff00ff'];
+  const colors=['#ff0000','#ffff00','#00ffff'];
   const strips=[];
 
-  /* STRIPS 2.5s */
-  for(let i=0;i<6;i++){
+  /* BIG STRIPS 2.5s */
+  for(let i=0;i<3;i++){
     const s=document.createElement('div');
     s.className='dead-strip';
-    s.style.top=Math.random()*innerHeight+'px';
-    s.style.height=(Math.random()*180+90)+'px';
+    s.style.top=(i*30)+'vh';
     s.style.background=colors[Math.floor(Math.random()*colors.length)];
-    s.style.opacity=0.7;
+    s.style.opacity=0.8;
     dead.appendChild(s);
     strips.push(s);
   }
 
   setTimeout(()=>{
-    strips.forEach(s=>s.remove());
-
     /* DISTORT + RGB 1.5s */
     snap.classList.add('dead-distort');
+
+    strips.forEach(s=>{
+      s.style.background=colors[Math.floor(Math.random()*colors.length)];
+    });
 
     setTimeout(()=>{
       const face=document.createElement('img');
@@ -275,6 +278,8 @@ logo.onclick=e=>{
 
 </body>
 </html>
+
+
 
 
 
