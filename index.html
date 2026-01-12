@@ -88,7 +88,7 @@ body {
     0 0 8px rgba(0,0,0,.9);
 }
 
-/* ================= LOCAL MICRO GLITCH ================= */
+/* ================= EVENT MICRO GLITCH ================= */
 .micro-glitch {
   position: fixed;
   width: 140px;
@@ -115,6 +115,15 @@ body {
   100% { opacity: 0; }
 }
 
+/* ================= CONSTANT NOISE GLITCH ================= */
+.noise-glitch {
+  position: fixed;
+  background: rgba(255,255,255,.25);
+  pointer-events: none;
+  z-index: 20;
+  mix-blend-mode: difference;
+}
+
 /* ================= MEGA GLITCH ================= */
 .site-glitch {
   animation: siteGlitch .35s steps(1);
@@ -122,23 +131,19 @@ body {
 
 @keyframes siteGlitch {
   0% { transform:none; filter:none; }
-
   20% {
     transform: translateX(-90px);
     filter:
       drop-shadow(-14px 0 red)
       drop-shadow(14px 0 cyan);
   }
-
   40% { transform: translateX(120px); }
-
   60% {
     transform: translateX(-40px);
     filter:
       drop-shadow(-8px 0 magenta)
       drop-shadow(8px 0 cyan);
   }
-
   100% { transform:none; filter:none; }
 }
 
@@ -241,12 +246,12 @@ function greenSplash(x,y){
   }
 }
 
-/* ================= GLOBAL CLICK SPLASH ================= */
+/* GLOBAL CLICK SPLASH */
 document.addEventListener('click',e=>{
   greenSplash(e.clientX,e.clientY);
 });
 
-/* ================= IMAGE VIEWER ================= */
+/* IMAGE VIEWER */
 const viewer=document.getElementById('viewer');
 const viewerImg=document.getElementById('viewerImg');
 
@@ -264,7 +269,7 @@ viewer.addEventListener('click',()=>{
   setTimeout(()=>viewer.classList.remove('active'),250);
 });
 
-/* ================= MICRO GLITCH ================= */
+/* EVENT MICRO GLITCH */
 setInterval(()=>{
   const g=document.createElement('div');
   g.className='micro-glitch';
@@ -274,7 +279,20 @@ setInterval(()=>{
   setTimeout(()=>g.remove(),180);
 },1500);
 
-/* ================= MEGA GLITCH ================= */
+/* CONSTANT NOISE GLITCH */
+setInterval(()=>{
+  const n=document.createElement('div');
+  n.className='noise-glitch';
+  n.style.width = Math.random()*10 + 2 + 'px';
+  n.style.height = Math.random()*2 + 1 + 'px';
+  n.style.left = Math.random()*innerWidth + 'px';
+  n.style.top = Math.random()*innerHeight + 'px';
+  n.style.opacity = Math.random()*0.25 + 0.1;
+  document.body.appendChild(n);
+  setTimeout(()=>n.remove(),60);
+},90);
+
+/* MEGA GLITCH */
 setInterval(()=>{
   document.body.classList.add('site-glitch');
   setTimeout(()=>document.body.classList.remove('site-glitch'),350);
@@ -284,3 +302,5 @@ setInterval(()=>{
 
 </body>
 </html>
+
+
