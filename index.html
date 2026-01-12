@@ -6,8 +6,6 @@
 <title>TOXIC WASTE</title>
 
 <style>
-
-/* ================= BASE ================= */
 body {
   margin: 0;
   min-height: 100vh;
@@ -21,7 +19,6 @@ body {
   position: relative;
 }
 
-/* ================= GLOBAL RGB GLITCH ================= */
 body.rgb-glitch {
   filter:
     drop-shadow(var(--rgbR) 0 red)
@@ -29,165 +26,65 @@ body.rgb-glitch {
     drop-shadow(0 var(--rgbR) magenta);
 }
 
-/* ================= LOGO ================= */
-.logo {
-  margin-top: 30px;
-  pointer-events: none;
-  animation: logoFloat 3.5s ease-in-out infinite;
-}
-
+.logo { margin-top:30px; pointer-events:none; animation:logoFloat 3.5s ease-in-out infinite; }
 .logo img { max-width: 220px; }
+@keyframes logoFloat { 50% { transform: translateY(-14px); } }
 
-@keyframes logoFloat {
-  50% { transform: translateY(-14px); }
-}
+.images { display:flex; gap:90px; margin-top:140px; }
+.image-block { position:relative; text-align:center; }
+.zoomable { max-width:260px; cursor:pointer; transition: transform .35s cubic-bezier(.2,.8,.2,1); }
+.zoomable:hover { transform: scale(1.06); }
+.noglitch { max-width:260px; cursor:default; }
 
-/* ================= IMAGES ================= */
-.images {
-  display: flex;
-  gap: 90px;
-  margin-top: 140px;
-}
+.caption,.hint { margin-top:10px; font-size:18px; font-weight:bold; color:#fff;
+  text-shadow:2px 0 red, -2px 0 cyan, 0 0 8px rgba(0,0,0,.9); }
 
-.image-block {
-  position: relative;
-  text-align: center;
-}
-
-.zoomable {
-  max-width: 260px;
-  cursor: pointer;
-  transition: transform .35s cubic-bezier(.2,.8,.2,1);
-}
-
-.zoomable:hover {
-  transform: scale(1.06);
-}
-
-.noglitch {
-  max-width: 260px;
-  cursor: default;
-}
-
-/* ================= TEXT ================= */
-.caption,.hint {
-  margin-top: 10px;
-  font-size: 18px;
-  font-weight: bold;
-  color: #fff;
-  text-shadow:
-    2px 0 red,
-    -2px 0 cyan,
-    0 0 8px rgba(0,0,0,.9);
-}
-
-/* ================= MICRO GLITCH ================= */
-.noise-glitch {
-  position: fixed;
-  pointer-events: none;
-  z-index: 90;
+.noise-glitch { position: fixed; pointer-events: none; z-index:90;
   background: rgba(255,255,255,.75);
-  filter:
-    drop-shadow(-2px 0 red)
-    drop-shadow(2px 0 cyan);
-}
+  filter: drop-shadow(-2px 0 red) drop-shadow(2px 0 cyan); }
 
-/* ================= MEGA GLITCH (FULLSCREEN) ================= */
-.site-glitch {
-  animation: siteGlitch var(--megaDur) steps(1);
-  transform-origin: center center;
-}
+.site-glitch { animation: siteGlitch var(--megaDur) steps(1); transform-origin: center center; }
 
 @keyframes siteGlitch {
   0% { transform:none; }
-  20% { transform: translate(var(--gx), var(--gy)) scale(1.1) rotate(1deg); }
-  40% {
-    transform: translate(calc(var(--gx) * -1), calc(var(--gy) * 0.8)) scale(1.2) rotate(-1deg);
-    filter:
-      drop-shadow(-50px 0 red)
-      drop-shadow(50px 0 cyan)
-      drop-shadow(0 50px magenta);
-  }
-  70% { transform: translate(var(--gx), calc(var(--gy) * -1)) scale(1.15) rotate(2deg); }
+  20% { transform: translate(var(--gx), var(--gy)) rotate(var(--gr)); }
+  40% { transform: translate(calc(var(--gx) * -1), calc(var(--gy) * 0.5)) rotate(calc(var(--gr) * -1));
+       filter: drop-shadow(-20px 0 red) drop-shadow(20px 0 cyan) drop-shadow(0 20px magenta);}
+  70% { transform: translate(var(--gx), calc(var(--gy) * -1)) rotate(var(--gr)); }
   100% { transform:none; filter:none; }
 }
 
-/* ================= VIEWER ================= */
-.viewer {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,.65);
-  display: none;
-  justify-content: center;
-  align-items: center;
-  z-index: 200;
-}
-
-.viewer.active { display: flex; }
-
-.viewer img {
-  max-width: 50vw;
-  max-height: 70vh;
-}
-
+.viewer { position:fixed; inset:0; background:rgba(0,0,0,.65); display:none; justify-content:center; align-items:center; z-index:200; }
+.viewer.active { display:flex; }
+.viewer img { max-width:50vw; max-height:70vh; }
 .zoom-in { animation: zoomIn .28s ease-out forwards; }
 .zoom-out { animation: zoomOut .25s ease-in forwards; }
+@keyframes zoomIn { from { transform:scale(.4); opacity:0; } to { transform:scale(1); opacity:1; } }
+@keyframes zoomOut { to { transform:scale(.25); opacity:0; } }
 
-@keyframes zoomIn {
-  from { transform: scale(.4); opacity:0; }
-  to { transform: scale(1); opacity:1; }
-}
-
-@keyframes zoomOut {
-  to { transform: scale(.25); opacity:0; }
-}
-
-/* ================= GREEN SPLASH ================= */
-.particle {
-  position: fixed;
-  width: 6px;
-  height: 6px;
-  background: #39ff14;
-  box-shadow: 0 0 12px #39ff14;
-  border-radius: 50%;
-  pointer-events: none;
-  z-index: 300;
-  animation: splash .8s ease-out forwards;
-}
-
-@keyframes splash {
-  to {
-    transform: translate(var(--x),var(--y)) scale(.1);
-    opacity: 0;
-  }
-}
+.particle { position:fixed; width:6px; height:6px; background:#39ff14; box-shadow:0 0 12px #39ff14;
+  border-radius:50%; pointer-events:none; z-index:300; animation:splash .8s ease-out forwards; }
+@keyframes splash { to { transform:translate(var(--x),var(--y)) scale(.1); opacity:0; } }
 
 </style>
 </head>
-
 <body>
 
-<div class="logo">
-  <img src="img/logo3.png">
-</div>
+<div class="logo"><img src="img/logo3.png"></div>
 
 <div class="images">
-
   <div class="image-block">
     <img src="img/1.png" class="zoomable">
     <div class="hint">нажми меня!</div>
   </div>
-
   <div class="image-block">
     <img src="img/2.png" class="zoomable">
     <div class="caption">нажми меня!</div>
   </div>
-
   <div class="image-block">
     <img src="img/animation.gif" class="noglitch">
     <div class="caption">14.1</div>
   </div>
-
 </div>
 
 <div class="viewer" id="viewer">
@@ -195,11 +92,8 @@ body.rgb-glitch {
 </div>
 
 <script>
-
-/* ================= STATE ================= */
 let clickCount = 0;
 
-/* ================= GREEN SPLASH ================= */
 function greenSplash(x,y){
   for(let i=0;i<26;i++){
     const p=document.createElement('div');
@@ -215,19 +109,13 @@ function greenSplash(x,y){
   }
 }
 
-/* ================= ULTRA MEGA GLITCH ================= */
 function ultraMegaGlitch(){
-  const level = Math.floor(clickCount / 10);
-
-  document.body.style.setProperty('--gx', level * 38 + 'px');
-  document.body.style.setProperty('--gy', level * 28 + 'px');
-  document.body.style.setProperty('--rgbR', level * 4 + 'px');
-  document.body.style.setProperty('--ultraDur', 0.7 + level * 0.1 + 's');
-
-  document.body.classList.add('rgb-glitch');
-  document.body.classList.add('ultra-glitch');
-
-  // сильный шум на весь экран
+  const level = Math.floor(clickCount/10);
+  document.body.style.setProperty('--gx',level*38+'px');
+  document.body.style.setProperty('--gy',level*28+'px');
+  document.body.style.setProperty('--rgbR',level*4+'px');
+  document.body.style.setProperty('--ultraDur',0.7+level*0.1+'s');
+  document.body.classList.add('rgb-glitch','ultra-glitch');
   for(let i=0;i<50;i++){
     const n=document.createElement('div');
     n.className='noise-glitch';
@@ -238,117 +126,79 @@ function ultraMegaGlitch(){
     n.style.left=Math.random()*(innerWidth-w)+'px';
     n.style.top=Math.random()*(innerHeight-h)+'px';
     document.body.appendChild(n);
-    setTimeout(()=>n.remove(), 300 + Math.random()*300);
+    setTimeout(()=>n.remove(),300+Math.random()*300);
   }
-
-  setTimeout(()=>{
-    document.body.classList.remove('ultra-glitch');
-    updateGlobalGlitch();
-  }, 800 + level * 150);
+  setTimeout(()=>{document.body.classList.remove('ultra-glitch'); updateGlobalGlitch();},800+level*150);
 }
 
-/* ================= GLOBAL CLICK ================= */
 document.addEventListener('click',e=>{
   clickCount++;
   greenSplash(e.clientX,e.clientY);
-
-  if(clickCount % 10 === 0){
-    ultraMegaGlitch();
-  } else {
-    updateGlobalGlitch();
-  }
+  if(clickCount%10===0){ ultraMegaGlitch(); } else { updateGlobalGlitch(); }
 });
 
-/* ================= IMAGE VIEWER + RESET ================= */
 const viewer=document.getElementById('viewer');
 const viewerImg=document.getElementById('viewerImg');
-
 document.querySelectorAll('.zoomable').forEach(img=>{
   img.addEventListener('click',e=>{
-    e.stopPropagation();
-    clickCount = 0;
-    updateGlobalGlitch();
-    viewerImg.src = img.src;
-    viewerImg.className='zoom-in';
-    viewer.classList.add('active');
+    e.stopPropagation(); clickCount=0; updateGlobalGlitch();
+    viewerImg.src=img.src; viewerImg.className='zoom-in'; viewer.classList.add('active');
   });
 });
+viewer.addEventListener('click',()=>{ viewerImg.className='zoom-out'; setTimeout(()=>viewer.classList.remove('active'),250); });
 
-viewer.addEventListener('click',()=>{
-  viewerImg.className='zoom-out';
-  setTimeout(()=>viewer.classList.remove('active'),250);
-});
-
-/* ================= GLOBAL GLITCH UPDATE ================= */
 function updateGlobalGlitch(){
-  const level = Math.floor(clickCount / 10);
-
-  document.body.style.setProperty('--rgbR', level * 1.6 + 'px');
-  document.body.style.setProperty('--gx', level * 18 + 'px');
-  document.body.style.setProperty('--gy', level * 12 + 'px');
-  document.body.style.setProperty('--megaDur', 0.35 + level * 0.04 + 's');
-
-  if(level > 0){
-    document.body.classList.add('rgb-glitch');
-  } else {
-    document.body.classList.remove('rgb-glitch');
-  }
+  const level=Math.floor(clickCount/10);
+  document.body.style.setProperty('--rgbR',level*1.6+'px');
+  document.body.style.setProperty('--gx',level*18+'px');
+  document.body.style.setProperty('--gy',level*12+'px');
+  document.body.style.setProperty('--megaDur',0.35+level*0.04+'s');
+  if(level>0){ document.body.classList.add('rgb-glitch'); } else { document.body.classList.remove('rgb-glitch'); }
 }
 
-/* ================= CONSTANT MICRO GLITCH ================= */
 setInterval(()=>{
-  const level = Math.floor(clickCount / 10);
-  updateGlobalGlitch();
-
-  const amount = 2 + level * 3;
-
-  for(let i=0;i<amount;i++){
-    const n=document.createElement('div');
-    n.className='noise-glitch';
-
-    const w=Math.random()*(14+level*3)+4;
-    const h=Math.random()*3+1;
-
-    n.style.width=w+'px';
-    n.style.height=h+'px';
-    n.style.left=Math.random()*(innerWidth-w)+'px';
-    n.style.top=Math.random()*(innerHeight-h)+'px';
-
-    document.body.appendChild(n);
-
-    setTimeout(()=>n.remove(), Math.max(30,110 - level*6));
-  }
-}, 40);
-
-/* ================= MEGA GLITCH FULLSCREEN EVERY 6s ================= */
-setInterval(()=>{
-  const level = Math.floor(clickCount / 10);
-
-  // включаем глитч на весь экран
+  const level=Math.floor(clickCount/10);
   document.body.classList.add('site-glitch');
 
-  // добавляем шум по экрану
+  // шум по экрану
   for(let i=0;i<30;i++){
     const n=document.createElement('div');
     n.className='noise-glitch';
-    const w=Math.random()*(30+level*5)+10;
-    const h=Math.random()*(30+level*5)+10;
-    n.style.width=w+'px';
-    n.style.height=h+'px';
+    const w=Math.random()*(40)+'px';
+    const h=Math.random()*(10)+'px';
+    n.style.width=w; n.style.height=h;
+    n.style.left=Math.random()*(innerWidth-parseFloat(w))+'px';
+    n.style.top=Math.random()*(innerHeight-parseFloat(h))+'px';
+    document.body.appendChild(n);
+    setTimeout(()=>n.remove(),200+Math.random()*200);
+  }
+
+  // маленькое смещение
+  document.body.style.setProperty('--gx','5px');
+  document.body.style.setProperty('--gy','3px');
+  document.body.style.setProperty('--gr','0.5deg');
+
+  setTimeout(()=>{ document.body.classList.remove('site-glitch'); },600);
+},6000);
+
+setInterval(()=>{
+  const level=Math.floor(clickCount/10);
+  updateGlobalGlitch();
+  const amount=2+level*3;
+  for(let i=0;i<amount;i++){
+    const n=document.createElement('div');
+    n.className='noise-glitch';
+    const w=Math.random()*(14+level*3)+4;
+    const h=Math.random()*3+1;
+    n.style.width=w+'px'; n.style.height=h+'px';
     n.style.left=Math.random()*(innerWidth-w)+'px';
     n.style.top=Math.random()*(innerHeight-h)+'px';
     document.body.appendChild(n);
-    setTimeout(()=>n.remove(), 300 + Math.random()*300);
+    setTimeout(()=>n.remove(), Math.max(30,110-level*6));
   }
-
-  setTimeout(()=>{
-    document.body.classList.remove('site-glitch');
-  }, 600 + level*100);
-
-}, 6000); // каждые 6 секунд
+},40);
 
 </script>
-
 </body>
 </html>
 
