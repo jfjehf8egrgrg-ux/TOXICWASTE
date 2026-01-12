@@ -16,7 +16,6 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  position: relative;
 }
 
 /* RGB */
@@ -88,10 +87,11 @@ body.rgb-glitch {
   to { transform:translate(var(--x),var(--y)) scale(.1); opacity:0; }
 }
 
-/* COLOR GLITCH OVERLAY */
-.glitch-overlay {
+/* FNATI GLITCH STRIP */
+.glitch-strip {
   position:fixed;
-  inset:0;
+  left:0;
+  width:100vw;
   z-index:500;
   pointer-events:none;
   mix-blend-mode: difference;
@@ -126,7 +126,7 @@ body.rgb-glitch {
 
 <audio id="exitSound" src="music/exit-glitch.mp3" preload="auto"></audio>
 
-<div class="logo exit-trigger">
+<div class="logo" id="exitLogo">
   <img src="img/logo3.png">
 </div>
 
@@ -180,8 +180,8 @@ viewer.addEventListener('click',()=>{
   setTimeout(()=>viewer.classList.remove('active'),250);
 });
 
-/* EXIT */
-const logo=document.querySelector('.exit-trigger');
+/* FNATI EXIT */
+const logo=document.getElementById('exitLogo');
 const sound=document.getElementById('exitSound');
 
 logo.addEventListener('click',e=>{
@@ -191,24 +191,32 @@ logo.addEventListener('click',e=>{
   sound.play();
 
   document.body.classList.add('jerk');
-  setTimeout(()=>document.body.classList.remove('jerk'),150);
-
-  /* COLOR OVERLAYS */
-  const colors=['rgba(255,0,0,.35)','rgba(0,255,255,.35)','rgba(255,0,255,.35)','rgba(0,255,0,.25)'];
-  colors.forEach((c,i)=>{
-    const o=document.createElement('div');
-    o.className='glitch-overlay';
-    o.style.background=c;
-    o.style.transform=`translate(${(Math.random()*40-20)}px,${(Math.random()*40-20)}px)`;
-    document.body.appendChild(o);
-  });
+  setTimeout(()=>document.body.classList.remove('jerk'),120);
 
   document.body.classList.add('freeze','rgb-glitch');
 
+  const colors=['#ff0000','#ffff00','#00ff00','#00ffff','#ff00ff'];
+
+  let glitchTimer=setInterval(()=>{
+    const strip=document.createElement('div');
+    strip.className='glitch-strip';
+    strip.style.top=Math.random()*innerHeight+'px';
+    strip.style.height=(Math.random()*60+10)+'px';
+    strip.style.background=colors[Math.floor(Math.random()*colors.length)];
+    strip.style.opacity=Math.random()*0.6+0.2;
+    document.body.appendChild(strip);
+
+    requestAnimationFrame(()=>{
+      requestAnimationFrame(()=>strip.remove());
+    });
+  },40);
+
   setTimeout(()=>{
+    clearInterval(glitchTimer);
+
     const face=document.createElement('div');
     face.className='face-frame';
-    face.innerHTML=`<img src="img/face.png">`;
+    face.innerHTML='<img src="img/face.png">';
     document.body.appendChild(face);
 
     requestAnimationFrame(()=>{
