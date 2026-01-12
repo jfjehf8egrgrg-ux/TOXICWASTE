@@ -18,31 +18,53 @@ body {
   align-items:center;
 }
 
+/* RGB-глитч */
 body.rgb-glitch {
   filter:
     drop-shadow(var(--rgbR) 0 red)
-    drop-shadow(calc(var(--rgbR)*-1) 0 cyan);
+    drop-shadow(calc(var(--rgbR)*-1) 0 cyan)
+    drop-shadow(0 var(--rgbR) magenta);
 }
 
+/* ЛОГО */
 .logo {
   margin-top:30px;
   cursor:pointer;
-  animation:float 3.5s ease-in-out infinite;
+  animation:logoFloat 3.5s ease-in-out infinite;
 }
 .logo img { max-width:220px; }
-@keyframes float { 50% { transform:translateY(-14px); } }
+@keyframes logoFloat {
+  50% { transform:translateY(-14px); }
+}
 
-.images { display:flex; gap:90px; margin-top:140px; }
-.zoomable { max-width:260px; cursor:pointer; }
+/* РЕЗКИЙ ДЁРГ */
+.jerk {
+  animation: jerk .12s steps(1);
+}
+@keyframes jerk {
+  25% { transform:translate(-18px,6px); }
+  50% { transform:translate(12px,-10px); }
+  75% { transform:translate(-8px,14px); }
+}
 
-.noise-glitch {
+/* ГЛИТЧ-ЛАГ */
+.glitch {
+  animation: glitchShake .08s infinite steps(1);
+}
+@keyframes glitchShake {
+  25% { transform:translate(-6px,3px); }
+  50% { transform:translate(4px,-5px); }
+  75% { transform:translate(-5px,-6px); }
+}
+
+.noise {
   position:fixed;
   pointer-events:none;
   background:white;
-  z-index:50;
+  z-index:100;
 }
 
-/* ====== 1 FRAME FACE ====== */
+/* ЛИЦО НА 1 КАДР */
 .face-frame {
   position:fixed;
   inset:0;
@@ -51,26 +73,10 @@ body.rgb-glitch {
   justify-content:center;
   align-items:center;
   z-index:9999;
-  pointer-events:none;
 }
 .face-frame img {
   max-width:80vw;
   filter:contrast(180%) saturate(0);
-}
-
-/* ====== FREEZE STATE ====== */
-.freeze {
-  cursor:none !important;
-  pointer-events:none !important;
-}
-
-.exit-glitch {
-  animation:shake .06s infinite steps(1);
-}
-@keyframes shake {
-  25% { transform:translate(-10px,5px); }
-  50% { transform:translate(8px,-6px); }
-  75% { transform:translate(-6px,-10px); }
 }
 </style>
 </head>
@@ -83,12 +89,6 @@ body.rgb-glitch {
   <img src="img/logo3.png">
 </div>
 
-<div class="images">
-  <img src="img/1.png" class="zoomable">
-  <img src="img/2.png" class="zoomable">
-  <img src="img/animation.gif">
-</div>
-
 <script>
 const logo = document.querySelector('.exit-trigger');
 const sound = document.getElementById('exitSound');
@@ -96,49 +96,52 @@ const sound = document.getElementById('exitSound');
 logo.addEventListener('click', e => {
   e.stopPropagation();
 
-  /* === 1 КАДР: ЛИЦО === */
-  const face = document.createElement('div');
-  face.className = 'face-frame';
-  face.innerHTML = `<img src="img/face.png">`;
-  document.body.appendChild(face);
-
-  requestAnimationFrame(() => {
-    face.remove(); // ← РОВНО 1 FRAME
-  });
-
-  /* === ЗВУК === */
+  /* 1️⃣ СРАЗУ ЗВУК */
   sound.currentTime = 0;
   sound.play();
 
-  /* === ГЛИТЧ + ФРИЗ === */
-  document.body.classList.add('rgb-glitch','exit-glitch','freeze');
+  /* 2️⃣ РЕЗКИЙ ДЁРГ */
+  document.body.classList.add('jerk');
+  setTimeout(() => document.body.classList.remove('jerk'), 150);
 
-  let chaos = setInterval(() => {
-    document.body.style.setProperty('--rgbR', Math.random()*12+4+'px');
+  /* 3️⃣ ЛАГАЮЩИЙ ГЛИТЧ */
+  document.body.classList.add('rgb-glitch','glitch');
 
-    for(let i=0;i<40;i++){
-      const n=document.createElement('div');
-      n.className='noise-glitch';
-      n.style.width=Math.random()*140+20+'px';
-      n.style.height=Math.random()*8+2+'px';
-      n.style.left=Math.random()*innerWidth+'px';
-      n.style.top=Math.random()*innerHeight+'px';
+  let noiseInt = setInterval(() => {
+    document.body.style.setProperty('--rgbR', (Math.random()*10+4)+'px');
+
+    for(let i=0;i<30;i++){
+      const n = document.createElement('div');
+      n.className = 'noise';
+      n.style.width = Math.random()*140+20+'px';
+      n.style.height = Math.random()*6+2+'px';
+      n.style.left = Math.random()*innerWidth+'px';
+      n.style.top = Math.random()*innerHeight+'px';
       document.body.appendChild(n);
       setTimeout(()=>n.remove(),100);
     }
-  },40);
+  }, 40);
 
-  /* === ПОЛНЫЙ ФРИЗ === */
+  /* 4️⃣ РОВНО 4 СЕКУНДЫ */
   setTimeout(() => {
-    clearInterval(chaos);
-  },1200);
+    clearInterval(noiseInt);
 
-  /* === ПЕРЕЗАПУСК === */
-  setTimeout(() => {
-    location.reload();
-  },2600);
+    /* 5️⃣ ЛИЦО НА 1 КАДР */
+    const face = document.createElement('div');
+    face.className = 'face-frame';
+    face.innerHTML = `<img src="img/face.png">`;
+    document.body.appendChild(face);
+
+    requestAnimationFrame(() => {
+      /* 6️⃣ ПЕРЕЗАГРУЗКА */
+      location.reload();
+    });
+
+  }, 4000);
 });
 </script>
 
 </body>
 </html>
+
+
