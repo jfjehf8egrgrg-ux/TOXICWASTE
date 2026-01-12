@@ -15,7 +15,6 @@ body{
   flex-direction:column;
   align-items:center;
   overflow:hidden;
-  transition: transform 0.05s linear;
 }
 
 /* LOGO */
@@ -118,31 +117,29 @@ viewer.onclick=()=>{
   setTimeout(()=>viewer.classList.remove('active'),200);
 };
 
-/* SITE-WIDE GLITCH WITH RGB */
+/* --- HAOTIC GLITCH FOR SITE --- */
 function glitchSite(){
-  const offsetX = (Math.random() - 0.5) * 20;
-  const offsetY = (Math.random() - 0.5) * 20;
-  const rotate = (Math.random() - 0.5) * 5;
-  const scale = 1 + (Math.random() - 0.5) * 0.05;
-
-  // RGB split через filter + translate
-  const rOffset = (Math.random() - 0.5) * 10;
-  const gOffset = (Math.random() - 0.5) * 10;
-  const bOffset = (Math.random() - 0.5) * 10;
+  const offsetX = (Math.random()-0.5)*30;
+  const offsetY = (Math.random()-0.5)*30;
+  const rotate = (Math.random()-0.5)*10;
+  const scale = 1 + (Math.random()-0.5)*0.1;
+  const rOffset = (Math.random()-0.5)*15;
+  const gOffset = (Math.random()-0.5)*15;
+  const bOffset = (Math.random()-0.5)*15;
 
   document.body.style.transform = `translate(${offsetX}px, ${offsetY}px) rotate(${rotate}deg) scale(${scale})`;
-  document.body.style.filter = `url(#rgbSplit) drop-shadow(${rOffset}px 0 red) drop-shadow(${gOffset}px 0 green) drop-shadow(${bOffset}px 0 blue)`;
+  document.body.style.filter = `drop-shadow(${rOffset}px 0 red) drop-shadow(${gOffset}px 0 green) drop-shadow(${bOffset}px 0 blue)`;
 
   setTimeout(()=>{
     document.body.style.transform = '';
     document.body.style.filter = '';
-  }, 80);
+  },100);
 }
 
-// каждые 2 секунды
-setInterval(glitchSite, 2000);
+// каждые 1.5 секунды
+setInterval(glitchSite,1500);
 
-/* FNATI EXIT ON LOGO */
+/* --- FNATI EXIT --- */
 const logo=document.getElementById('exitLogo');
 const sound=document.getElementById('exitSound');
 
@@ -151,12 +148,12 @@ logo.onclick=e=>{
   sound.currentTime=0;
   sound.play();
 
-  // Черный экран
+  // Дед экран
   const dead=document.createElement('div');
   dead.className='dead-screen';
   document.body.appendChild(dead);
 
-  // Быстрые полосы + RGB glitch на всей сцене
+  // Полосы + хаотичный RGB glitch на всей сцене (кроме лица)
   const deadGlitchInterval = setInterval(()=>{
     // полосы
     const strip=document.createElement('div');
@@ -164,41 +161,38 @@ logo.onclick=e=>{
     strip.style.top=Math.random()*window.innerHeight+'px';
     strip.style.backgroundColor=`rgba(${Math.floor(Math.random()*256)},${Math.floor(Math.random()*256)},${Math.floor(Math.random()*256)},0.8)`;
     dead.appendChild(strip);
-    setTimeout(()=>strip.remove(),80);
+    setTimeout(()=>strip.remove(),50);
 
-    // RGB сдвиг на всём экране (кроме лица)
-    const rOffset = (Math.random() - 0.5) * 10;
-    const gOffset = (Math.random() - 0.5) * 10;
-    const bOffset = (Math.random() - 0.5) * 10;
+    // RGB хаос
+    const rOffset = (Math.random()-0.5)*25;
+    const gOffset = (Math.random()-0.5)*25;
+    const bOffset = (Math.random()-0.5)*25;
+    const offsetX = (Math.random()-0.5)*20;
+    const offsetY = (Math.random()-0.5)*20;
+    const rotate = (Math.random()-0.5)*10;
+    const scale = 1 + (Math.random()-0.5)*0.1;
+
+    dead.style.transform = `translate(${offsetX}px, ${offsetY}px) rotate(${rotate}deg) scale(${scale})`;
     dead.style.filter = `drop-shadow(${rOffset}px 0 red) drop-shadow(${gOffset}px 0 green) drop-shadow(${bOffset}px 0 blue)`;
   },30);
 
-  // Через 4 секунды показать лицо
+  // Через 4 секунды показываем лицо
   setTimeout(()=>{
     clearInterval(deadGlitchInterval);
     const face=document.createElement('img');
     face.src='img/face.png';
     face.className='dead-face';
-    face.style.filter = 'none'; // лицо без глитча
+    face.style.filter='none';
+    face.style.transform='none';
     dead.appendChild(face);
 
     setTimeout(()=>location.reload(),100);
   },4000);
 };
 </script>
-
-<!-- SVG filter для RGB split -->
-<svg style="display:none">
-<filter id="rgbSplit">
-  <feColorMatrix in="SourceGraphic" type="matrix" values="1 0 0 0 0
-                                                        0 1 0 0 0
-                                                        0 0 1 0 0
-                                                        0 0 0 1 0"/>
-</filter>
-</svg>
-
 </body>
 </html>
+
 
 
 
