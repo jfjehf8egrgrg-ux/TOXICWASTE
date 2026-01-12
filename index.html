@@ -26,7 +26,7 @@ body {
   pointer-events: none;
   animation:
     logoFloat 3.5s ease-in-out infinite,
-    logoGlitch 7s steps(1) infinite;
+    logoGlitch 8s steps(1) infinite;
 }
 
 .logo img { max-width: 220px; }
@@ -36,9 +36,9 @@ body {
 }
 
 @keyframes logoGlitch {
-  95% { filter: drop-shadow(-6px 0 red); }
-  96% { filter: drop-shadow(6px 0 cyan); }
-  97% { filter: drop-shadow(-10px 0 magenta); }
+  96% { filter: drop-shadow(-6px 0 red); }
+  97% { filter: drop-shadow(6px 0 cyan); }
+  98% { filter: drop-shadow(-10px 0 magenta); }
 }
 
 /* ================= IMAGES ================= */
@@ -68,12 +68,6 @@ body {
   max-width: 260px;
   height: auto;
   cursor: default;
-  animation: gifTear 11s steps(1) infinite;
-}
-
-@keyframes gifTear {
-  97% { transform: translateX(-8px); }
-  98% { transform: translateX(12px); }
 }
 
 /* ================= TEXT ================= */
@@ -88,33 +82,7 @@ body {
     0 0 8px rgba(0,0,0,.9);
 }
 
-/* ================= MICRO GLITCH (EVENT) ================= */
-.micro-glitch {
-  position: fixed;
-  width: 120px;
-  height: 16px;
-  background: linear-gradient(
-    to right,
-    transparent,
-    rgba(255,255,255,.9),
-    transparent
-  );
-  pointer-events: none;
-  z-index: 100;
-  animation: microFlash .18s steps(1) forwards;
-}
-
-@keyframes microFlash {
-  40% {
-    transform: translate(-18px, 6px);
-    filter:
-      drop-shadow(-4px 0 red)
-      drop-shadow(4px 0 cyan);
-  }
-  100% { opacity: 0; }
-}
-
-/* ================= MICRO NOISE (CONSTANT) ================= */
+/* ================= CONSTANT MICRO NOISE ================= */
 .noise-glitch {
   position: fixed;
   pointer-events: none;
@@ -127,28 +95,30 @@ body {
 
 /* ================= MEGA GLITCH ================= */
 .site-glitch {
-  animation: siteGlitch .4s steps(1);
+  animation: siteGlitch .55s steps(1);
 }
 
 @keyframes siteGlitch {
   0% { transform:none; filter:none; }
-  20% {
-    transform: translateX(-110px);
+  25% {
+    transform: translateX(-140px);
     filter:
-      drop-shadow(-18px 0 red)
+      drop-shadow(-22px 0 red)
+      drop-shadow(22px 0 cyan);
+  }
+  50% {
+    transform: translateY(60px);
+    filter:
+      drop-shadow(-18px 0 magenta)
       drop-shadow(18px 0 cyan);
   }
-  40% { transform: translateX(140px); }
-  60% {
-    transform: translateX(-60px);
-    filter:
-      drop-shadow(-12px 0 magenta)
-      drop-shadow(12px 0 cyan);
+  75% {
+    transform: translateX(120px);
   }
   100% { transform:none; filter:none; }
 }
 
-/* ================= VIEWER ================= */
+/* ================= IMAGE VIEWER ================= */
 .viewer {
   position: fixed;
   inset: 0;
@@ -166,7 +136,7 @@ body {
   max-height: 70vh;
 }
 
-.zoom-in { animation: zoomIn .25s ease-out forwards; }
+.zoom-in { animation: zoomIn .28s ease-out forwards; }
 .zoom-out { animation: zoomOut .25s ease-in forwards; }
 
 @keyframes zoomIn {
@@ -232,9 +202,12 @@ body {
 
 <script>
 
+/* ================= STATE ================= */
+let clickCount = 0;
+
 /* ================= GREEN SPLASH ================= */
 function greenSplash(x,y){
-  for(let i=0;i<28;i++){
+  for(let i=0;i<26;i++){
     const p=document.createElement('div');
     p.className='particle';
     p.style.left=x+'px';
@@ -248,19 +221,23 @@ function greenSplash(x,y){
   }
 }
 
-/* GLOBAL CLICK SPLASH */
+/* ================= GLOBAL CLICK ================= */
 document.addEventListener('click',e=>{
+  clickCount++;
   greenSplash(e.clientX,e.clientY);
 });
 
-/* IMAGE VIEWER */
+/* ================= IMAGE VIEWER + RESET ================= */
 const viewer=document.getElementById('viewer');
 const viewerImg=document.getElementById('viewerImg');
 
 document.querySelectorAll('.zoomable').forEach(img=>{
   img.addEventListener('click',e=>{
     e.stopPropagation();
-    viewerImg.src=img.src;
+
+    clickCount = 0; // 🔥 ПОЛНЫЙ СБРОС
+
+    viewerImg.src = img.src;
     viewerImg.className='zoom-in';
     viewer.classList.add('active');
   });
@@ -271,37 +248,37 @@ viewer.addEventListener('click',()=>{
   setTimeout(()=>viewer.classList.remove('active'),250);
 });
 
-/* EVENT MICRO GLITCH */
+/* ================= CONSTANT MICRO GLITCH ================= */
 setInterval(()=>{
-  const g=document.createElement('div');
-  g.className='micro-glitch';
-  g.style.top=Math.random()*innerHeight+'px';
-  g.style.left=Math.random()*(innerWidth-140)+'px';
-  document.body.appendChild(g);
-  setTimeout(()=>g.remove(),180);
-},1400);
+  const level = Math.floor(clickCount / 10); // усиление каждые 10 кликов
+  const amount = 2 + level * 2;
 
-/* CONSTANT MICRO NOISE */
-setInterval(()=>{
-  for(let i=0;i<3;i++){
+  for(let i=0;i<amount;i++){
     const n=document.createElement('div');
     n.className='noise-glitch';
-    const w=Math.random()*18+4;
+
+    const w=Math.random()*(14+level*2)+4;
     const h=Math.random()*3+1;
+
     n.style.width=w+'px';
     n.style.height=h+'px';
     n.style.left=Math.random()*(innerWidth-w)+'px';
     n.style.top=Math.random()*(innerHeight-h)+'px';
-    document.body.appendChild(n);
-    setTimeout(()=>n.remove(),Math.random()*180+120);
-  }
-},90);
 
-/* MEGA GLITCH */
+    document.body.appendChild(n);
+
+    setTimeout(()=>n.remove(), Math.max(40,120 - level*5));
+  }
+}, 45);
+
+/* ================= MEGA GLITCH ================= */
 setInterval(()=>{
-  document.body.classList.add('site-glitch');
-  setTimeout(()=>document.body.classList.remove('site-glitch'),400);
-},6500);
+  const level = Math.floor(clickCount / 10);
+  if(level > 0){
+    document.body.classList.add('site-glitch');
+    setTimeout(()=>document.body.classList.remove('site-glitch'), 400 + level*30);
+  }
+}, 6500);
 
 </script>
 
