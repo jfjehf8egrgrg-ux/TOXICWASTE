@@ -92,11 +92,23 @@ body {
 .dead-screen {
   position:fixed;
   inset:0;
-  background:black;
   z-index:999999;
+  background:black;
   pointer-events:all;
   cursor:none;
   overflow:hidden;
+}
+.dead-screen * {
+  animation:none !important;
+  transition:none !important;
+  pointer-events:none !important;
+}
+
+/* SNAPSHOT */
+.snapshot {
+  position:absolute;
+  inset:0;
+  filter:grayscale(1) contrast(120%);
 }
 
 /* GLITCH STRIP */
@@ -105,6 +117,16 @@ body {
   left:0;
   width:100%;
   mix-blend-mode:difference;
+}
+
+/* FACE */
+.dead-face {
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  max-width:80vw;
+  filter:contrast(180%) grayscale(1);
 }
 </style>
 </head>
@@ -159,7 +181,7 @@ viewer.onclick=()=>{
   setTimeout(()=>viewer.classList.remove('active'),200);
 };
 
-/* MICRO GLITCH LOOP */
+/* MICRO GLITCH */
 setInterval(()=>{
   const n=document.createElement('div');
   n.className='noise';
@@ -190,6 +212,12 @@ logo.onclick=e=>{
 
   const dead=document.createElement('div');
   dead.className='dead-screen';
+
+  /* SNAPSHOT */
+  const snap=document.body.cloneNode(true);
+  snap.className='snapshot';
+  dead.appendChild(snap);
+
   document.body.appendChild(dead);
 
   const colors=['#ff0000','#ffff00','#00ff00','#00ffff','#ff00ff'];
@@ -211,18 +239,13 @@ logo.onclick=e=>{
     strips.forEach(s=>s.remove());
 
     /* 1.5s DISTORT */
-    dead.style.filter='drop-shadow(14px 0 red) drop-shadow(-14px 0 cyan)';
-    dead.style.transform='translate(8px,-6px)';
+    snap.style.filter='grayscale(1) contrast(140%)';
+    snap.style.transform='translate(6px,-4px)';
 
     setTimeout(()=>{
       const face=document.createElement('img');
       face.src='img/face.png';
-      face.style.position='absolute';
-      face.style.maxWidth='80vw';
-      face.style.top='50%';
-      face.style.left='50%';
-      face.style.transform='translate(-50%,-50%)';
-      face.style.filter='contrast(180%) grayscale(1)';
+      face.className='dead-face';
       dead.appendChild(face);
 
       requestAnimationFrame(()=>{
@@ -235,6 +258,7 @@ logo.onclick=e=>{
 
 </body>
 </html>
+
 
 
 
