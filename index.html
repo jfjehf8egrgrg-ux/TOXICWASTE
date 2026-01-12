@@ -63,6 +63,7 @@ body{
   z-index:10000;
   overflow:hidden;
   cursor:none;
+  filter: none;
 }
 .dead-face{
   position:fixed;
@@ -117,17 +118,25 @@ viewer.onclick=()=>{
   setTimeout(()=>viewer.classList.remove('active'),200);
 };
 
-/* SIMPLE SITE-WIDE GLITCH */
+/* SITE-WIDE GLITCH WITH RGB */
 function glitchSite(){
-  const offsetX = (Math.random() - 0.5) * 20; // горизонтальное смещение
-  const offsetY = (Math.random() - 0.5) * 20; // вертикальное смещение
-  const rotate = (Math.random() - 0.5) * 5;   // небольшое вращение
-  const scale = 1 + (Math.random() - 0.5) * 0.05; // лёгкое масштабирование
+  const offsetX = (Math.random() - 0.5) * 20;
+  const offsetY = (Math.random() - 0.5) * 20;
+  const rotate = (Math.random() - 0.5) * 5;
+  const scale = 1 + (Math.random() - 0.5) * 0.05;
+
+  // RGB split через filter + translate
+  const rOffset = (Math.random() - 0.5) * 10;
+  const gOffset = (Math.random() - 0.5) * 10;
+  const bOffset = (Math.random() - 0.5) * 10;
 
   document.body.style.transform = `translate(${offsetX}px, ${offsetY}px) rotate(${rotate}deg) scale(${scale})`;
+  document.body.style.filter = `url(#rgbSplit) drop-shadow(${rOffset}px 0 red) drop-shadow(${gOffset}px 0 green) drop-shadow(${bOffset}px 0 blue)`;
 
-  // сброс через 80 мс
-  setTimeout(()=>document.body.style.transform = '', 80);
+  setTimeout(()=>{
+    document.body.style.transform = '';
+    document.body.style.filter = '';
+  }, 80);
 }
 
 // каждые 2 секунды
@@ -147,14 +156,21 @@ logo.onclick=e=>{
   dead.className='dead-screen';
   document.body.appendChild(dead);
 
-  // Генерация быстрых полос на дедскрине
+  // Быстрые полосы + RGB glitch на всей сцене
   const deadGlitchInterval = setInterval(()=>{
+    // полосы
     const strip=document.createElement('div');
     strip.className='dead-strip';
     strip.style.top=Math.random()*window.innerHeight+'px';
     strip.style.backgroundColor=`rgba(${Math.floor(Math.random()*256)},${Math.floor(Math.random()*256)},${Math.floor(Math.random()*256)},0.8)`;
     dead.appendChild(strip);
     setTimeout(()=>strip.remove(),80);
+
+    // RGB сдвиг на всём экране (кроме лица)
+    const rOffset = (Math.random() - 0.5) * 10;
+    const gOffset = (Math.random() - 0.5) * 10;
+    const bOffset = (Math.random() - 0.5) * 10;
+    dead.style.filter = `drop-shadow(${rOffset}px 0 red) drop-shadow(${gOffset}px 0 green) drop-shadow(${bOffset}px 0 blue)`;
   },30);
 
   // Через 4 секунды показать лицо
@@ -163,12 +179,24 @@ logo.onclick=e=>{
     const face=document.createElement('img');
     face.src='img/face.png';
     face.className='dead-face';
+    face.style.filter = 'none'; // лицо без глитча
     dead.appendChild(face);
 
     setTimeout(()=>location.reload(),100);
   },4000);
 };
 </script>
+
+<!-- SVG filter для RGB split -->
+<svg style="display:none">
+<filter id="rgbSplit">
+  <feColorMatrix in="SourceGraphic" type="matrix" values="1 0 0 0 0
+                                                        0 1 0 0 0
+                                                        0 0 1 0 0
+                                                        0 0 0 1 0"/>
+</filter>
+</svg>
+
 </body>
 </html>
 
