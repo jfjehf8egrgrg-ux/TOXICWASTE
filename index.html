@@ -13,40 +13,30 @@ body {
 
 /* LOGO */
 .logo { margin-top:30px; pointer-events:none; animation: logoFloat 3.5s ease-in-out infinite; }
-.logo img { max-width:220px; }
+.logo img { max-width:220px; transition:text-shadow .2s ease; }
 @keyframes logoFloat {50% {transform: translateY(-14px);}}
 
 /* IMAGES */
 .images { display:flex; gap:90px; margin-top:140px; }
 .image-block { position:relative; text-align:center; }
-.zoomable { max-width:260px; cursor:pointer; transition: transform .35s cubic-bezier(.2,.8,.2,1); }
-.zoomable:hover { transform: scale(1.06);}
+.zoomable { max-width:260px; cursor:pointer; transition: transform .35s cubic-bezier(.2,.8,.2,1), filter .2s ease; }
 .noglitch { max-width:260px; cursor:default; }
 
 /* TEXT */
 .caption,.hint { margin-top:10px; font-size:18px; font-weight:bold; color:#fff;
-  text-shadow:2px 0 red,-2px 0 cyan,0 0 8px rgba(0,0,0,.9);
-}
+  transition:text-shadow .2s ease; }
 
 /* MICRO GLITCH */
 .noise-glitch { position:fixed; pointer-events:none; z-index:90; background:rgba(255,255,255,.75);
-  filter: drop-shadow(-2px 0 red) drop-shadow(2px 0 cyan);
-}
+  filter: drop-shadow(-2px 0 red) drop-shadow(2px 0 cyan); }
 
 /* MEGA GLITCH */
-.site-glitch {
-  animation: siteGlitch var(--megaDur) steps(1);
-}
+.site-glitch { animation: siteGlitch var(--megaDur) steps(1); }
 @keyframes siteGlitch {
   0% { transform:none; }
   20% { transform: translate(var(--gx), var(--gy)); }
-  40% {
-    transform: translate(calc(var(--gx)*-1), calc(var(--gy)*0.5));
-    filter:
-      drop-shadow(-20px 0 var(--c1))
-      drop-shadow(20px 0 var(--c2))
-      drop-shadow(0 20px var(--c3));
-  }
+  40% { transform: translate(calc(var(--gx)*-1), calc(var(--gy)*0.5));
+       filter: drop-shadow(-20px 0 var(--c1)) drop-shadow(20px 0 var(--c2)) drop-shadow(0 20px var(--c3)); }
   70% { transform: translate(var(--gx), calc(var(--gy)*-1)); }
   100% { transform:none; filter:none; }
 }
@@ -55,16 +45,15 @@ body {
 .viewer { position:fixed; inset:0; background:rgba(0,0,0,.65);
   display:none; justify-content:center; align-items:center; z-index:200; }
 .viewer.active { display:flex; }
-.viewer img { max-width:50vw; max-height:70vh; }
+.viewer img { max-width:50vw; max-height:70vh; transition: filter .2s ease; }
 .zoom-in { animation:zoomIn .28s ease-out forwards; }
 .zoom-out { animation:zoomOut .25s ease-in forwards; }
 @keyframes zoomIn { from {transform:scale(.4); opacity:0;} to {transform:scale(1); opacity:1;} }
 @keyframes zoomOut { to {transform:scale(.25); opacity:0;} }
 
 /* GREEN SPLASH */
-.particle { position:fixed; width:6px; height:6px; background:#39ff14;
-  box-shadow:0 0 12px #39ff14; border-radius:50%; pointer-events:none; z-index:300;
-  animation:splash .8s ease-out forwards; }
+.particle { position:fixed; width:6px; height:6px; border-radius:50%; pointer-events:none; z-index:300;
+  animation:splash .8s ease-out forwards; transition:background .2s ease, box-shadow .2s ease;}
 @keyframes splash { to { transform:translate(var(--x),var(--y)) scale(.1); opacity:0;} }
 </style>
 </head>
@@ -82,32 +71,65 @@ body {
 
 <script>
 let clickCount = 0;
+window.nextParticleColors = ['#39ff14','#39ff14','#39ff14'];
+
+/* RANDOM COLOR */
+function randomColor(){
+  const r=Math.floor(Math.random()*255),
+        g=Math.floor(Math.random()*255),
+        b=Math.floor(Math.random()*255);
+  return `rgb(${r},${g},${b})`;
+}
 
 /* GREEN SPLASH */
 function greenSplash(x,y){
+  const [c1,c2,c3] = window.nextParticleColors;
   for(let i=0;i<26;i++){
     const p=document.createElement('div');
     p.className='particle';
     p.style.left=x+'px'; p.style.top=y+'px';
     const a=Math.random()*Math.PI*2, r=Math.random()*180+40;
-    p.style.setProperty('--x',Math.cos(a)*r+'px'); p.style.setProperty('--y',Math.sin(a)*r+'px');
+    p.style.setProperty('--x',Math.cos(a)*r+'px');
+    p.style.setProperty('--y',Math.sin(a)*r+'px');
+    p.style.background = c1;
+    p.style.boxShadow = `0 0 12px ${c2}`;
     document.body.appendChild(p);
     setTimeout(()=>p.remove(),800);
   }
 }
 
-/* RANDOM COLOR */
-function randomColor(){ const r=Math.floor(Math.random()*255), g=Math.floor(Math.random()*255), b=Math.floor(Math.random()*255);
-return `rgb(${r},${g},${b})`;}
+/* UPDATE COLORS EVERY 10TH CLICK */
+function updateColors(){
+  const c1=randomColor();
+  const c2=randomColor();
+  const c3=randomColor();
+  window.nextParticleColors = [c1,c2,c3];
 
-/* IMAGE VIEWER + RESET */
+  // логотип
+  const logo = document.querySelector('.logo img');
+  logo.style.textShadow = `2px 0 ${c1}, -2px 0 ${c2}, 0 0 8px ${c3}`;
+
+  // текст
+  document.querySelectorAll('.caption,.hint').forEach(t=>{
+    t.style.textShadow = `2px 0 ${c1}, -2px 0 ${c2}, 0 0 8px ${c3}`;
+  });
+
+  // фото
+  document.querySelectorAll('.zoomable').forEach(img=>{
+    img.style.filter = `drop-shadow(2px 0 ${c1}) drop-shadow(-2px 0 ${c2})`;
+  });
+
+  return [c1,c2,c3];
+}
+
+/* IMAGE VIEWER */
 const viewer=document.getElementById('viewer');
 const viewerImg=document.getElementById('viewerImg');
 
 document.querySelectorAll('.zoomable').forEach(img=>{
   img.addEventListener('click',e=>{
     e.stopPropagation();
-    clickCount = 0; // сброс всего
+    clickCount=0; // сброс уровня хаоса
     updateGlobalGlitch();
     viewerImg.src = img.src;
     viewerImg.className='zoom-in';
@@ -120,24 +142,21 @@ viewer.addEventListener('click',()=>{
   setTimeout(()=>viewer.classList.remove('active'),250);
 });
 
-/* ================= UPDATE GLOBAL GLITCH ================= */
+/* ================= GLOBAL GLITCH ================= */
 function updateGlobalGlitch(){
   const level = Math.floor(clickCount/10);
-
-  // сдвиги и длительность мега-глитча растут с уровнем
   document.body.style.setProperty('--gx', 12 + level*18 + 'px');
   document.body.style.setProperty('--gy', 8 + level*12 + 'px');
   document.body.style.setProperty('--megaDur', 0.35 + level*0.04 + 's');
 
-  // каждый 10-й клик — новые цвета
+  // каждый 10-й клик
   if(clickCount>0 && clickCount % 10 === 0){
-    document.body.style.setProperty('--c1', randomColor());
-    document.body.style.setProperty('--c2', randomColor());
-    document.body.style.setProperty('--c3', randomColor());
+    const [c1,c2,c3] = updateColors();
+    document.body.style.setProperty('--c1', c1);
+    document.body.style.setProperty('--c2', c2);
+    document.body.style.setProperty('--c3', c3);
     document.body.classList.add('site-glitch');
-    setTimeout(()=>document.body.classList.remove('site-glitch'),
-      400 + level*60
-    );
+    setTimeout(()=>document.body.classList.remove('site-glitch'), 400 + level*60);
   }
 }
 
@@ -156,8 +175,8 @@ setInterval(()=>{
   }
 },40);
 
-/* GLOBAL CLICK */
-document.addEventListener('click', e=>{
+/* GLOBAL CLICK HANDLER */
+document.addEventListener('click',e=>{
   clickCount++;
   greenSplash(e.clientX,e.clientY);
   updateGlobalGlitch();
@@ -166,6 +185,7 @@ document.addEventListener('click', e=>{
 
 </body>
 </html>
+
 
 
 
