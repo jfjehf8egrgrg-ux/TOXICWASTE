@@ -14,7 +14,7 @@ body{
   display:flex;
   flex-direction:column;
   align-items:center;
-  overflow-x:hidden;
+  overflow:hidden;
   transition: transform 0.05s linear;
 }
 
@@ -55,24 +55,6 @@ body{
 @keyframes zin{from{transform:scale(.4);opacity:0}to{transform:scale(1);opacity:1}}
 @keyframes zout{to{transform:scale(.25);opacity:0}}
 
-/* MEGA GLITCH OVERLAY */
-.mega-glitch{
-  position:fixed;
-  inset:0;
-  pointer-events:none;
-  z-index:999;
-  mix-blend-mode:difference;
-  opacity:0.7;
-  animation:windGlitch 0.3s infinite;
-}
-@keyframes windGlitch{
-  0%{transform:translate(0,0) skew(0deg,0deg);}
-  25%{transform:translate(-15px,10px) skew(2deg,1deg);}
-  50%{transform:translate(10px,-10px) skew(-2deg,-1deg);}
-  75%{transform:translate(-10px,5px) skew(1deg,2deg);}
-  100%{transform:translate(0,0) skew(0deg,0deg);}
-}
-
 /* DEAD SCREEN */
 .dead-screen{
   position:fixed;
@@ -95,7 +77,7 @@ body{
 .dead-strip{
   position:absolute;
   width:100%;
-  height:30px; /* большая высота */
+  height:30px;
   mix-blend-mode:difference;
   opacity:0.8;
 }
@@ -135,25 +117,21 @@ viewer.onclick=()=>{
   setTimeout(()=>viewer.classList.remove('active'),200);
 };
 
-/* MEGA GLITCH ON MAIN SCREEN */
-function randomColor(){
-  const r=Math.floor(Math.random()*256);
-  const g=Math.floor(Math.random()*256);
-  const b=Math.floor(Math.random()*256);
-  return `rgba(${r},${g},${b},0.7)`;
-}
+/* SIMPLE SITE-WIDE GLITCH */
+function glitchSite(){
+  const offsetX = (Math.random() - 0.5) * 20; // горизонтальное смещение
+  const offsetY = (Math.random() - 0.5) * 20; // вертикальное смещение
+  const rotate = (Math.random() - 0.5) * 5;   // небольшое вращение
+  const scale = 1 + (Math.random() - 0.5) * 0.05; // лёгкое масштабирование
 
-function spawnMegaGlitch(){
-  const glitch=document.createElement('div');
-  glitch.className='mega-glitch';
-  glitch.style.backgroundColor=randomColor();
-  document.body.appendChild(glitch);
+  document.body.style.transform = `translate(${offsetX}px, ${offsetY}px) rotate(${rotate}deg) scale(${scale})`;
 
-  setTimeout(()=>glitch.remove(),300); // длительность каждой волны ~0.3 сек
+  // сброс через 80 мс
+  setTimeout(()=>document.body.style.transform = '', 80);
 }
 
 // каждые 2 секунды
-setInterval(spawnMegaGlitch,2000);
+setInterval(glitchSite, 2000);
 
 /* FNATI EXIT ON LOGO */
 const logo=document.getElementById('exitLogo');
@@ -169,15 +147,15 @@ logo.onclick=e=>{
   dead.className='dead-screen';
   document.body.appendChild(dead);
 
-  // Генерация больших полос глитча на дедскрине (очень быстро)
+  // Генерация быстрых полос на дедскрине
   const deadGlitchInterval = setInterval(()=>{
     const strip=document.createElement('div');
     strip.className='dead-strip';
     strip.style.top=Math.random()*window.innerHeight+'px';
     strip.style.backgroundColor=`rgba(${Math.floor(Math.random()*256)},${Math.floor(Math.random()*256)},${Math.floor(Math.random()*256)},0.8)`;
     dead.appendChild(strip);
-    setTimeout(()=>strip.remove(),80); // удаление каждой полосы
-  },30); // каждые 30 мс
+    setTimeout(()=>strip.remove(),80);
+  },30);
 
   // Через 4 секунды показать лицо
   setTimeout(()=>{
@@ -193,13 +171,6 @@ logo.onclick=e=>{
 </script>
 </body>
 </html>
-
-
-
-
-
-
-
 
 
 
