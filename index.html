@@ -6,175 +6,174 @@
 <title>TOXIC WASTE</title>
 
 <style>
-/* ================= ОСНОВА ================= */
+/* ================= BASE ================= */
+html, body {
+  width: 100%;
+  height: 100%;
+}
 body {
   margin: 0;
-  min-height: 100vh;
+  overflow-x: hidden;
   font-family: Arial, sans-serif;
-
   background: url("img/background.gif") no-repeat center center fixed;
   background-size: cover;
-
   display: flex;
   flex-direction: column;
   align-items: center;
-
-  animation: hardGlitch 4s infinite;
 }
 
-/* ================= HARD GLITCH ================= */
-@keyframes hardGlitch {
-  0%, 82%, 100% {
-    transform: translate(0);
-    filter: none;
-  }
-  83% {
-    transform: translate(-8px, 2px);
-    filter: hue-rotate(30deg) contrast(1.4);
-  }
-  84% {
-    transform: translate(8px, -2px);
-    filter: hue-rotate(-30deg) saturate(1.6);
-  }
-  85% {
-    transform: translate(-14px, 0);
-    filter: contrast(1.6);
-  }
-  86% {
-    transform: translate(14px, 0);
-  }
-  87% {
-    transform: translate(0);
-    filter: none;
-  }
+/* ================= TOTAL GLITCH (БЕЗУМИЕ) ================= */
+@keyframes totalGlitch {
+  0%, 70%, 100% { transform: translate(0) skew(0); filter:none; }
+  71% { transform: translate(-20px, 5px) skewX(5deg); filter: hue-rotate(60deg) contrast(1.8); }
+  72% { transform: translate(20px, -5px) skewY(-5deg); filter: hue-rotate(-60deg) saturate(2); }
+  73% { transform: translate(-35px, 0); filter: contrast(2.2); }
+  74% { transform: translate(35px, 0); }
+  75% { transform: translate(0); filter:none; }
+}
+body {
+  animation: totalGlitch 2.2s infinite;
 }
 
-/* ================= VHS СКАНЛАЙНЫ ================= */
-body::before {
-  content: "";
+/* ================= RGB SPLIT LAYERS ================= */
+body::before,
+body::after {
+  content:"";
   position: fixed;
-  inset: 0;
-  pointer-events: none;
+  inset:0;
+  pointer-events:none;
   z-index: 120;
+}
+body::before {
   background:
     repeating-linear-gradient(
       to bottom,
-      rgba(255,255,255,0.04),
-      rgba(255,255,255,0.04) 1px,
-      rgba(0,0,0,0.06) 2px,
-      rgba(0,0,0,0.06) 3px
-    );
-  opacity: 0.35;
-}
-
-/* ================= RGB АРТЕФАКТЫ (ПОЛОСЫ) ================= */
-body::after {
-  content: "";
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 110;
-  background:
-    linear-gradient(to bottom,
-      rgba(255,0,0,0.15) 0%,
-      rgba(0,255,255,0.15) 20%,
-      rgba(255,0,255,0.15) 40%,
-      rgba(0,255,0,0.15) 60%,
-      rgba(0,0,255,0.15) 80%,
-      rgba(255,0,0,0.15) 100%
+      rgba(255,0,0,.35) 0,
+      rgba(255,0,0,.35) 2px,
+      transparent 4px
     );
   mix-blend-mode: screen;
-  opacity: 0;
-  animation: rgbTear 3.5s infinite;
+  animation: rgbShift 0.15s infinite;
+}
+body::after {
+  background:
+    repeating-linear-gradient(
+      to bottom,
+      rgba(0,255,255,.35) 0,
+      rgba(0,255,255,.35) 2px,
+      transparent 5px
+    );
+  mix-blend-mode: screen;
+  animation: rgbShift 0.18s infinite reverse;
+}
+@keyframes rgbShift {
+  from { transform: translateY(0); }
+  to { transform: translateY(-30px); }
 }
 
-@keyframes rgbTear {
-  0%, 75%, 100% { opacity: 0; }
-  76% { opacity: 0.7; transform: translateY(-30px); }
-  77% { opacity: 0.4; transform: translateY(30px); }
-  78% { opacity: 0; transform: translateY(0); }
+/* ================= SIGNAL TEARS ================= */
+.signal-tear {
+  position: fixed;
+  left:0;
+  width:100%;
+  height:6px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    rgba(255,255,255,.9),
+    transparent
+  );
+  z-index:110;
+  animation: tearMove .08s linear infinite;
+}
+@keyframes tearMove {
+  from { transform: translateX(-30px); }
+  to { transform: translateX(30px); }
 }
 
 /* ================= LOGO ================= */
-@keyframes floatY {
-  0%,100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
-}
-
 .logo {
-  margin-top: 30px;
-  margin-bottom: 40px;
-  animation: floatY 3s ease-in-out infinite;
+  margin: 30px 0 40px;
+  animation: floatY 2.5s infinite;
 }
-
-.logo img {
-  max-width: 220px;
+@keyframes floatY {
+  0%,100%{ transform: translateY(0); }
+  50%{ transform: translateY(-12px); }
 }
+.logo img { max-width:220px; }
 
 /* ================= IMAGES ================= */
 .images {
-  display: flex;
-  gap: 40px;
+  display:flex;
+  gap:40px;
 }
-
-.image-block {
-  text-align: center;
-}
-
+.image-block { text-align:center; }
 .image-block img {
-  max-width: 260px;
-  cursor: pointer;
+  max-width:260px;
+  cursor:pointer;
 }
 
 /* ================= TEXT ================= */
-.caption,
-.hint {
-  margin-top: 10px;
-  font-size: 18px;
-  font-weight: bold;
-  color: #fff;
-  text-shadow:
-    2px 0 red,
-    -2px 0 cyan,
-    0 0 6px rgba(0,0,0,0.8);
-}
-
-/* ================= ZOOM ANIMATION ================= */
-@keyframes zoomIn {
-  from {
-    transform: translate(-50%, -50%) scale(0.4);
-    opacity: 0;
-  }
-  to {
-    transform: translate(-50%, -50%) scale(1);
-    opacity: 1;
-  }
-}
-
-.expanded {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  max-width: 45vw !important;
-  max-height: 70vh;
-  z-index: 20;
-  animation: zoomIn 0.35s ease-out forwards;
+.caption,.hint{
+  margin-top:10px;
+  font-size:18px;
+  font-weight:bold;
+  color:#fff;
+  text-shadow: 3px 0 red, -3px 0 cyan, 0 0 10px #000;
 }
 
 /* ================= OVERLAY ================= */
-.overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.7);
-  z-index: 10;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.3s ease;
+.overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.75);
+  z-index:10;
+  opacity:0;
+  pointer-events:none;
+  transition:.25s;
+}
+.overlay.active{
+  opacity:1;
+  pointer-events:auto;
 }
 
-.overlay.active {
-  opacity: 1;
-  pointer-events: auto;
+/* ================= ZOOM IN / OUT ================= */
+@keyframes zoomIn {
+  from { transform: translate(-50%,-50%) scale(.2) rotate(-5deg); opacity:0; }
+  to { transform: translate(-50%,-50%) scale(1) rotate(0); opacity:1; }
+}
+@keyframes zoomOut {
+  from { transform: translate(-50%,-50%) scale(1); opacity:1; }
+  to { transform: translate(-50%,-50%) scale(.1); opacity:0; }
+}
+
+.expanded{
+  position:fixed;
+  top:50%;
+  left:50%;
+  max-width:45vw!important;
+  max-height:70vh;
+  z-index:20;
+  animation: zoomIn .35s cubic-bezier(.2,.9,.1,1) forwards;
+}
+.closing{
+  animation: zoomOut .25s ease-in forwards;
+}
+
+/* ================= FLYING PARTICLES ================= */
+.particle{
+  position:fixed;
+  width:6px;
+  height:6px;
+  background: white;
+  mix-blend-mode: screen;
+  pointer-events:none;
+  z-index:25;
+  animation: fly 1s ease-out forwards;
+}
+@keyframes fly{
+  from{ transform: translate(0,0) scale(1); opacity:1; }
+  to{ transform: translate(var(--x),var(--y)) scale(0); opacity:0; }
 }
 </style>
 </head>
@@ -183,19 +182,15 @@ body::after {
 
 <div class="overlay" id="overlay"></div>
 
-<!-- MUSIC -->
 <audio id="bgMusic" loop>
   <source src="music/bg.mp3" type="audio/mpeg">
 </audio>
 
-<!-- LOGO -->
 <div class="logo">
   <img src="img/logo3.png">
 </div>
 
-<!-- CONTENT -->
 <div class="images">
-
   <div class="image-block">
     <img src="img/1.png" class="zoomable">
     <div class="hint">нажми меня!</div>
@@ -210,44 +205,62 @@ body::after {
     <img src="img/animation.gif">
     <div class="caption">14.1</div>
   </div>
-
 </div>
 
 <script>
-const zoomImages = document.querySelectorAll('.zoomable');
+const imgs = document.querySelectorAll('.zoomable');
 const overlay = document.getElementById('overlay');
 const music = document.getElementById('bgMusic');
 
-zoomImages.forEach(img => {
-  img.addEventListener('click', () => {
+/* signal tears spawn */
+setInterval(()=>{
+  const t=document.createElement('div');
+  t.className='signal-tear';
+  t.style.top=Math.random()*innerHeight+'px';
+  document.body.appendChild(t);
+  setTimeout(()=>t.remove(),120);
+},200);
+
+/* particles */
+function spawnParticles(x,y){
+  for(let i=0;i<25;i++){
+    const p=document.createElement('div');
+    p.className='particle';
+    p.style.left=x+'px';
+    p.style.top=y+'px';
+    p.style.setProperty('--x',(Math.random()*600-300)+'px');
+    p.style.setProperty('--y',(Math.random()*600-300)+'px');
+    document.body.appendChild(p);
+    setTimeout(()=>p.remove(),1000);
+  }
+}
+
+imgs.forEach(img=>{
+  img.addEventListener('click',e=>{
+    img.classList.remove('closing');
     img.classList.add('expanded');
     overlay.classList.add('active');
+    spawnParticles(e.clientX,e.clientY);
   });
 });
 
-overlay.addEventListener('click', () => {
-  zoomImages.forEach(img => img.classList.remove('expanded'));
+overlay.addEventListener('click',()=>{
+  imgs.forEach(img=>{
+    if(img.classList.contains('expanded')){
+      img.classList.add('closing');
+      setTimeout(()=>{
+        img.classList.remove('expanded','closing');
+      },250);
+    }
+  });
   overlay.classList.remove('active');
 });
 
-/* autoplay music after first click */
-document.body.addEventListener('click', () => {
+/* music */
+document.body.addEventListener('click',()=>{
   music.play().catch(()=>{});
-}, { once:true });
+},{once:true});
 </script>
-
-<!-- ГОТОВО -->
 
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
