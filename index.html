@@ -12,62 +12,64 @@ body {
   min-height: 100vh;
   font-family: Arial, sans-serif;
   overflow-x: hidden;
-
   background: url("img/background.gif") no-repeat center center fixed;
   background-size: cover;
-
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
-/* ================= VHS SCANLINES ================= */
-body::after {
-  content: "";
+/* ================= VHS SCANLINES (REAL) ================= */
+.vhs {
   position: fixed;
   inset: 0;
   pointer-events: none;
-  z-index: 10;
+  z-index: 15;
   background:
     repeating-linear-gradient(
       to bottom,
-      rgba(255,255,255,0.04) 0px,
-      rgba(255,255,255,0.04) 1px,
+      rgba(255,255,255,0.06) 0px,
+      rgba(255,255,255,0.06) 1px,
       rgba(0,0,0,0) 2px,
       rgba(0,0,0,0) 4px
     );
-  opacity: 0.15;
+  opacity: 0.35;
+  animation: scanMove 8s linear infinite;
 }
 
-/* ================= RGB FLASH (1-2 FRAMES) ================= */
-body::before {
-  content: "";
+@keyframes scanMove {
+  from { background-position-y: 0; }
+  to   { background-position-y: 120px; }
+}
+
+/* ================= RGB FRAME GLITCH ================= */
+.rgb-flash {
   position: fixed;
   inset: 0;
   pointer-events: none;
-  z-index: 9;
+  z-index: 14;
   mix-blend-mode: screen;
-  animation: rgbFlash 6s infinite;
+  animation: rgbFlash 7s infinite;
 }
 
 @keyframes rgbFlash {
-  0%,92%,100% { opacity: 0; transform: translate(0); }
-  93% { opacity: 1; transform: translate(-3px,0); background: rgba(255,0,0,0.2); }
-  94% { opacity: 1; transform: translate(3px,0); background: rgba(0,255,255,0.2); }
-  95% { opacity: 0; }
+  0%,93%,100% { opacity: 0; }
+  94% { opacity: 1; background: rgba(255,0,0,0.18); transform: translate(-2px,0); }
+  95% { opacity: 1; background: rgba(0,255,255,0.18); transform: translate(2px,0); }
+  96% { opacity: 0; }
 }
 
-/* ================= GLOBAL SHAKE ================= */
+/* ================= GLOBAL SHAKE (VERY SUBTLE) ================= */
 .glitch-wrapper {
   width: 100%;
   min-height: 100vh;
-  animation: globalShake 3.5s infinite;
+  animation: globalShake 4.5s infinite;
 }
 
 @keyframes globalShake {
-  0%,95%,100% { transform: translate(0); }
-  96% { transform: translate(-2px,1px); }
-  97% { transform: translate(2px,-1px); }
+  0%,97%,100% { transform: translate(0); }
+  98% { transform: translate(-1px,1px); }
+  99% { transform: translate(1px,-1px); }
 }
 
 /* ================= LOGO ================= */
@@ -85,7 +87,7 @@ body::before {
 
 @keyframes logoFloat {
   0%,100% { transform: translateY(0); }
-  50% { transform: translateY(-14px); }
+  50% { transform: translateY(-12px); }
 }
 
 /* ================= IMAGES ================= */
@@ -98,6 +100,7 @@ body::before {
 }
 
 .image-block {
+  position: relative;
   text-align: center;
 }
 
@@ -106,18 +109,56 @@ body::before {
   cursor: pointer;
 }
 
-/* ================= INSANE HOVER GLITCH ================= */
-@keyframes hoverGlitch {
-  0%   { transform: translate(0); filter:none; }
-  20%  { transform: translate(-6px,2px) skewX(6deg); filter: hue-rotate(20deg); }
-  40%  { transform: translate(6px,-2px) skewY(-6deg); filter: contrast(160%); }
-  60%  { transform: translate(-8px,0) scaleX(1.05); filter: saturate(200%); }
-  80%  { transform: translate(8px,0) scaleY(0.95); filter: hue-rotate(-20deg); }
-  100% { transform: translate(0); filter:none; }
+/* ================= LAG / VHS HOVER ================= */
+.image-block::before,
+.image-block::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
 }
 
-.zoomable:hover:not(.expanded) {
-  animation: hoverGlitch 0.18s infinite;
+.image-block::before {
+  background:
+    repeating-linear-gradient(
+      to bottom,
+      rgba(0,0,0,0.35) 0px,
+      rgba(0,0,0,0.35) 2px,
+      transparent 4px,
+      transparent 8px
+    );
+}
+
+.image-block::after {
+  background:
+    repeating-linear-gradient(
+      to right,
+      rgba(255,255,255,0.25) 0px,
+      rgba(255,255,255,0.25) 1px,
+      transparent 3px,
+      transparent 6px
+    );
+  mix-blend-mode: overlay;
+}
+
+@keyframes lagGlitch {
+  0% { transform: translateX(0); }
+  30% { transform: translateX(-2px); }
+  60% { transform: translateX(2px); }
+  100% { transform: translateX(0); }
+}
+
+.image-block:hover:not(.open)::before,
+.image-block:hover:not(.open)::after {
+  opacity: 1;
+}
+
+.image-block:hover:not(.open) img {
+  animation: lagGlitch 0.25s steps(2) infinite;
+  filter:
+    contrast(120%)
+    saturate(130%);
 }
 
 /* ================= TEXT ================= */
@@ -152,7 +193,7 @@ body::before {
 /* ================= ZOOM ================= */
 @keyframes zoomIn {
   from {
-    transform: translate(-50%,-50%) scale(0.3);
+    transform: translate(-50%,-50%) scale(0.35);
     opacity: 0;
   }
   to {
@@ -191,10 +232,10 @@ body::before {
 /* ================= GREEN SPLASH ================= */
 .particle {
   position: fixed;
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
   background: #39ff14;
-  box-shadow: 0 0 12px #39ff14;
+  box-shadow: 0 0 10px #39ff14;
   border-radius: 50%;
   pointer-events: none;
   z-index: 90;
@@ -210,6 +251,8 @@ body::before {
 
 <body>
 
+<div class="vhs"></div>
+<div class="rgb-flash"></div>
 <div class="overlay" id="overlay"></div>
 
 <div class="glitch-wrapper">
@@ -243,14 +286,14 @@ const overlay = document.getElementById('overlay');
 
 /* GREEN SPLASH */
 function greenSplash(x, y) {
-  for (let i = 0; i < 30; i++) {
+  for (let i = 0; i < 26; i++) {
     const p = document.createElement('div');
     p.className = 'particle';
     p.style.left = x + 'px';
     p.style.top = y + 'px';
 
     const a = Math.random() * Math.PI * 2;
-    const r = Math.random() * 220 + 40;
+    const r = Math.random() * 200 + 40;
 
     p.style.setProperty('--x', Math.cos(a) * r + 'px');
     p.style.setProperty('--y', Math.sin(a) * r + 'px');
@@ -263,6 +306,7 @@ function greenSplash(x, y) {
 /* ZOOM */
 imgs.forEach(img => {
   img.addEventListener('click', e => {
+    img.closest('.image-block').classList.add('open');
     img.classList.remove('closing');
     img.classList.add('expanded');
     overlay.classList.add('active');
@@ -274,6 +318,7 @@ overlay.addEventListener('click', () => {
   imgs.forEach(img => {
     if (img.classList.contains('expanded')) {
       img.classList.add('closing');
+      img.closest('.image-block').classList.remove('open');
       setTimeout(() => {
         img.classList.remove('expanded', 'closing');
       }, 250);
@@ -285,6 +330,7 @@ overlay.addEventListener('click', () => {
 
 </body>
 </html>
+
 
 
 
