@@ -9,12 +9,21 @@ body{
   margin:0;
   min-height:100vh;
   font-family:Arial,sans-serif;
-  background:url("img/background.gif") no-repeat center center fixed;
-  background-size:cover;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
   overflow:hidden;
+  position:relative;
+}
+
+/* BACKGROUND LAYER */
+body::before{
+  content:"";
+  position:fixed;
+  top:0; left:0;
+  width:100%; height:100%;
+  background:url("img/background.gif") no-repeat center center;
+  background-size:cover;
+  z-index:-1;
+  pointer-events:none;
+  transition: transform 0.05s linear;
 }
 
 /* LOGO */
@@ -103,7 +112,7 @@ body{
 <div class="viewer" id="viewer"><img id="viewerImg"></div>
 
 <script>
-/* VIEWER PNG */
+/* VIEWER */
 const viewer=document.getElementById('viewer');
 const viewerImg=document.getElementById('viewerImg');
 document.querySelectorAll('.zoomable').forEach(img=>{
@@ -120,20 +129,27 @@ viewer.onclick=()=>{
   setTimeout(()=>viewer.classList.remove('active'),200);
 };
 
-/* --- HAOTIC GLITCH FOR ENTIRE PAGE INCLUDING BACKGROUND --- */
+/* --- HAOTIC GLITCH WITH BACKGROUND --- */
 function glitchSite(){
-  // Включаем все элементы страницы
   const allElements = [document.body, ...document.body.querySelectorAll("*")];
-  
+  const bg = document.body.querySelector('::before'); // псевдоэлемент управляется через body.style.setProperty
+
+  // случайный глитч для фонового слоя
+  const bgX = (Math.random()-0.5)*30;
+  const bgY = (Math.random()-0.5)*30;
+  const bgScale = 1 + (Math.random()-0.5)*0.05;
+  document.body.style.setProperty('--bg-transform', `translate(${bgX}px, ${bgY}px) scale(${bgScale})`);
+
+  // элементы страницы
   allElements.forEach(el=>{
     const offsetX = (Math.random()-0.5)*50;
     const offsetY = (Math.random()-0.5)*50;
-    const rotate = (Math.random()-0.5)*20;
-    const scale = 1 + (Math.random()-0.5)*0.15;
+    const rotate = (Math.random()-0.5)*15;
+    const scale = 1 + (Math.random()-0.5)*0.1;
 
-    const rOffset = (Math.random()-0.5)*25;
-    const gOffset = (Math.random()-0.5)*25;
-    const bOffset = (Math.random()-0.5)*25;
+    const rOffset = (Math.random()-0.5)*20;
+    const gOffset = (Math.random()-0.5)*20;
+    const bOffset = (Math.random()-0.5)*20;
 
     el.style.transform = `translate(${offsetX}px, ${offsetY}px) rotate(${rotate}deg) scale(${scale})`;
     el.style.filter = `drop-shadow(${rOffset}px 0 red) drop-shadow(${gOffset}px 0 green) drop-shadow(${bOffset}px 0 blue)`;
@@ -144,10 +160,14 @@ function glitchSite(){
       el.style.transform='';
       el.style.filter='';
     });
+    document.body.style.setProperty('--bg-transform','');
   },120);
 }
 
-// каждые 1.2 сек
+// CSS переменная для фонового слоя
+document.body.style.setProperty('--bg-transform','');
+
+// каждую 1.2 сек
 setInterval(glitchSite,1200);
 
 /* --- FNATI EXIT --- */
@@ -159,14 +179,11 @@ logo.onclick=e=>{
   sound.currentTime=0;
   sound.play();
 
-  // Черный экран полностью закрывает фон
   const dead=document.createElement('div');
   dead.className='dead-screen';
   document.body.appendChild(dead);
 
-  // Полосы + RGB-сдвиг без тряски
   const deadGlitchInterval = setInterval(()=>{
-    // полосы
     const strip=document.createElement('div');
     strip.className='dead-strip';
     strip.style.top=Math.random()*window.innerHeight+'px';
@@ -174,14 +191,13 @@ logo.onclick=e=>{
     dead.appendChild(strip);
     setTimeout(()=>strip.remove(),50);
 
-    // хаотичный RGB на всем черном фоне
+    // RGB сдвиги без тряски
     const rOffset = (Math.random()-0.5)*25;
     const gOffset = (Math.random()-0.5)*25;
     const bOffset = (Math.random()-0.5)*25;
     dead.style.filter = `drop-shadow(${rOffset}px 0 red) drop-shadow(${gOffset}px 0 green) drop-shadow(${bOffset}px 0 blue)`;
   },30);
 
-  // Через 4 секунды показываем лицо без глитча
   setTimeout(()=>{
     clearInterval(deadGlitchInterval);
     const face=document.createElement('img');
@@ -194,8 +210,18 @@ logo.onclick=e=>{
   },4000);
 };
 </script>
+
+<style>
+/* привязываем переменную к псевдоэлементу */
+body::before {
+  transform: var(--bg-transform, none);
+  transition: transform 0.05s linear;
+}
+</style>
 </body>
 </html>
+
+
 
 
 
