@@ -125,20 +125,6 @@ body{
   100%{transform:translateY(-20px);}
 }
 
-/* DISTORT + RGB */
-.dead-distort{
-  animation:distort .12s steps(1) infinite;
-  filter:
-    drop-shadow(8px 0 red)
-    drop-shadow(-8px 0 cyan)
-    drop-shadow(0 6px magenta);
-}
-@keyframes distort{
-  0%{transform:translate(6px,-4px) rotate(.6deg);}
-  50%{transform:translate(-5px,3px) rotate(-.5deg);}
-  100%{transform:translate(4px,-2px) rotate(.4deg);}
-}
-
 /* FACE */
 .dead-face{
   position:fixed;
@@ -254,50 +240,58 @@ logo.onclick=e=>{
   }
 
   setTimeout(()=>{
-    // Убираем старые полосы
-    strips.forEach(s => s.remove());
+    // 1.5 сек Freeze Frame Glitch
+    strips.forEach(s => s.remove()); // убираем старые полосы
 
-    // Создаём новые большие полосы для "жёсткого глитча"
+    // Останавливаем все анимации на странице
+    document.body.style.animation='none';
+    document.body.style.transition='none';
+    snap.style.animation='none';
+    snap.style.transition='none';
+
+    // Добавляем крупные полосы для эффекта смещения кадра
     const glitchStrips = [];
-    for (let i = 0; i < 4; i++) {
-      const s = document.createElement('div');
-      s.className = 'dead-strip';
-      s.style.top = (i * 20) + 'vh';
-      s.style.height = '25vh';
-      s.style.background = 'rgba(255,255,255,0.2)';
+    for(let i=0;i<5;i++){
+      const s=document.createElement('div');
+      s.className='dead-strip';
+      s.style.top=(i*15)+'vh';
+      s.style.height='20vh';
+      s.style.background='rgba(255,255,255,0.2)';
+      s.style.mixBlendMode='difference';
       dead.appendChild(s);
       glitchStrips.push(s);
     }
 
-    // Смещение клона страницы (кадр дергается)
-    let count = 0;
-    const glitchInterval = setInterval(() => {
-      const offsetX = (Math.random() - 0.5) * 20;
-      const offsetY = (Math.random() - 0.5) * 20;
-      snap.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
-      count++;
-      if (count > 15) { // ~1.5 секунды
-        clearInterval(glitchInterval);
-        snap.style.transform = '';
+    // Горизонтальное смещение кадра для эффекта "разрыва"
+    const offsets=['translate(12px,0)','translate(-10px,0)','translate(8px,0)','translate(-6px,0)'];
+    let idx=0;
+    const glitchFrame=setInterval(()=>{
+      snap.style.transform=offsets[idx%offsets.length];
+      idx++;
+      if(idx>offsets.length*4){ // ~1.5 сек
+        clearInterval(glitchFrame);
+        snap.style.transform='';
 
-        // Показываем лицо
-        const face = document.createElement('img');
-        face.src = 'img/face.png';
-        face.className = 'dead-face';
+        // Появление лица
+        const face=document.createElement('img');
+        face.src='img/face.png';
+        face.className='dead-face';
         dead.appendChild(face);
 
         requestAnimationFrame(()=>{
           requestAnimationFrame(()=>location.reload());
         });
       }
-    }, 100);
+    },100);
 
-  }, 2500);
+  },2500);
 };
 </script>
 
 </body>
 </html>
+
+
 
 
 
