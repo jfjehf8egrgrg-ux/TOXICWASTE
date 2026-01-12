@@ -49,10 +49,10 @@ body{
   justify-content:center;
   align-items:center;
   z-index:200;
-  transition: transform 0.05s linear, filter 0.05s linear;
+  transition: transform 0.2s ease, filter 0.05s linear;
 }
 .viewer.active{display:flex;}
-.viewer img{max-width:50vw;max-height:70vh; transition: transform 0.05s linear, filter 0.05s linear;}
+.viewer img{max-width:50vw;max-height:70vh; transition: transform 0.2s ease, filter 0.05s linear;}
 
 /* DEAD SCREEN */
 .dead-screen{
@@ -79,20 +79,6 @@ body{
   opacity:0.8;
 }
 
-/* SPLASH */
-.splash {
-  position:absolute;
-  width:20px;
-  height:20px;
-  border-radius:50%;
-  background:limegreen;
-  pointer-events:none;
-  z-index:10000;
-  opacity:0.8;
-  transform: scale(0);
-  transition: transform 0.3s ease-out, opacity 0.3s ease-out;
-}
-
 /* GLITCH PARTICLES */
 .glitch-particle{
   position:absolute;
@@ -104,6 +90,20 @@ body{
   mix-blend-mode:difference;
   opacity:0;
   transition: all 0.05s linear;
+}
+
+/* CLICK SPLASH PARTICLE */
+.splash-particle{
+  position:absolute;
+  width:4px;
+  height:4px;
+  background:limegreen;
+  border-radius:50%;
+  pointer-events:none;
+  z-index:10000;
+  opacity:1;
+  transform: scale(1);
+  transition: transform 0.3s ease-out, opacity 0.3s ease-out;
 }
 </style>
 </head>
@@ -124,7 +124,7 @@ body{
 <div class="viewer" id="viewer"><img id="viewerImg"></div>
 
 <script>
-/* VIEWER PNG */
+/* VIEWER PNG с zoom-out */
 const viewer=document.getElementById('viewer');
 const viewerImg=document.getElementById('viewerImg');
 document.querySelectorAll('.zoomable').forEach(img=>{
@@ -132,16 +132,23 @@ document.querySelectorAll('.zoomable').forEach(img=>{
     if(!img.src.endsWith('.png'))return;
     e.stopPropagation();
     viewerImg.src=img.src;
-    viewerImg.className='zoom-in';
+    viewerImg.style.transform = 'scale(0.4)';
     viewer.classList.add('active');
+    requestAnimationFrame(()=>{
+      viewerImg.style.transition = 'transform 0.25s ease-out';
+      viewerImg.style.transform = 'scale(1)';
+    });
   };
 });
 viewer.onclick=()=>{
-  viewerImg.className='zoom-out';
-  setTimeout(()=>viewer.classList.remove('active'),200);
+  viewerImg.style.transform = 'scale(0.4)';
+  setTimeout(()=>{
+    viewer.classList.remove('active');
+    viewerImg.style.transition = '';
+  },250);
 };
 
-/* FNATI EXIT ON LOGO */
+/* FNATI EXIT */
 const logo=document.getElementById('exitLogo');
 const sound=document.getElementById('exitSound');
 
@@ -174,15 +181,15 @@ logo.onclick=e=>{
   },4000);
 };
 
-/* TV-LIKE GLITCH с RGB-сдвигами и тряской элементов */
+/* TV-LIKE GLITCH */
 function glitchPage() {
-  // Фон RGB
+  // RGB фон
   const rBg = (Math.random()-0.5)*8;
   const gBg = (Math.random()-0.5)*8;
   const bBg = (Math.random()-0.5)*8;
   document.body.style.filter = `drop-shadow(${rBg}px 0 red) drop-shadow(0 ${gBg}px lime) drop-shadow(${bBg}px ${bBg}px blue)`;
 
-  // Элементы трясутся + RGB
+  // Элементы трясутся
   const elements = [...document.querySelectorAll('.logo, .images, .image-block, .zoomable, .noglitch, .viewer')];
   elements.forEach(el => {
     const xShift = (Math.random()-0.5)*6;
@@ -202,25 +209,7 @@ function glitchPage() {
     });
   }, 500);
 }
-
-// каждые 6-7 секунд
 setInterval(glitchPage, 6000 + Math.random()*1000);
-
-/* SPLASH при клике */
-document.body.addEventListener('click', e=>{
-  const splash = document.createElement('div');
-  splash.className = 'splash';
-  splash.style.left = `${e.clientX-10}px`;
-  splash.style.top = `${e.clientY-10}px`;
-  document.body.appendChild(splash);
-
-  requestAnimationFrame(()=>{
-    splash.style.transform = 'scale(3)';
-    splash.style.opacity = '0';
-  });
-
-  setTimeout(()=>splash.remove(),300);
-});
 
 /* GLITCH PARTICLES */
 function spawnGlitchParticle() {
@@ -230,18 +219,37 @@ function spawnGlitchParticle() {
   particle.style.top = Math.random()*window.innerHeight + 'px';
   particle.style.opacity = 1;
   document.body.appendChild(particle);
-
-  setTimeout(()=>{
-    particle.remove();
-  },100);
+  setTimeout(()=>particle.remove(),100);
 }
-
-// Частые маленькие частицы
 setInterval(spawnGlitchParticle, 50);
 
+/* SPLASH — плеск частиц при клике */
+document.body.addEventListener('click', e=>{
+  const count = 8; // число частиц
+  for(let i=0;i<count;i++){
+    const particle = document.createElement('div');
+    particle.className = 'splash-particle';
+    particle.style.left = `${e.clientX - 2}px`;
+    particle.style.top = `${e.clientY - 2}px`;
+    const angle = Math.random()*2*Math.PI;
+    const distance = 20 + Math.random()*20;
+    const dx = Math.cos(angle)*distance;
+    const dy = Math.sin(angle)*distance;
+    document.body.appendChild(particle);
+
+    requestAnimationFrame(()=>{
+      particle.style.transform = `translate(${dx}px, ${dy}px) scale(0.5)`;
+      particle.style.opacity = '0';
+    });
+
+    setTimeout(()=>particle.remove(), 300);
+  }
+});
 </script>
 </body>
 </html>
+
+
 
 
 
