@@ -254,30 +254,52 @@ logo.onclick=e=>{
   }
 
   setTimeout(()=>{
-    /* DISTORT + RGB 1.5s */
-    snap.classList.add('dead-distort');
+    // Убираем старые полосы
+    strips.forEach(s => s.remove());
 
-    strips.forEach(s=>{
-      s.style.background=colors[Math.floor(Math.random()*colors.length)];
-    });
+    // Создаём новые большие полосы для "жёсткого глитча"
+    const glitchStrips = [];
+    for (let i = 0; i < 4; i++) {
+      const s = document.createElement('div');
+      s.className = 'dead-strip';
+      s.style.top = (i * 20) + 'vh';
+      s.style.height = '25vh';
+      s.style.background = 'rgba(255,255,255,0.2)';
+      dead.appendChild(s);
+      glitchStrips.push(s);
+    }
 
-    setTimeout(()=>{
-      const face=document.createElement('img');
-      face.src='img/face.png';
-      face.className='dead-face';
-      dead.appendChild(face);
+    // Смещение клона страницы (кадр дергается)
+    let count = 0;
+    const glitchInterval = setInterval(() => {
+      const offsetX = (Math.random() - 0.5) * 20;
+      const offsetY = (Math.random() - 0.5) * 20;
+      snap.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
+      count++;
+      if (count > 15) { // ~1.5 секунды
+        clearInterval(glitchInterval);
+        snap.style.transform = '';
 
-      requestAnimationFrame(()=>{
-        requestAnimationFrame(()=>location.reload());
-      });
-    },1500);
+        // Показываем лицо
+        const face = document.createElement('img');
+        face.src = 'img/face.png';
+        face.className = 'dead-face';
+        dead.appendChild(face);
 
-  },2500);
+        requestAnimationFrame(()=>{
+          requestAnimationFrame(()=>location.reload());
+        });
+      }
+    }, 100);
+
+  }, 2500);
 };
 </script>
 
 </body>
 </html>
+
+
 
 
 
