@@ -110,6 +110,25 @@ body.rgb-glitch {
   100% { transform:none; filter:none; }
 }
 
+/* ================= ULTRA MEGA GLITCH ================= */
+.ultra-glitch {
+  animation: ultraGlitch var(--ultraDur) steps(1);
+}
+
+@keyframes ultraGlitch {
+  0% { transform:none; }
+  20% { transform: translate(var(--gx), var(--gy)) scale(1.05); }
+  40% {
+    transform: translate(calc(var(--gx) * -1), calc(var(--gy) * .8)) scale(1.1);
+    filter:
+      drop-shadow(-35px 0 red)
+      drop-shadow(35px 0 cyan)
+      drop-shadow(0 35px magenta);
+  }
+  70% { transform: translate(var(--gx), calc(var(--gy) * -1)) rotate(1deg); }
+  100% { transform:none; filter:none; }
+}
+
 /* ================= VIEWER ================= */
 .viewer {
   position: fixed;
@@ -213,10 +232,35 @@ function greenSplash(x,y){
   }
 }
 
+/* ================= ULTRA MEGA GLITCH ================= */
+function ultraMegaGlitch(){
+  const level = Math.floor(clickCount / 10);
+
+  document.body.style.setProperty('--gx', level * 38 + 'px');
+  document.body.style.setProperty('--gy', level * 28 + 'px');
+  document.body.style.setProperty('--rgbR', level * 4 + 'px');
+  document.body.style.setProperty('--ultraDur', 0.55 + level * 0.08 + 's');
+
+  document.body.classList.add('rgb-glitch');
+  document.body.classList.add('ultra-glitch');
+
+  setTimeout(()=>{
+    document.body.classList.remove('ultra-glitch');
+    updateGlobalGlitch();
+  }, 600 + level * 120);
+}
+
 /* ================= GLOBAL CLICK ================= */
 document.addEventListener('click',e=>{
   clickCount++;
   greenSplash(e.clientX,e.clientY);
+
+  // каждые 10 кликов → ультра мега глитч
+  if(clickCount % 10 === 0){
+    ultraMegaGlitch();
+  } else {
+    updateGlobalGlitch();
+  }
 });
 
 /* ================= IMAGE VIEWER + RESET ================= */
@@ -280,7 +324,7 @@ setInterval(()=>{
   }
 }, 40);
 
-/* ================= MEGA GLITCH ================= */
+/* ================= MEGA GLITCH EVERY 6.5S ================= */
 setInterval(()=>{
   const level = Math.floor(clickCount / 10);
   if(level > 0){
@@ -295,6 +339,8 @@ setInterval(()=>{
 
 </body>
 </html>
+
+
 
 
 
