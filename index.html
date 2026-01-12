@@ -18,6 +18,7 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
+  position: relative;
 }
 
 /* ================= GLOBAL RGB GLITCH ================= */
@@ -91,41 +92,23 @@ body.rgb-glitch {
     drop-shadow(2px 0 cyan);
 }
 
-/* ================= MEGA GLITCH ================= */
+/* ================= MEGA GLITCH (FULLSCREEN) ================= */
 .site-glitch {
   animation: siteGlitch var(--megaDur) steps(1);
+  transform-origin: center center;
 }
 
 @keyframes siteGlitch {
   0% { transform:none; }
-  20% { transform: translate(var(--gx), var(--gy)); }
+  20% { transform: translate(var(--gx), var(--gy)) scale(1.1) rotate(1deg); }
   40% {
-    transform: translate(calc(var(--gx) * -1), calc(var(--gy) * .5));
+    transform: translate(calc(var(--gx) * -1), calc(var(--gy) * 0.8)) scale(1.2) rotate(-1deg);
     filter:
-      drop-shadow(-20px 0 red)
-      drop-shadow(20px 0 cyan)
-      drop-shadow(0 20px magenta);
+      drop-shadow(-50px 0 red)
+      drop-shadow(50px 0 cyan)
+      drop-shadow(0 50px magenta);
   }
-  70% { transform: translate(var(--gx), calc(var(--gy) * -1)); }
-  100% { transform:none; filter:none; }
-}
-
-/* ================= ULTRA MEGA GLITCH ================= */
-.ultra-glitch {
-  animation: ultraGlitch var(--ultraDur) steps(1);
-}
-
-@keyframes ultraGlitch {
-  0% { transform:none; }
-  20% { transform: translate(var(--gx), var(--gy)) scale(1.05); }
-  40% {
-    transform: translate(calc(var(--gx) * -1), calc(var(--gy) * .8)) scale(1.1);
-    filter:
-      drop-shadow(-35px 0 red)
-      drop-shadow(35px 0 cyan)
-      drop-shadow(0 35px magenta);
-  }
-  70% { transform: translate(var(--gx), calc(var(--gy) * -1)) rotate(1deg); }
+  70% { transform: translate(var(--gx), calc(var(--gy) * -1)) scale(1.15) rotate(2deg); }
   100% { transform:none; filter:none; }
 }
 
@@ -239,15 +222,29 @@ function ultraMegaGlitch(){
   document.body.style.setProperty('--gx', level * 38 + 'px');
   document.body.style.setProperty('--gy', level * 28 + 'px');
   document.body.style.setProperty('--rgbR', level * 4 + 'px');
-  document.body.style.setProperty('--ultraDur', 0.55 + level * 0.08 + 's');
+  document.body.style.setProperty('--ultraDur', 0.7 + level * 0.1 + 's');
 
   document.body.classList.add('rgb-glitch');
   document.body.classList.add('ultra-glitch');
 
+  // сильный шум на весь экран
+  for(let i=0;i<50;i++){
+    const n=document.createElement('div');
+    n.className='noise-glitch';
+    const w=Math.random()*(30+level*5)+10;
+    const h=Math.random()*(30+level*5)+10;
+    n.style.width=w+'px';
+    n.style.height=h+'px';
+    n.style.left=Math.random()*(innerWidth-w)+'px';
+    n.style.top=Math.random()*(innerHeight-h)+'px';
+    document.body.appendChild(n);
+    setTimeout(()=>n.remove(), 300 + Math.random()*300);
+  }
+
   setTimeout(()=>{
     document.body.classList.remove('ultra-glitch');
     updateGlobalGlitch();
-  }, 600 + level * 120);
+  }, 800 + level * 150);
 }
 
 /* ================= GLOBAL CLICK ================= */
@@ -255,7 +252,6 @@ document.addEventListener('click',e=>{
   clickCount++;
   greenSplash(e.clientX,e.clientY);
 
-  // каждые 10 кликов → ультра мега глитч
   if(clickCount % 10 === 0){
     ultraMegaGlitch();
   } else {
@@ -324,14 +320,30 @@ setInterval(()=>{
   }
 }, 40);
 
-/* ================= MEGA GLITCH EVERY 6s ================= */
+/* ================= MEGA GLITCH FULLSCREEN EVERY 6s ================= */
 setInterval(()=>{
   const level = Math.floor(clickCount / 10);
 
+  // включаем глитч на весь экран
   document.body.classList.add('site-glitch');
+
+  // добавляем шум по экрану
+  for(let i=0;i<30;i++){
+    const n=document.createElement('div');
+    n.className='noise-glitch';
+    const w=Math.random()*(30+level*5)+10;
+    const h=Math.random()*(30+level*5)+10;
+    n.style.width=w+'px';
+    n.style.height=h+'px';
+    n.style.left=Math.random()*(innerWidth-w)+'px';
+    n.style.top=Math.random()*(innerHeight-h)+'px';
+    document.body.appendChild(n);
+    setTimeout(()=>n.remove(), 300 + Math.random()*300);
+  }
+
   setTimeout(()=>{
     document.body.classList.remove('site-glitch');
-  }, 400 + level * 60);
+  }, 600 + level*100);
 
 }, 6000); // каждые 6 секунд
 
@@ -339,6 +351,8 @@ setInterval(()=>{
 
 </body>
 </html>
+
+
 
 
 
