@@ -2,43 +2,48 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>cancelled</title>
 
 <style>
 html, body {
   margin: 0;
   padding: 0;
-  width: 100%;
-  height: 100%;
   background: black;
   overflow: hidden;
+  width: 100%;
+  height: 100%;
 }
 
-video {
+/* Контейнер с реальной высотой экрана */
+.video-wrapper {
   position: fixed;
   inset: 0;
   width: 100%;
+  height: 100svh; /* РЕАЛЬНАЯ высота экрана */
+}
+
+/* Видео */
+video {
+  width: 100%;
   height: 100%;
-  object-fit: cover; /* cover = на весь экран */
+  object-fit: contain; /* НЕ обрезает */
+  background: black;
+  pointer-events: none;
 }
 </style>
 </head>
 
 <body>
 
-<video autoplay loop muted playsinline>
-  <source src="img/video.mp4">
-</video>
+<div class="video-wrapper">
+  <video autoplay loop muted playsinline>
+    <source src="img/video.mp4" type="video/mp4">
+  </video>
+</div>
 
 </body>
 </html>
-
-
-
-
-
-
 
 
 
